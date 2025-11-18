@@ -8,7 +8,7 @@ export default function Dashboard() {
     <>
       <ThemedView className="flex-1">
         <ScrollView>
-          <ThemedText>Edit Profile page</ThemedText>
+          <ThemedText>Dashboard page</ThemedText>
         </ScrollView>
       </ThemedView>
     </>

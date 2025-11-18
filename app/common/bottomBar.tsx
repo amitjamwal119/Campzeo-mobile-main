@@ -23,7 +23,7 @@ export default function BottomBar() {
           options={{
             title: "Dashboard",
             tabBarIcon: ({ color }) => (
-              <IconSymbol size={28} name="chart.bar" color={color} />
+              <IconSymbol size={29} name="chart.bar" color={color} />
             ),
           }}
         />
@@ -33,7 +33,7 @@ export default function BottomBar() {
           options={{
             title: "Logs",
             tabBarIcon: ({ color }) => (
-              <IconSymbol size={28} name="doc.text" color={color} />
+              <IconSymbol size={29} name="doc.text" color={color} />
             ),
           }}
         />
@@ -43,7 +43,7 @@ export default function BottomBar() {
           options={{
             title: "Campaigns",
             tabBarIcon: ({ color }) => (
-              <IconSymbol size={28} name="map" color={color} />
+              <IconSymbol size={29} name="map" color={color} />
             ),
           }}
         />
@@ -53,7 +53,7 @@ export default function BottomBar() {
           options={{
             title: "Contacts",
             tabBarIcon: ({ color }) => (
-              <IconSymbol size={28} name="envelope" color={color} />
+              <IconSymbol size={29} name="envelope" color={color} />
             ),
           }}
         />
@@ -63,7 +63,7 @@ export default function BottomBar() {
           options={{
             title: "Accounts",
             tabBarIcon: ({ color }) => (
-              <IconSymbol size={28} name="book" color={color} />
+              <IconSymbol size={29} name="book" color={color} />
             ),
           }}
         />

@@ -2,15 +2,20 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BottomBar from "../common/bottomBar";
 import TopBar from "../common/topBar";
+// import { useSidebarStore } from "@/store/sidebarStore";
+// import Sidebar from "../common/sideBar";
 
 
 
 export default function TabLayout() {
+// const sidebarOpen = useSidebarStore((s) => s.sidebarOpen);
+//   const closeSidebar = useSidebarStore((s) => s.closeSidebar);
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['top']}>
    <TopBar />
-   
+           {/* <Sidebar open ={sidebarOpen} close ={closeSidebar}/> */}
+
    <BottomBar />
     </SafeAreaView>
   );

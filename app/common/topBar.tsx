@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import {  Text, TouchableOpacity, Image, Modal } from "react-native";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Image, Modal, Text, TouchableOpacity } from "react-native";
 import { useSidebarStore } from "../../store/sidebarStore";
-import { ThemedView } from "@/components/themed-view";
 
 export default function TopBar() {
-  const router = useRouter();
+  const routePage = useRouter();
   const openSidebar = useSidebarStore((s) => s.openSidebar);
 
   const [showNotifications, setShowNotifications] = useState(false);
@@ -18,24 +19,29 @@ export default function TopBar() {
         className="flex-row items-center justify-between bg-white border-b border-gray-200 px-4 pb-3"
         style={{ paddingTop: 12, minHeight: 60 }}
       >
-        {/* LEFT — MENU */}
-        <TouchableOpacity activeOpacity={0.7} onPress={openSidebar}>
-          <Ionicons name="menu-outline" size={28} color="#000" />
+        {/* Left icon */}
+        <TouchableOpacity 
+          onPress={() => {routePage.push("/(tabs)/dashboard/dashboard");}}
+        activeOpacity={0.7} 
+        >
+          <Image
+            source={require("../../assets/app-images/logo-1.png")}
+            style={{ width: 100, height: 28, borderRadius: 6 }}
+            resizeMode="contain"
+          />{" "}
         </TouchableOpacity>
+        {/* <TouchableOpacity activeOpacity={0.7} onPress={openSidebar}>
+          <Ionicons name="menu-outline" size={28} color="#000" />
+        </TouchableOpacity> */}
 
         {/* RIGHT — ICONS + AVATAR */}
-        <ThemedView className="flex-row items-center space-x-5">
-
+        <ThemedView className="flex-row items-center gap-7"> 
           {/* 🔔 Notifications */}
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => setShowNotifications(true)}
           >
-            <Ionicons
-              name="notifications-outline"
-              size={24}
-              color="#007AFF"
-            />
+            <IconSymbol name="notifications" size={29} color="#ea7d00ff" />
           </TouchableOpacity>
 
           {/* ⚡ Quick Actions */}
@@ -43,13 +49,13 @@ export default function TopBar() {
             activeOpacity={0.7}
             onPress={() => setShowQuickActions(true)}
           >
-            <Ionicons name="layers-outline" size={24} color="#007AFF" />
+            <IconSymbol name="layers" size={29} color="#ea7d00ff" />
           </TouchableOpacity>
 
           {/* 👤 Avatar */}
           <TouchableOpacity
             activeOpacity={0.7}
-            onPress={() => router.push("/(profile)/userProfile")}
+            onPress={openSidebar}
           >
             <Image
               source={{
@@ -107,10 +113,13 @@ export default function TopBar() {
               className="items-center"
               onPress={() => {
                 setShowQuickActions(false);
-                // router.push("/(invoice)/invoice");
               }}
             >
-              <Ionicons name="document-text-outline" size={28} color="#007AFF" />
+              <Ionicons
+                name="document-text-outline"
+                size={28}
+                color="#007AFF"
+              />
               <Text className="text-blue-600 mt-1">Invoice</Text>
             </TouchableOpacity>
           </ThemedView>
