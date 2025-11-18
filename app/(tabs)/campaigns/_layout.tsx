@@ -8,18 +8,13 @@ export default function CampaignsLayout() {
         options={{ title: "Campaigns", headerShown: false }}
       />
       <Stack.Screen
-        name="campaignsDetails"
+        name="CampaignsDetails"
         options={{ title: "Back to campaign list" }}
         // Campaign Details
       />
       <Stack.Screen
-        name="campaignPost"
+        name="CampaignPost"
         options={{ title: "Create New Campaign" }}
-      />
-      <Stack.Screen
-        name="campaignsDetails"
-        options={{ title: "Back to campaign list" }}
-        // Campaign Details
       />
     </Stack>
   );

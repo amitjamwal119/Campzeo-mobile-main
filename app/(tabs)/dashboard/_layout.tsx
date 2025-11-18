@@ -1,3 +1,4 @@
+import TopBar from "@/app/common/topBar";
 import { Stack } from "expo-router";
 
 export default function AccountsLayout() {
@@ -5,7 +6,7 @@ export default function AccountsLayout() {
     <Stack>
       <Stack.Screen
         name="Dashboard"
-        options={{ title: "Dashboard", headerShown: false }}
+        options={{ header: () => <TopBar />, }}
       />
       
     </Stack>

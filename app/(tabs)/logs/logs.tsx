@@ -8,7 +8,7 @@ export default function Logs() {
     <>
       <ThemedView className="flex-1">
         <ScrollView>
-          <ThemedText>Edit Profile page</ThemedText>
+          <ThemedText>Logs page</ThemedText>
         </ScrollView>
       </ThemedView>
     </>

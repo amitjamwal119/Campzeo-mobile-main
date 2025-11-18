@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { ScrollView} from "react-native";
 
-export default function campaignPost() {
+export default function CampaignPost() {
   
   return (
     <>

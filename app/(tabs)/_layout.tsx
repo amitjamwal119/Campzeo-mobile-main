@@ -1,35 +1,39 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import BottomBar from "../common/bottomBar";
+import TopBar from "../common/topBar";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+   <TopBar />
+   
+   <BottomBar />
+    </SafeAreaView>
   );
 }
+
+
+
+// <ion-icon name="stats-chart"></ion-icon>
+// <ion-icon name="mail"></ion-icon>
+// <ion-icon name="book-outline"></ion-icon>
+// <ion-icon name="map"></ion-icon>
+// <Ionicons name="document-text"></ion-icon>
+
+
+
+
+
+
+
+
+
+// <ion-icon name="create"></ion-icon>
+// <ion-icon name="trash"></ion-icon>
+// <ion-icon name="notifications"></ion-icon>
+// <ion-icon name="layers"></ion-icon>
+// <ion-icon name="log-out"></ion-icon>

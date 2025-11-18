@@ -10,7 +10,7 @@ export default function Login() {
   const insets = useSafeAreaInsets();
 
   const handleLogin = () => {
-    router.replace("/(tabs)");
+    router.replace("/(tabs)/dashboard/dashboard");
   };
 
   return (
