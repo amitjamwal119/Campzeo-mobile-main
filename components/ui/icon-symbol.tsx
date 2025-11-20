@@ -34,12 +34,15 @@ export function IconSymbol({
   size = 24,
   color,
   style,
+  weight,
 }: {
   // Accept either an SF Symbol key (mapped in `MAPPING`) or a MaterialIcons name directly.
   name: string;
   size?: number;
   color: string | OpaqueColorValue;
   style?: StyleProp<TextStyle>;
+  // some callers pass a `weight` prop (SF Symbols weight). Accept and ignore it.
+  weight?: string;
 }) {
   // Resolve mapping; if the provided name isn't an SF key, assume it's a MaterialIcons name.
   const resolvedName = (MAPPING[name] ?? name) as ComponentProps<typeof MaterialIcons>['name'];

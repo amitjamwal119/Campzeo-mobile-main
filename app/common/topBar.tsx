@@ -2,7 +2,7 @@ import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Image, Modal, Text, TouchableOpacity } from "react-native";
 import { useSidebarStore } from "../../store/sidebarStore";
 
@@ -26,7 +26,7 @@ export default function TopBar() {
         >
           <Image
             source={require("../../assets/app-images/logo-1.png")}
-            style={{ width: 100, height: 28, borderRadius: 6 }}
+            style={{ width: 130, height: 50, borderRadius: 6 }}
             resizeMode="contain"
           />{" "}
         </TouchableOpacity>
@@ -36,23 +36,24 @@ export default function TopBar() {
 
         {/* RIGHT — ICONS + AVATAR */}
         <ThemedView className="flex-row items-center gap-7"> 
-          {/* 🔔 Notifications */}
+          {/*  Notifications */}
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => setShowNotifications(true)}
           >
-            <IconSymbol name="notifications" size={29} color="#ea7d00ff" />
+            {/* #D55B35 */}
+            <IconSymbol name="notifications" size={25} color="#D55B35" />
           </TouchableOpacity>
 
-          {/* ⚡ Quick Actions */}
+          {/*  Quick Actions */}
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => setShowQuickActions(true)}
           >
-            <IconSymbol name="layers" size={29} color="#ea7d00ff" />
+            <IconSymbol name="layers" size={25} color="#D55B35" />
           </TouchableOpacity>
 
-          {/* 👤 Avatar */}
+          {/*  Avatar */}
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={openSidebar}
@@ -68,7 +69,7 @@ export default function TopBar() {
       </ThemedView>
 
       {/* ========================== */}
-      {/* 🔔 Notifications Modal */}
+      {/* Notifications Modal */}
       {/* ========================== */}
       <Modal
         transparent
@@ -90,7 +91,7 @@ export default function TopBar() {
       </Modal>
 
       {/* ========================== */}
-      {/* ⚡ Quick Actions Modal */}
+      {/* Quick Actions Modal */}
       {/* ========================== */}
       <Modal
         transparent
