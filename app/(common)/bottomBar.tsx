@@ -58,11 +58,11 @@ export default function BottomBar() {
         />
 
         <Tabs.Screen
-          name="accounts"
+          name="invoices"
           options={{
-            title: "Accounts",
+            title: "Invoices",
             tabBarIcon: ({ color }) => (
-              <IconSymbol size={29} name="book" color={color} />
+              <IconSymbol size={29} name="receipt" color={color} />
             ),
           }}
         />

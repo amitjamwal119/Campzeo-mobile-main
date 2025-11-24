@@ -1,9 +1,9 @@
 import { ThemedText } from "@/components/themed-text";
 
-export default function Invoices() {
+export default function Settings() {
   return (
     <>
-      <ThemedText>Invoices page</ThemedText>
+      <ThemedText>Settings page</ThemedText>
     </>
   );
 }

@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 // import { router } from "expo-router";
 
 
-export default function Dashboard() {
+export default function Invoices() {
 
 const routePage = useRouter(); 
 
@@ -15,13 +15,13 @@ const routePage = useRouter();
     <>
       <ThemedView className="flex-1">
         <ScrollView>
-          <ThemedText>Dashboard page</ThemedText>
+          <ThemedText>Invoices page</ThemedText>
 
-          <Button 
+          {/* <Button 
           onPress={() => {routePage.push("/(auth)/login")}}
 >
             <ThemedText>Go to Login Page</ThemedText>
-          </Button>
+          </Button> */}
         </ScrollView>
       </ThemedView>
     </>

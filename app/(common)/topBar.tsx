@@ -27,7 +27,7 @@ export default function TopBar() {
           activeOpacity={0.7}
         >
           <Image
-            source={require("../../assets/app-images/logo-1.png")}
+            source={require("../../assets/app-images/camp-logo.jpg")}
             style={{ width: 130, height: 50, borderRadius: 6 }}
             resizeMode="contain"
             alt="CampZeo logo"
@@ -46,12 +46,12 @@ export default function TopBar() {
           </TouchableOpacity>
 
           {/*  Quick Actions */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => setShowQuickActions(true)}
           >
             <IconSymbol name="layers" size={25} color="#D55B35" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           {/*  Avatar */}
           <TouchableOpacity
@@ -60,10 +60,10 @@ export default function TopBar() {
           >
             <Image
               source={{
-                uri: "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
+                uri: "https://i.pravatar.cc/300?img=12",
               }}
               className="w-10 h-10 rounded-full border border-gray-300"
-              alt="User avatar"
+              alt="User"
             />
           </TouchableOpacity>
         </ThemedView>

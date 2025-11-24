@@ -1,83 +1,65 @@
+import { View, Image, Text } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
+import { Input, Button, InputField } from "@gluestack-ui/themed";
 import { useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ScrollView, TextInput, TouchableOpacity } from "react-native";
-
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
 
 export default function Login() {
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
-
-  const handleLogin = () => {
-    router.replace("/(tabs)/dashboard/dashboard");
-  };
+  // const routePage = useRouter();
 
   return (
-    <>
-      <ThemedView className="flex-1">
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingTop: insets.top + 40,
-            paddingBottom: insets.bottom + 40,
+    <View className="flex-1">
+      {/* Background Gradient */}
+      <LinearGradient
+        colors={["#ffb07c", "#ffffff", "#ffe2d0"]}
+        start={{ x: 0.2, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        {/* BlurView Card */}
+        <BlurView
+          intensity={50}
+          tint="light"
+          style={{
+            shadowColor: "#000",
+            shadowOpacity: 0.15,
+            shadowRadius: 8,
+            shadowOffset: { width: 0, height: 3 },
           }}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Card Container */}
-          <ThemedView className="w-full max-w-sm rounded-xl p-6 shadow-lg bg-card">
-            {/* Header */}
-            <ThemedView className="items-center mb-6">
-              <ThemedText className="text-2xl font-bold">
-                Welcome Back
-              </ThemedText>
-              <ThemedView className="w-1/3 h-[2px] bg-gray-400 mt-2" />
-            </ThemedView>
+          className="w-[85%] max-w-[400px] rounded-2xl p-6 overflow-hidden bg-[rgba(251,221,221,0.65)] gap-7">
+          {/* CampZeo Logo */}
+          <Image
+            source={require("../../assets/app-images/logo-1.png")}
+            style={{
+              width: 150,
+              height: 50,
+              alignSelf: "center",
+              marginBottom: 25,
+            }}
+            resizeMode="contain"
+          />
 
-            {/* Form */}
-            <ThemedView className="space-y-4">
-              {/* Email */}
-              <ThemedView>
-                <ThemedText className="text-base mb-1">Email</ThemedText>
+          {/* Email Input */}
+          <Input>
+            <InputField placeholder="Email" type="text" />
+          </Input>
 
-                <TextInput
-                  placeholder="Enter email"
-                  className="w-full p-4 rounded-lg border bg-transparent
-                           dark:text-white text-black
-                           border-gray-400 dark:border-gray-600"
-                  placeholderTextColor="#888"
-                />
-              </ThemedView>
+          {/* Password Input */}
+          <Input>
+            <InputField placeholder="Password" type="password" />
+          </Input>
 
-              {/* Password */}
-              <ThemedView>
-                <ThemedText className="text-base mb-1">Password</ThemedText>
-
-                <TextInput
-                  placeholder="Enter password"
-                  secureTextEntry
-                  className="w-full p-4 rounded-lg border bg-transparent
-                           dark:text-white text-black
-                           border-gray-400 dark:border-gray-600"
-                  placeholderTextColor="#888"
-                />
-              </ThemedView>
-
-              {/* Login Button */}
-              <TouchableOpacity
-                onPress={handleLogin}
-                className="bg-green-600 w-full p-4 rounded-lg active:opacity-90"
-              >
-                <ThemedText className="text-center text-white text-lg font-bold">
-                  Login Now
-                </ThemedText>
-              </TouchableOpacity>
-            </ThemedView>
-          </ThemedView>
-        </ScrollView>
-      </ThemedView>
-    </>
+          {/* Login Button */}
+          <Button
+            // onPress={() => router.push("/(tabs)")}
+            className="bg-orange-500 rounded-2xl py-3"
+          >
+            <Text className="text-white font-semibold text-center text-lg">
+              Log In
+            </Text>
+          </Button>
+        </BlurView>
+      </LinearGradient>
+    </View>
   );
 }

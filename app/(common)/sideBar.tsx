@@ -1,47 +1,43 @@
 import {
-    Drawer,
-    DrawerBackdrop,
-    DrawerBody,
-    DrawerContent,
-    DrawerFooter,
-    DrawerHeader,
+  Drawer,
+  DrawerBackdrop,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
 } from "@/components/ui/drawer";
 import {
-    Avatar,
-    AvatarFallbackText,
-    AvatarImage,
-    Button,
-    ButtonIcon,
-    ButtonText,
-    Divider,
-    Icon,
-    Pressable,
-    Text,
-    VStack,
+  Avatar,
+  AvatarFallbackText,
+  AvatarImage,
+  Button,
+  ButtonIcon,
+  ButtonText,
+  Divider,
+  Icon,
+  Pressable,
+  Text,
+  VStack,
 } from "@gluestack-ui/themed";
 import {
-    Home,
-    LogOut,
-    User,
-    Wallet,
-    Settings,
-    Layers,
-    Calendar,
-    LineChartIcon,
+  LogOut,
+  User,
+  Settings,
+  Calendar,
+  Notebook,
 } from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import { useSidebarStore } from "../../store/sidebarStore";
+import { useRouter } from "expo-router";
+import { ThemedView } from "@/components/themed-view";
 
 export default function Sidebar() {
   const sidebarOpen = useSidebarStore((state) => state.sidebarOpen);
   const closeSidebar = useSidebarStore((state) => state.closeSidebar);
 
+  const routePage = useRouter();
   return (
-    <Drawer
-      isOpen={sidebarOpen}
-      onClose={closeSidebar}
-      anchor="right"
-    >
+    <Drawer isOpen={sidebarOpen} onClose={closeSidebar} anchor="right">
       <DrawerBackdrop />
       <DrawerContent className="w-[270px] md:w-[300px]">
         <DrawerHeader className="justify-center flex-col gap-2">
@@ -50,7 +46,7 @@ export default function Sidebar() {
               <AvatarFallbackText>Amit Jamwal</AvatarFallbackText>
               <AvatarImage
                 source={{
-                  uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+                  uri: "https://i.pravatar.cc/300?img=12",
                 }}
               />
             </Avatar>
@@ -63,36 +59,62 @@ export default function Sidebar() {
           </View>
         </DrawerHeader>
         <Divider style={styles.divider} />
-        <DrawerBody contentContainerClassName="gap-2">
-          <Pressable
-            style={styles.menuItem}
-            onPress={closeSidebar}
-          >
-            <Icon as={User} size="lg" style={styles.icon} />
-            <Text>My Profile</Text>
-          </Pressable>
-          <Pressable
+        <DrawerBody>
+          <ThemedView className="justify-center align-middle gap-3">
+            {/* ===Profile=== */}
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                routePage.push("/(profile)/userProfile");
+              }}
+            >
+              <Icon as={User} size="lg" style={styles.icon} />
+              <Text>My Profile</Text>
+            </Pressable>
+
+            {/* ===Accounts=== */}
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                routePage.push("/(accounts)/accounts");
+              }}
+            >
+              <Icon as={Notebook} size="lg" style={styles.icon} />
+              <Text>Accounts</Text>
+            </Pressable>
+
+            {/* <Pressable
             style={styles.menuItem}
             onPress={closeSidebar}
           >
             <Icon as={LineChartIcon} size="lg" style={styles.icon} />
             <Text>Invoices</Text>
-          </Pressable>
-          
-          <Pressable
-            style={styles.menuItem}
-            onPress={closeSidebar}
-          >
-            <Icon as={Calendar} size="lg" style={styles.icon} />
-            <Text>Calendar</Text>
-          </Pressable>
-          <Pressable
-            style={styles.menuItem}
-            onPress={closeSidebar}
-          >
-            <Icon as={Settings} size="lg" style={styles.icon} />
-            <Text>Settings</Text>
-          </Pressable>
+          </Pressable> */}
+
+            {/* ===Calander=== */}
+
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                routePage.push("/(calander)/calander");
+              }}
+            >
+              <Icon as={Calendar} size="lg" style={styles.icon} />
+              <Text>Calendar</Text>
+            </Pressable>
+
+            {/* ===Settings=== */}
+
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                routePage.push("/(settings)/settings");
+              }}
+            >
+              <Icon as={Settings} size="lg" style={styles.icon} />
+              <Text>Settings</Text>
+            </Pressable>
+          </ThemedView>
         </DrawerBody>
         <DrawerFooter>
           <Button
@@ -141,4 +163,3 @@ const styles = StyleSheet.create({
     gap: 8,
   },
 });
-
