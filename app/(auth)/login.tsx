@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+import { ScrollView, TextInput, TouchableOpacity } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -29,17 +29,17 @@ export default function Login() {
           {/* Card Container */}
           <ThemedView className="w-full max-w-sm rounded-xl p-6 shadow-lg bg-card">
             {/* Header */}
-            <View className="items-center mb-6">
+            <ThemedView className="items-center mb-6">
               <ThemedText className="text-2xl font-bold">
                 Welcome Back
               </ThemedText>
-              <View className="w-1/3 h-[2px] bg-gray-400 mt-2" />
-            </View>
+              <ThemedView className="w-1/3 h-[2px] bg-gray-400 mt-2" />
+            </ThemedView>
 
             {/* Form */}
-            <View className="space-y-4">
+            <ThemedView className="space-y-4">
               {/* Email */}
-              <View>
+              <ThemedView>
                 <ThemedText className="text-base mb-1">Email</ThemedText>
 
                 <TextInput
@@ -49,10 +49,10 @@ export default function Login() {
                            border-gray-400 dark:border-gray-600"
                   placeholderTextColor="#888"
                 />
-              </View>
+              </ThemedView>
 
               {/* Password */}
-              <View>
+              <ThemedView>
                 <ThemedText className="text-base mb-1">Password</ThemedText>
 
                 <TextInput
@@ -63,7 +63,7 @@ export default function Login() {
                            border-gray-400 dark:border-gray-600"
                   placeholderTextColor="#888"
                 />
-              </View>
+              </ThemedView>
 
               {/* Login Button */}
               <TouchableOpacity
@@ -74,7 +74,7 @@ export default function Login() {
                   Login Now
                 </ThemedText>
               </TouchableOpacity>
-            </View>
+            </ThemedView>
           </ThemedView>
         </ScrollView>
       </ThemedView>

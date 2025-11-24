@@ -8,7 +8,7 @@ import { useSidebarStore } from "../../store/sidebarStore";
 
 export default function TopBar() {
   const routePage = useRouter();
-  const openSidebar = useSidebarStore((s) => s.openSidebar);
+  const openSidebar = useSidebarStore((state) => state.openSidebar);
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(false);
@@ -20,19 +20,19 @@ export default function TopBar() {
         style={{ paddingTop: 12, minHeight: 60 }}
       >
         {/* Left icon */}
-        <TouchableOpacity 
-          onPress={() => {routePage.push("/(tabs)/dashboard/dashboard");}}
-        activeOpacity={0.7} 
+        <TouchableOpacity
+          onPress={() => {
+            routePage.push("/(tabs)/dashboard");
+          }}
+          activeOpacity={0.7}
         >
           <Image
             source={require("../../assets/app-images/logo-1.png")}
             style={{ width: 130, height: 50, borderRadius: 6 }}
             resizeMode="contain"
-          />{" "}
+            alt="CampZeo logo"
+          />
         </TouchableOpacity>
-        {/* <TouchableOpacity activeOpacity={0.7} onPress={openSidebar}>
-          <Ionicons name="menu-outline" size={28} color="#000" />
-        </TouchableOpacity> */}
 
         {/* RIGHT — ICONS + AVATAR */}
         <ThemedView className="flex-row items-center gap-7"> 
@@ -63,6 +63,7 @@ export default function TopBar() {
                 uri: "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
               }}
               className="w-10 h-10 rounded-full border border-gray-300"
+              alt="User avatar"
             />
           </TouchableOpacity>
         </ThemedView>

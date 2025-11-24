@@ -37,7 +37,7 @@ export default function RootLayout() {
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>
-      </SafeAreaProvider>{" "}
+      </SafeAreaProvider>
     </GluestackUIProvider>
   );
 }

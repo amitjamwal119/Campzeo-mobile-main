@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
 
-export default function AccountsLayout() {
+export default function LogsLayout() {
   return <Stack screenOptions={{ headerShown: false }} />;
 }
