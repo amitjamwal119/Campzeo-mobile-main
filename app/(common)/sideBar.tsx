@@ -40,6 +40,7 @@ export default function Sidebar() {
     <Drawer isOpen={sidebarOpen} onClose={closeSidebar} anchor="right">
       <DrawerBackdrop />
       <DrawerContent className="w-[270px] md:w-[300px]">
+        {/*  rounded-l-2xl overflow-hidden */}
         <DrawerHeader className="justify-center flex-col gap-2">
           <View style={styles.headerContent}>
             <Avatar size="xl">

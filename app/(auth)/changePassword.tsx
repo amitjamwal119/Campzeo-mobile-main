@@ -82,9 +82,7 @@ export default function ChangePassword({ closeCP }: closeCPType) {
                 Cancel
               </ThemedText>
             </Pressable>
-          </VStack>
-
-          
+          </VStack> 
         </VStack>
       </ScrollView>
     </ThemedView>
