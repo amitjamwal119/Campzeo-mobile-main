@@ -1,17 +1,35 @@
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Image, Modal, Text, TouchableOpacity } from "react-native";
+import { Image, Text, TouchableOpacity } from "react-native";
 import { useSidebarStore } from "../../store/sidebarStore";
+import { Box } from "@gluestack-ui/themed";
+
+import React from "react";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverBody,
+  PopoverArrow,
+  PopoverBackdrop,
+  ButtonText,
+} from "@gluestack-ui/themed";
+import { Button } from "@gluestack-ui/themed";
+
+// type PopoverHandle = {
+//   close: () => void;
+//   open?: () => void;
+// };
 
 export default function TopBar() {
   const routePage = useRouter();
+
   const openSidebar = useSidebarStore((state) => state.openSidebar);
 
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showQuickActions, setShowQuickActions] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = React.useState(false);
+
+  // const popoverRef = React.useRef<PopoverHandle | null>(null);
 
   return (
     <>
@@ -35,29 +53,86 @@ export default function TopBar() {
         </TouchableOpacity>
 
         {/* RIGHT — ICONS + AVATAR */}
-        <ThemedView className="flex-row items-center gap-7"> 
+        <ThemedView className="flex-row items-center gap-7">
           {/*  Notifications */}
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => setShowNotifications(true)}
-          >
-            {/* #D55B35 */}
-            <IconSymbol name="notifications" size={25} color="#D55B35" />
-          </TouchableOpacity>
 
-          {/*  Quick Actions */}
-          {/* <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => setShowQuickActions(true)}
+          <Popover
+            //  ref={popoverRef}
+            isOpen={isNotifOpen}
+            onOpen={() => setIsNotifOpen(true)}
+            onClose={() => setIsNotifOpen(false)}
+            placement="bottom"
+            size="lg"
+            trigger={(triggerProps) => {
+              return (
+                <Button {...triggerProps} variant="link">
+                  <IconSymbol name="notifications" size={25} color="#D55B35" />
+                </Button>
+              );
+            }}
           >
-            <IconSymbol name="layers" size={25} color="#D55B35" />
-          </TouchableOpacity> */}
+            <PopoverBackdrop />
+            <PopoverContent>
+              <PopoverArrow />
+
+              <PopoverBody className="p-3">
+                <Text className="font-semibold text-center text-base my-3">
+                  Notifications
+                </Text>
+
+                {/* Notification Item 1 */}
+                <Box className="mb-3 p-2 rounded-lg bg-background-50 border border-background-200">
+                  <Text className="text-sm font-medium text-typography-900">
+                    New campaign created 🎉
+                  </Text>
+                  <Text className="text-xs text-typography-600 mt-1">
+                    Just now
+                  </Text>
+                </Box>
+
+                {/* Notification Item 2 */}
+                <Box className="mb-3 p-2 rounded-lg bg-background-50 border border-background-200">
+                  <Text className="text-sm font-medium text-typography-900">
+                    You have 3 new leads 🔥
+                  </Text>
+                  <Text className="text-xs text-typography-600 mt-1">
+                    5 minutes ago
+                  </Text>
+                </Box>
+
+                {/* Notification Item 3 */}
+                <Box className="mb-3 p-2 rounded-lg bg-background-50 border border-background-200">
+                  <Text className="text-sm font-medium text-typography-900">
+                    Reminder: Follow up with John
+                  </Text>
+                  <Text className="text-xs text-typography-600 mt-1">
+                    30 minutes ago
+                  </Text>
+                </Box>
+
+                {/* Footer Button */}
+
+                <Button
+                  variant="link"
+                  className="self-center mt-1"
+                  onPress={() => console.log("See all notifications")}
+                >
+                  <ButtonText
+                    className="text-primary-600 font-medium"
+                    onPress={() => {
+                      setIsNotifOpen(false);
+                      routePage.push("/(notifications)/allNotifications");
+                    }}
+                  >
+                    See all notifications →
+                  </ButtonText>
+                </Button>
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
 
           {/*  Avatar */}
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={openSidebar}
-          >
+          <TouchableOpacity activeOpacity={0.7} onPress={openSidebar}>
             <Image
               source={{
                 uri: "https://i.pravatar.cc/300?img=12",
@@ -68,65 +143,6 @@ export default function TopBar() {
           </TouchableOpacity>
         </ThemedView>
       </ThemedView>
-
-      {/* ========================== */}
-      {/* Notifications Modal */}
-      {/* ========================== */}
-      <Modal
-        transparent
-        visible={showNotifications}
-        animationType="fade"
-        onRequestClose={() => setShowNotifications(false)}
-      >
-        <TouchableOpacity
-          activeOpacity={1}
-          className="flex-1 bg-black/40 justify-center items-center"
-          onPress={() => setShowNotifications(false)}
-        >
-          <ThemedView className="bg-white p-4 rounded-xl w-60 border border-gray-300">
-            <Text className="text-gray-700 text-base">
-              You have no new notifications.
-            </Text>
-          </ThemedView>
-        </TouchableOpacity>
-      </Modal>
-
-      {/* ========================== */}
-      {/* Quick Actions Modal */}
-      {/* ========================== */}
-      <Modal
-        transparent
-        visible={showQuickActions}
-        animationType="fade"
-        onRequestClose={() => setShowQuickActions(false)}
-      >
-        <TouchableOpacity
-          activeOpacity={1}
-          className="flex-1 bg-black/40 justify-center items-center"
-          onPress={() => setShowQuickActions(false)}
-        >
-          <ThemedView className="bg-white p-4 rounded-xl w-60 border border-gray-300">
-            <Text className="text-lg font-semibold text-center mb-3">
-              Quick Actions
-            </Text>
-
-            {/* Invoice */}
-            <TouchableOpacity
-              className="items-center"
-              onPress={() => {
-                setShowQuickActions(false);
-              }}
-            >
-              <Ionicons
-                name="document-text-outline"
-                size={28}
-                color="#007AFF"
-              />
-              <Text className="text-blue-600 mt-1">Invoice</Text>
-            </TouchableOpacity>
-          </ThemedView>
-        </TouchableOpacity>
-      </Modal>
     </>
   );
 }
