@@ -125,3 +125,382 @@ export default function AllNotifications() {
     </>
   );
 }
+
+
+
+// Vik code 
+// Old method -------------------------------------------------------------------------------------------------------------------
+
+// import React, { useState } from "react";
+// import {
+//   ScrollView,
+//   TouchableOpacity,
+//   TextInput,
+//   View,
+// } from "react-native";
+// import { Text } from "@gluestack-ui/themed";
+// import { Ionicons } from "@expo/vector-icons";
+// import { ThemedView } from "@/components/themed-view";
+// import { useNavigation } from "@react-navigation/native";
+
+// // Sample notifications
+// const sampleNotifications = [
+//   {
+//     id: 1,
+//     title: "New Course Material Available",
+//     desc: "Check out the latest lecture slides",
+//     time: "2 mins ago",
+//     date: "Today",
+//     read: false,
+//   },
+//   {
+//     id: 2,
+//     title: "Upcoming Assignment Deadline",
+//     desc: "Don't forget to submit Biology",
+//     time: "30 mins ago",
+//     date: "Today",
+//     read: false,
+//   },
+//   {
+//     id: 3,
+//     title: "Important Announcement",
+//     desc: "Webinar on AI Ethics",
+//     time: "1 day ago",
+//     date: "Yesterday",
+//     read: true,
+//   },
+//   {
+//     id: 4,
+//     title: "Recommended Reading Material",
+//     desc: "New lecture slides uploaded",
+//     time: "1 day ago",
+//     date: "Yesterday",
+//     read: true,
+//   },
+// ];
+
+// export default function Notifications() {
+//   const navigation = useNavigation();
+//   const [notifications, setNotifications] = useState(sampleNotifications);
+//   const [tab, setTab] = useState("All");
+
+//   const filtered =
+//     tab === "All" ? notifications : notifications.filter((n) => !n.read);
+
+//   const unreadCount = notifications.filter((n) => !n.read).length;
+
+//   const markAsRead = (id: number) => {
+//     setNotifications((prev) =>
+//       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+//     );
+//   };
+
+//   const markAllAsRead = () => {
+//     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+//   };
+
+//   const hasNotifications = filtered.length > 0;
+
+//   // Group notifications by date
+//   const grouped = filtered.reduce((acc: any, item) => {
+//     acc[item.date] = acc[item.date] || [];
+//     acc[item.date].push(item);
+//     return acc;
+//   }, {});
+
+//   return (
+//     <ThemedView className="flex-1 bg-[#EEF2FF] px-4 pt-3">
+//       {/* CUSTOM HEADER */}
+//       <View className="flex-row items-center justify-between mb-3">
+//         <TouchableOpacity onPress={() => navigation.goBack()}>
+//           <Ionicons name="arrow-back" size={22} color="#333" />
+//         </TouchableOpacity>
+//         <Text className="text-lg font-semibold">Notifications</Text>
+//         <TouchableOpacity>
+//           <Ionicons name="settings-outline" size={22} color="#333" />
+//         </TouchableOpacity>
+//       </View>
+
+//       {/* SEARCH + REFRESH */}
+//       <View className="flex-row items-center bg-white rounded-full px-4 py-2 mb-3 shadow-sm">
+//         <Ionicons name="search-outline" size={20} color="#777" />
+//         <TextInput
+//           placeholder="Search"
+//           className="flex-1 px-2 text-gray-700"
+//         />
+//         <TouchableOpacity>
+//           <Ionicons name="refresh-outline" size={22} color="#444" />
+//         </TouchableOpacity>
+//       </View>
+
+//       {/* TABS */}
+//       <View className="flex-row items-center justify-between mb-3">
+//         <View className="flex-row space-x-2">
+//           <TouchableOpacity
+//             onPress={() => setTab("All")}
+//             className={`px-4 py-1 rounded-full ${
+//               tab === "All" ? "bg-[#516BFF]" : "bg-white"
+//             }`}
+//           >
+//             <Text className={`${tab === "All" ? "text-white" : "text-gray-700"}`}>
+//               All ({notifications.length})
+//             </Text>
+//           </TouchableOpacity>
+
+//           <TouchableOpacity
+//             onPress={() => setTab("Unread")}
+//             className={`px-4 py-1 rounded-full ${
+//               tab === "Unread" ? "bg-[#516BFF]" : "bg-white"
+//             }`}
+//           >
+//             <Text
+//               className={`${tab === "Unread" ? "text-white" : "text-gray-700"}`}
+//             >
+//               Unread ({unreadCount})
+//             </Text>
+//           </TouchableOpacity>
+//         </View>
+
+//         <TouchableOpacity onPress={markAllAsRead}>
+//           <Text className="text-[#516BFF] font-medium">Mark all as read</Text>
+//         </TouchableOpacity>
+//       </View>
+
+//       {/* EMPTY STATE */}
+//       {!hasNotifications && (
+//         <View className="flex-1 items-center justify-center mt-10">
+//           <Ionicons name="notifications-off-outline" size={70} color="#9AA6FF" />
+//           <Text className="text-gray-500 mt-4 text-base">
+//             Looks like there’s nothing here
+//           </Text>
+//         </View>
+//       )}
+
+//       {/* NOTIFICATION LIST */}
+//       {hasNotifications && (
+//         <ScrollView showsVerticalScrollIndicator={false}>
+//           {Object.keys(grouped).map((section) => (
+//             <View key={section} className="mb-4">
+//               <Text className="text-gray-500 font-medium mb-2">{section}</Text>
+
+//               {grouped[section].map((item: any) => (
+//                 <TouchableOpacity
+//                   key={item.id}
+//                   onPress={() => markAsRead(item.id)}
+//                   className={`p-4 mb-2 rounded-2xl shadow-sm ${
+//                     item.read ? "bg-white/60" : "bg-white"
+//                   }`}
+//                 >
+//                   <View className="flex-row justify-between items-start">
+//                     <View className="flex-1">
+//                       <Text className="font-semibold text-gray-800">
+//                         {item.title}
+//                       </Text>
+//                       <Text className="text-gray-500 text-sm mt-1">{item.desc}</Text>
+//                       <Text className="text-gray-400 text-xs mt-2">{item.time}</Text>
+//                     </View>
+
+//                     {!item.read && (
+//                       <View className="w-3 h-3 bg-[#516BFF] rounded-full mt-1" />
+//                     )}
+//                   </View>
+//                 </TouchableOpacity>
+//               ))}
+//             </View>
+//           ))}
+//         </ScrollView>
+//       )}
+//     </ThemedView>
+//   );
+// }
+
+
+
+// Flatlist code ------- new approach --------------------------------------------------------------------------------------------
+
+
+// import React, { useState } from "react";
+// import {
+//   TouchableOpacity,
+//   TextInput,
+//   View,
+//   SectionList,
+// } from "react-native";
+// import { Text } from "@gluestack-ui/themed";
+// import { Ionicons } from "@expo/vector-icons";
+// import { ThemedView } from "@/components/themed-view";
+// import { useNavigation } from "@react-navigation/native";
+
+// // Sample notifications
+// const sampleNotifications = [
+//   {
+//     id: 1,
+//     title: "New Course Material Available",
+//     desc: "Check out the latest lecture slides",
+//     time: "2 mins ago",
+//     date: "Today",
+//     read: false,
+//   },
+//   {
+//     id: 2,
+//     title: "Upcoming Assignment Deadline",
+//     desc: "Don't forget to submit Biology",
+//     time: "30 mins ago",
+//     date: "Today",
+//     read: false,
+//   },
+//   {
+//     id: 3,
+//     title: "Important Announcement",
+//     desc: "Webinar on AI Ethics",
+//     time: "1 day ago",
+//     date: "Yesterday",
+//     read: true,
+//   },
+//   {
+//     id: 4,
+//     title: "Recommended Reading Material",
+//     desc: "New lecture slides uploaded",
+//     time: "1 day ago",
+//     date: "Yesterday",
+//     read: true,
+//   },
+// ];
+
+// export default function Notifications() {
+//   const navigation = useNavigation();
+//   const [notifications, setNotifications] = useState(sampleNotifications);
+//   const [tab, setTab] = useState("All");
+
+//   const filtered =
+//     tab === "All" ? notifications : notifications.filter((n) => !n.read);
+
+//   const unreadCount = notifications.filter((n) => !n.read).length;
+
+//   const markAsRead = (id: number) => {
+//     setNotifications((prev) =>
+//       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+//     );
+//   };
+
+//   const markAllAsRead = () => {
+//     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+//   };
+
+//   const hasNotifications = filtered.length > 0;
+
+//   // Convert grouped sections into SectionList format
+//   const sections = Object.entries(
+//     filtered.reduce((acc: any, item) => {
+//       acc[item.date] = acc[item.date] || [];
+//       acc[item.date].push(item);
+//       return acc;
+//     }, {})
+//   ).map(([date, items]) => ({
+//     title: date,
+//     data: items,
+//   }));
+
+//   return (
+//     <ThemedView className="flex-1 bg-[#EEF2FF] px-4 pt-3">
+//       {/* CUSTOM HEADER */}
+//       <View className="flex-row items-center justify-between mb-3">
+//         <TouchableOpacity onPress={() => navigation.goBack()}>
+//           <Ionicons name="arrow-back" size={22} color="#333" />
+//         </TouchableOpacity>
+//         <Text className="text-lg font-semibold">Notifications</Text>
+//         <TouchableOpacity>
+//           <Ionicons name="settings-outline" size={22} color="#333" />
+//         </TouchableOpacity>
+//       </View>
+
+//       {/* SEARCH + REFRESH */}
+//       <View className="flex-row items-center bg-white rounded-full px-4 py-2 mb-3 shadow-sm">
+//         <Ionicons name="search-outline" size={20} color="#777" />
+//         <TextInput placeholder="Search" className="flex-1 px-2 text-gray-700" />
+//         <TouchableOpacity>
+//           <Ionicons name="refresh-outline" size={22} color="#444" />
+//         </TouchableOpacity>
+//       </View>
+
+//       {/* TABS */}
+//       <View className="flex-row items-center justify-between mb-3">
+//         <View className="flex-row space-x-2">
+//           <TouchableOpacity
+//             onPress={() => setTab("All")}
+//             className={`px-4 py-1 rounded-full ${
+//               tab === "All" ? "bg-[#516BFF]" : "bg-white"
+//             }`}
+//           >
+//             <Text className={`${tab === "All" ? "text-white" : "text-gray-700"}`}>
+//               All ({notifications.length})
+//             </Text>
+//           </TouchableOpacity>
+
+//           <TouchableOpacity
+//             onPress={() => setTab("Unread")}
+//             className={`px-4 py-1 rounded-full ${
+//               tab === "Unread" ? "bg-[#516BFF]" : "bg-white"
+//             }`}
+//           >
+//             <Text
+//               className={`${tab === "Unread" ? "text-white" : "text-gray-700"}`}
+//             >
+//               Unread ({unreadCount})
+//             </Text>
+//           </TouchableOpacity>
+//         </View>
+
+//         <TouchableOpacity onPress={markAllAsRead}>
+//           <Text className="text-[#516BFF] font-medium">Mark all as read</Text>
+//         </TouchableOpacity>
+//       </View>
+
+//       {/* EMPTY STATE */}
+//       {!hasNotifications && (
+//         <View className="flex-1 items-center justify-center mt-10">
+//           <Ionicons name="notifications-off-outline" size={70} color="#9AA6FF" />
+//           <Text className="text-gray-500 mt-4 text-base">
+//             Looks like there’s nothing here
+//           </Text>
+//         </View>
+//       )}
+
+//       {/* NOTIFICATION LIST USING SECTIONLIST */}
+//       {hasNotifications && (
+//         <SectionList
+//           sections={sections}
+//           keyExtractor={(item) => item.id.toString()}
+//           showsVerticalScrollIndicator={false}
+//           renderSectionHeader={({ section }) => (
+//             <Text className="text-gray-500 font-medium mb-2 mt-4">
+//               {section.title}
+//             </Text>
+//           )}
+//           renderItem={({ item }) => (
+//             <TouchableOpacity
+//               onPress={() => markAsRead(item.id)}
+//               className={`p-4 mb-2 rounded-2xl shadow-sm ${
+//                 item.read ? "bg-white/60" : "bg-white"
+//               }`}
+//             >
+//               <View className="flex-row justify-between items-start">
+//                 <View className="flex-1">
+//                   <Text className="font-semibold text-gray-800">
+//                     {item.title}
+//                   </Text>
+//                   <Text className="text-gray-500 text-sm mt-1">{item.desc}</Text>
+//                   <Text className="text-gray-400 text-xs mt-2">{item.time}</Text>
+//                 </View>
+
+//                 {!item.read && (
+//                   <View className="w-3 h-3 bg-[#516BFF] rounded-full mt-1" />
+//                 )}
+//               </View>
+//             </TouchableOpacity>
+//           )}
+//         />
+//       )}
+//     </ThemedView>
+//   );
+// }

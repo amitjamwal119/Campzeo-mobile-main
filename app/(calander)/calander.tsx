@@ -1,3 +1,4 @@
+import { ThemedText } from "@/components/themed-text";
 import React, { useState, useMemo } from "react";
 import { View, Text, FlatList } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
@@ -15,15 +16,35 @@ export default function CalendarScreen() {
   // ⭐ Dummy campaigns
   const campaignData: CampaignMap = {
     "2025-01-05": [
-      { title: "WhatsApp Broadcast – Product Launch", time: "10:00 AM", platform: "WhatsApp" },
-      { title: "Facebook Reel – Winter Sale", time: "03:00 PM", platform: "Facebook" },
+      {
+        title: "WhatsApp Broadcast – Product Launch",
+        time: "10:00 AM",
+        platform: "WhatsApp",
+      },
+      {
+        title: "Facebook Reel – Winter Sale",
+        time: "03:00 PM",
+        platform: "Facebook",
+      },
     ],
     "2025-01-12": [
-      { title: "Instagram Post – New Arrivals", time: "11:30 AM", platform: "Instagram" },
+      {
+        title: "Instagram Post – New Arrivals",
+        time: "11:30 AM",
+        platform: "Instagram",
+      },
     ],
     "2025-01-20": [
-      { title: "LinkedIn Article – Growth Story", time: "09:00 AM", platform: "LinkedIn" },
-      { title: "Facebook Story – Flash Discount", time: "06:00 PM", platform: "Facebook" },
+      {
+        title: "LinkedIn Article – Growth Story",
+        time: "09:00 AM",
+        platform: "LinkedIn",
+      },
+      {
+        title: "Facebook Story – Flash Discount",
+        time: "06:00 PM",
+        platform: "Facebook",
+      },
     ],
   };
 
@@ -53,9 +74,12 @@ export default function CalendarScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       {/* Header */}
-      <Text className="text-center text-2xl font-bold py-4">
+      <ThemedText
+        style={{ fontSize: 30, lineHeight: 36, fontWeight: 700 }}
+        className="text-center mt-5 mb-9"
+      >
         Scheduled Campaigns
-      </Text>
+      </ThemedText>
 
       {/* 📅 Calendar */}
       <Calendar

@@ -15,7 +15,12 @@ const routePage = useRouter();
     <>
       <ThemedView className="flex-1">
         <ScrollView>
-          <ThemedText>Dashboard page</ThemedText>
+          <ThemedText
+            style={{ fontSize: 30, lineHeight: 36, fontWeight: 700 }}
+            className="text-center mt-5 mb-9"
+          >
+            Dashboard
+          </ThemedText>
 
           <Button 
           onPress={() => {routePage.push("/(auth)/login")}}
@@ -27,3 +32,5 @@ const routePage = useRouter();
     </>
   );
 }
+
+

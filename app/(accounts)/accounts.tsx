@@ -8,7 +8,7 @@ export default function Accounts() {
     <ThemedView className="flex-1 p-4">
       <ScrollView>
         <ThemedText
-          style={{ fontSize: 30, fontWeight: 700 }}
+          style={{ fontSize: 30, lineHeight: 36, fontWeight: 700 }}
           className="text-center mt-9 mb-20"
         >
           Accounts
