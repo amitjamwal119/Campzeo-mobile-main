@@ -5,13 +5,11 @@ import {
   AvatarFallbackText,
   AvatarImage,
   Box,
-  ButtonText,
   Divider,
   HStack,
   Modal,
   ModalBackdrop,
   ModalContent,
-  ModalFooter,
   VStack,
 } from "@gluestack-ui/themed";
 import {
@@ -23,16 +21,7 @@ import {
 } from "lucide-react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 
-// import {
-//   Modal,
-//   ModalBackdrop,
-//   ModalContent,
-//   ModalHeader,
-//   ModalCloseButton,
-//   ModalBody,
-//   ModalFooter,
-// } from '@/components/ui/modal';
-import { Button, ModalBody, ModalCloseButton, ModalHeader } from "@gluestack-ui/themed";
+import { ModalBody, ModalCloseButton, ModalHeader } from "@gluestack-ui/themed";
 import { useState } from "react";
 import ChangePassword from "../(auth)/changePassword";
 import EditProfile from "../(auth)/editProfile";

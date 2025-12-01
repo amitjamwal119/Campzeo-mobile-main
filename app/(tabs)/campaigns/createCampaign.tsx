@@ -1,3 +1,5 @@
+// Vik new
+
 import { useState } from "react";
 import {
   View,
@@ -205,13 +207,13 @@ export default function CreateCampaign({
 
             <Input
               className="border border-gray-300 rounded-xl"
-              style={{ height: 90 }}   // ← 3-line height
+              style={{ height: 90 }}   
             >
               <InputField
                 placeholder="Enter Description"
                 multiline
-                numberOfLines={3}      // ← ensures 3 lines
-                style={{ textAlignVertical: "top" }} // ← text starts from top
+                numberOfLines={3}
+                style={{ textAlignVertical: "top" }}
                 value={form.description}
                 onChangeText={(text) => setForm({ ...form, description: text })}
               />

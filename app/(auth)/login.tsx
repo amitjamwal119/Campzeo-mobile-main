@@ -2,7 +2,8 @@ import { View, Image, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { Input, Button, InputField } from "@gluestack-ui/themed";
-import { useRouter } from "expo-router";
+
+
 
 export default function Login() {
   // const routePage = useRouter();
@@ -26,7 +27,7 @@ export default function Login() {
             shadowRadius: 8,
             shadowOffset: { width: 0, height: 3 },
           }}
-          className="w-[85%] max-w-[400px] rounded-2xl p-6 overflow-hidden bg-[rgba(251,221,221,0.65)] gap-7">
+          className="w-[85%] max-w-[400px] rounded-2xl p-6 overflow-hidden bg-[rgba(251,221,221,0.65)] gap-7 ">
           {/* CampZeo Logo */}
           <Image
             source={require("../../assets/app-images/logo-1.png")}

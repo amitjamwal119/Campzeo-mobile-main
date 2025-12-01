@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,19 +5,23 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
-  Alert,
 } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
-import { Input, InputField, FormControl } from "@gluestack-ui/themed";
+import { Input, InputField, FormControl, VStack } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-type Contact = {
-  name: string;
-  email: string;
-  mobile: string;
-  whatsapp: string;
-};
+import { Controller, useForm } from "react-hook-form";
+import { contactSchema, ContactSchemaType } from "@/validations/contactSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// type Contact = {
+//   name: string;
+//   email: string;
+//   mobile: string;
+//   whatsapp: string;
+// };
 
 type RootStackParamList = {
   Contacts: undefined;
@@ -30,83 +33,142 @@ type CreateContactScreenProp = NativeStackNavigationProp<
   "CreateContact"
 >;
 
-export default function CreateContact({
-  onCreate,
-}: {
-  onCreate?: (c: Contact) => void;
-}) {
+export default function CreateContact() {
+  //   onCreate,
+  // }: {
+  //   onCreate?: (c: Contact) => void;
+  // }) {
+
+  // const [form, setForm] = useState<Contact>({
+  //   name: "",
+  //   email: "",
+  //   mobile: "",
+  //   whatsapp: "",
+  // });
+
+  // const [errors, setErrors] = useState<Partial<Record<keyof Contact, string>>>(
+  //   {}
+  // );
+  // const [submitting, setSubmitting] = useState(false);
+
+  // const validate = () => {
+  //   const e: Partial<Record<keyof Contact, string>> = {};
+  //   if (!form.name.trim()) e.name = "Name is required";
+  //   if (!form.email.trim()) e.email = "Email is required";
+  //   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+  //     e.email = "Invalid email";
+  //   if (!form.mobile.trim()) e.mobile = "Mobile is required";
+  //   else if (!/^\d{7,15}$/.test(form.mobile.replace(/\s+/g, "")))
+  //     e.mobile = "Enter 7–15 digits";
+  //   if (!form.whatsapp.trim()) e.whatsapp = "WhatsApp is required";
+  //   else if (!/^\d{7,15}$/.test(form.whatsapp.replace(/\s+/g, "")))
+  //     e.whatsapp = "Enter 7–15 digits";
+
+  //   setErrors(e);
+  //   return Object.keys(e).length === 0;
+  // };
+
+  // const handleCreate = () => {
+  //   if (!validate()) return;
+
+  //   setSubmitting(true);
+
+  //   setTimeout(() => {
+  //     setSubmitting(false);
+
+  //     // ✅ Show alert and navigate back on OK
+  //     Alert.alert(
+  //       "Contact Created",
+  //       `${form.name} has been added successfully`,
+  //       [
+  //         {
+  //           text: "OK",
+  //           onPress: () => {
+  //             onCreate?.(form); // optionally pass data to parent
+  //             setForm({ name: "", email: "", mobile: "", whatsapp: "" });
+  //             setErrors({});
+  //             navigation.navigate("Contacts"); // navigate back
+  //           },
+  //         },
+  //       ],
+  //       { cancelable: false }
+  //     );
+  //   }, 600);
+  // };
+
+  // const requiredLabel = (label: string) => (
+  //   <Text className="text-sm font-semibold text-gray-700">
+  //     {label} <Text className="text-red-500">*</Text>
+  //   </Text>
+  // );
+
   const navigation = useNavigation<CreateContactScreenProp>();
 
-  const [form, setForm] = useState<Contact>({
-    name: "",
-    email: "",
-    mobile: "",
-    whatsapp: "",
+  // Form fields -----------
+  type ContactField = {
+    name: "name" | "email" | "mobile" | "whatsapp";
+    label: string;
+    placeholder: string;
+    keyboardType: "default" | "email-address" | "phone-pad";
+  };
+
+  const fields: ContactField[] = [
+    {
+      name: "name",
+      label: "Name",
+      placeholder: "Enter Name",
+      keyboardType: "default",
+    },
+    {
+      name: "email",
+      label: "Email",
+      placeholder: "Enter Email",
+      keyboardType: "email-address",
+    },
+    {
+      name: "mobile",
+      label: "Mobile",
+      placeholder: "Enter Mobile",
+      keyboardType: "phone-pad",
+    },
+    {
+      name: "whatsapp",
+      label: "WhatsApp",
+      placeholder: "Enter WhatsApp",
+      keyboardType: "phone-pad",
+    },
+  ];
+
+  // RHF logics
+
+  const {
+    control,
+    handleSubmit,
+    // formState: { errors },
+  } = useForm<ContactSchemaType>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      mobile: "",
+      whatsapp: "",
+    },
   });
 
-  const [errors, setErrors] = useState<Partial<Record<keyof Contact, string>>>(
-    {}
-  );
-  const [submitting, setSubmitting] = useState(false);
-
-  const validate = () => {
-    const e: Partial<Record<keyof Contact, string>> = {};
-    if (!form.name.trim()) e.name = "Name is required";
-    if (!form.email.trim()) e.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = "Invalid email";
-    if (!form.mobile.trim()) e.mobile = "Mobile is required";
-    else if (!/^\d{7,15}$/.test(form.mobile.replace(/\s+/g, "")))
-      e.mobile = "Enter 7–15 digits";
-    if (!form.whatsapp.trim()) e.whatsapp = "WhatsApp is required";
-    else if (!/^\d{7,15}$/.test(form.whatsapp.replace(/\s+/g, "")))
-      e.whatsapp = "Enter 7–15 digits";
-
-    setErrors(e);
-    return Object.keys(e).length === 0;
+  const onSubmit = (data: ContactSchemaType) => {
+    console.log("Form Submitted:", data);
+    // call API or any other action
   };
-
-  const handleCreate = () => {
-    if (!validate()) return;
-
-    setSubmitting(true);
-
-    setTimeout(() => {
-      setSubmitting(false);
-
-      // ✅ Show alert and navigate back on OK
-      Alert.alert(
-        "Contact Created",
-        `${form.name} has been added successfully`,
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              onCreate?.(form); // optionally pass data to parent
-              setForm({ name: "", email: "", mobile: "", whatsapp: "" });
-              setErrors({});
-              navigation.navigate("Contacts"); // navigate back
-            },
-          },
-        ],
-        { cancelable: false }
-      );
-    }, 600);
-  };
-
-  const requiredLabel = (label: string) => (
-    <Text className="text-sm font-semibold text-gray-700">
-      {label} <Text className="text-red-500">*</Text>
-    </Text>
-  );
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       className="flex-1 bg-gray-50"
     >
-      <ScrollView className="flex-1 px-6 py-8" keyboardShouldPersistTaps="handled">
-
+      <ScrollView
+        className="flex-1 px-6 py-8"
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Top Right Close Button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -140,26 +202,39 @@ export default function CreateContact({
         </View>
 
         {/* Form Fields */}
-        <View className="space-y-6">
-          {["Name", "Email", "Mobile", "WhatsApp"].map((field) => (
-            <FormControl key={field}>
-              <FormControl.Label>{requiredLabel(field)}</FormControl.Label>
-              <Input className="border border-gray-300 rounded-xl">
-                <InputField
-                  placeholder={`Enter ${field}`}
-                  value={form[field.toLowerCase() as keyof Contact]}
-                  keyboardType={field === "Email" ? "email-address" : "phone-pad"}
-                  autoCapitalize={field === "Email" ? "none" : "sentences"}
-                  onChangeText={(text) =>
-                    setForm({ ...form, [field.toLowerCase()]: text })
-                  }
-                />
-              </Input>
-              {errors[field.toLowerCase() as keyof Contact] && (
-                <Text className="text-red-500 text-xs mt-1">
-                  {errors[field.toLowerCase() as keyof Contact]}
-                </Text>
-              )}
+        {/*  */}
+
+        <View className="gap-3">
+          {fields.map((field, idx) => (
+            <FormControl key={idx}>
+              <FormControl.Label>
+                <Text>{field.label}</Text>
+              </FormControl.Label>
+
+              <Controller
+                name={field.name} // must match schema field
+                control={control}
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <>
+                    <Input>
+                      <InputField
+                        placeholder={`Enter ${field.name}`}
+                        value={value}
+                        onChangeText={onChange}
+                      />
+                    </Input>
+
+                    {error && (
+                      <Text className="text-red-500 text-sm mt-1">
+                        *{error.message}
+                      </Text>
+                    )}
+                  </>
+                )}
+              />
             </FormControl>
           ))}
         </View>
@@ -167,7 +242,7 @@ export default function CreateContact({
         {/* Create Button */}
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={handleCreate}
+          onPress={handleSubmit(onSubmit)}
           className="w-full mt-10 rounded-xl items-center justify-center py-4"
           style={{
             backgroundColor: "#d55b35",
@@ -179,10 +254,15 @@ export default function CreateContact({
           }}
         >
           <Text className="text-white font-semibold text-lg">
-            {submitting ? "Creating..." : "Create Contact"}
+            Create Contact
+            {/* {handleSubmit ? "Creating..." : "Create Contact"} */}
           </Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
+}
+
+{
+  /*  */
 }

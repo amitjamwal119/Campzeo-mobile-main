@@ -30,12 +30,16 @@ import { StyleSheet, View } from "react-native";
 import { useSidebarStore } from "../../store/sidebarStore";
 import { useRouter } from "expo-router";
 import { ThemedView } from "@/components/themed-view";
+// import { useAuth } from "@clerk/clerk-expo";
 
 export default function Sidebar() {
   const sidebarOpen = useSidebarStore((state) => state.sidebarOpen);
   const closeSidebar = useSidebarStore((state) => state.closeSidebar);
 
   const routePage = useRouter();
+
+  // const { signOut } = useAuth();
+
   return (
     <Drawer isOpen={sidebarOpen} onClose={closeSidebar} anchor="right">
       <DrawerBackdrop />
@@ -97,7 +101,7 @@ export default function Sidebar() {
             <Pressable
               style={styles.menuItem}
               onPress={() => {
-                routePage.push("/(calander)/calander");
+                routePage.push("/(calander)/calanderPage");
               }}
             >
               <Icon as={Calendar} size="lg" style={styles.icon} />
@@ -122,7 +126,10 @@ export default function Sidebar() {
             style={styles.logoutButton}
             variant="outline"
             action="secondary"
-            onPress={closeSidebar}
+            // onPress={() => {
+            //   closeSidebar 
+            //   signOut()}}
+            // onPress={closeSidebar}
           >
             <ButtonText>Logout</ButtonText>
             <ButtonIcon as={LogOut} />

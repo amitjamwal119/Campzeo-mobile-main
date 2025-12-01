@@ -1,4 +1,4 @@
-import { ThemedText } from "@/components/themed-text";
+
 import { useState, useMemo } from "react";
 import { View, Text, FlatList } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
@@ -12,7 +12,7 @@ type Campaign = {
 
 type CampaignMap = Record<string, Campaign[]>;
 
-export default function CalendarScreen() {
+export default function CalendarComponent() {
   // ⭐ Dummy campaigns
   const campaignData: CampaignMap = {
     "2025-01-05": [
@@ -73,14 +73,6 @@ export default function CalendarScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* Header */}
-      <ThemedText
-        style={{ fontSize: 30, lineHeight: 36, fontWeight: 700 }}
-        className="text-center mt-5 mb-9"
-      >
-        Scheduled Campaigns
-      </ThemedText>
-
       {/* 📅 Calendar */}
       <Calendar
         onDayPress={(day: DateData) => setSelectedDate(day.dateString)}
@@ -123,3 +115,6 @@ export default function CalendarScreen() {
     </SafeAreaView>
   );
 }
+
+
+

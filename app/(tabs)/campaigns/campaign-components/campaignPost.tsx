@@ -2,8 +2,7 @@ import { useState } from "react";
 import { TouchableOpacity, ScrollView, View as RNView } from "react-native";
 import { View, Text } from "@gluestack-ui/themed";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
-import CampaignPostForm from "./campaign-components/campaignPostForm";
-import { ThemedText } from "@/components/themed-text";
+import CampaignPostForm from "./campaignPostForm";
 
 export default function CampaignPost() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -21,15 +20,7 @@ export default function CampaignPost() {
 
   return (
     <ScrollView className="flex-1 bg-gray-100 p-4">
-      {/* ------------ TITLE ------------- */}
-      <ThemedText
-        style={{ fontSize: 30, lineHeight: 36, fontWeight: 700 }}
-        className="text-center my-5"
-      >
-        Create Post
-      </ThemedText>
-
-      {/* ------------ ICON SECTION ------------- */}
+      {/* ---------- ICON SECTION ---------- */}
       <View className="flex-row flex-wrap justify-between mb-4">
         {icons.map((icon, index) => {
           const IconComponent = icon.library;
@@ -74,7 +65,6 @@ export default function CampaignPost() {
         })}
       </View>
 
-      {/* ------------- FORM SECTION ------------- */}
       {selected && (
         <View className="mt-0">
           <CampaignPostForm platform={selected} onClose={() => setSelected(null)} />

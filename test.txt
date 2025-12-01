@@ -1,0 +1,28 @@
+create contact old 
+<View className="gap-7">
+          {["Name", "Email", "Mobile", "WhatsApp"].map((field) => (
+            <FormControl key={field}>
+              <VStack className="gap-2">
+                <Text>{field}</Text>
+                <Input className="border border-gray-300 rounded-xl">
+                  <InputField
+                    placeholder={`Enter ${field}`}
+                    // value={form[field.toLowerCase() as keyof Contact]}
+                    keyboardType={
+                      field === "Email" ? "email-address" : "phone-pad"
+                    }
+                    autoCapitalize={field === "Email" ? "none" : "sentences"}
+                    // onChangeText={(text) =>
+                    //   setForm({ ...form, [field.toLowerCase()]: text })
+                    // }
+                  />
+                </Input>
+                {/* {errors[field.toLowerCase() as keyof Contact] && (
+                <Text className="text-red-500 text-xs mt-1">
+                  {errors[field.toLowerCase() as keyof Contact]}
+                </Text>
+              )} */}
+              </VStack>
+            </FormControl>
+          ))}
+        </View>

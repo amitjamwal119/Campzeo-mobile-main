@@ -3,9 +3,9 @@ import { FlatList, TextInput, TouchableOpacity, Share } from "react-native";
 import { View, Text } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import RecordCard, { Record } from "./contactComponents/contactCard";
-import Pagination from "./contactComponents/pagination";
 import { router } from "expo-router";
 import { ThemedText } from "@/components/themed-text";
+import Pagination from "@/app/(common)/pagination";
 
 export default function Contacts() {
   const [page, setPage] = useState(1);
@@ -186,13 +186,7 @@ export default function Contacts() {
             No records found
           </Text>
         }
-        ListFooterComponent={
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
-        }
+        ListFooterComponent={<Pagination />}
       />
     </View>
   );
