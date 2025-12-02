@@ -125,7 +125,8 @@ export default function Logs() {
                       alignItems: "center",
                       justifyContent: "center",
                       borderWidth: 2,
-                      borderColor: isSelected ? icon.color : "#d1d5db",
+                      borderColor: icon.color,
+                      // isSelected ?  : "#d1d5db"
                       backgroundColor: "#ffffff",
                     }}
                   >
