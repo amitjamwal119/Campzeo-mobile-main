@@ -1,196 +1,135 @@
 import { ThemedView } from "@/components/themed-view";
 import { Ionicons } from "@expo/vector-icons";
-import { Button, ButtonText } from "@gluestack-ui/themed";
-// import { router } from "expo-router";
+import {  Pressable, Text } from "@gluestack-ui/themed";
 
-export default function Pagination() {
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+export default function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: Props) {
+  if (totalPages <= 1) return null;
+
+  const pagesArray = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
-    <>
+    <ThemedView
+      style={{
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {/* Previous */}
+      <Pressable
+        onPress={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        style={{
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: "#d1d5db",
+          backgroundColor: "#ffffff",
+          opacity: currentPage === 1 ? 0.5 : 1,
+        }}
+      >
+        {/* <Button
+          style={{
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+            borderRadius: 12,
+            borderWidth: 1,
+            borderColor: "#d1d5db",
+            backgroundColor: "#ffffff",
+            opacity: currentPage === 1 ? 0.5 : 1,
+          }}
+        >
+        </Button> */}
+        <Ionicons name="chevron-back" size={20} color="gray" />
+      </Pressable>
+
+      {/* Page Numbers */}
       <ThemedView
         style={{
           flexDirection: "row",
-          justifyContent: "center",
           alignItems: "center",
+          marginLeft: 8,
         }}
       >
-        {/* Previous */}
-        <Button
-          style={{
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: "#d1d5db",
-            backgroundColor: "#ffffff",
-            opacity: 0.5,
-          }}
-        >
-          <Ionicons name="chevron-back" size={20} color="gray" />
-        </Button>
+        {pagesArray.map((page) => {
+          const isActive = page === currentPage;
 
-        {/* Pages */}
-        <ThemedView
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginLeft: 8,
-          }}
-        >
-          <Button
-            style={{
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderRadius: 12,
-              borderWidth: 1,
-              borderColor: "#d1d5db",
-              marginRight: 8,
-              backgroundColor: "#ffffff",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ButtonText style={{ color: "black" }}>1</ButtonText>
-          </Button>
-
-          <Button
-            style={{
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderRadius: 12,
-              borderWidth: 1,
-              borderColor: "#d1d5db",
-              marginRight: 8,
-              backgroundColor: "#d55b35",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ButtonText style={{ color: "white" }}>2</ButtonText>
-          </Button>
-
-          <Button
-            style={{
-              paddingHorizontal: 12,
-              paddingVertical: 8,
-              borderRadius: 12,
-              borderWidth: 1,
-              borderColor: "#d1d5db",
-              marginRight: 8,
-              backgroundColor: "#ffffff",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ButtonText style={{ color: "black" }}>3</ButtonText>
-          </Button>
-        </ThemedView>
-
-        {/* Next */}
-        <Button
-          style={{
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: "#d1d5db",
-            backgroundColor: "#ffffff",
-            opacity: 1,
-            marginLeft: 8,
-          }}
-        >
-          <Ionicons name="chevron-forward" size={20} color="black" />
-        </Button>
+          return (
+            <Pressable
+              key={page}
+              onPress={() => onPageChange(page)}
+              style={{
+                paddingHorizontal: 12,
+                paddingVertical: 8,
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: "#d1d5db",
+                marginRight: 8,
+                backgroundColor: isActive ? "#d55b35" : "#ffffff",
+              }}
+            >
+              {/* <Button
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: "#d1d5db",
+                  marginRight: 8,
+                  backgroundColor: isActive ? "#d55b35" : "#ffffff",
+                }}
+              >
+                
+              </Button> */}
+              <Text style={{ color: isActive ? "white" : "black" }}>
+                {page}
+              </Text>
+            </Pressable>
+          );
+        })}
       </ThemedView>
-    </>
+
+      {/* Next */}
+      <Pressable
+        onPress={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        style={{
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: "#d1d5db",
+          backgroundColor: "#ffffff",
+          opacity: currentPage === totalPages ? 0.5 : 1,
+          marginLeft: 8,
+        }}
+      >
+        {/* <Button
+          style={{
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+            borderRadius: 12,
+            borderWidth: 1,
+            borderColor: "#d1d5db",
+            backgroundColor: "#ffffff",
+            opacity: currentPage === totalPages ? 0.5 : 1,
+            marginLeft: 8,
+          }}
+        >
+        </Button> */}
+        <Ionicons name="chevron-forward" size={20} color="black" />
+      </Pressable>
+    </ThemedView>
   );
 }
-
-
-// import { ThemedView } from "@/components/themed-view";
-// import { Ionicons } from "@expo/vector-icons";
-// import { Button, ButtonText } from "@gluestack-ui/themed";
-
-// export default function Pagination() {
-//   return (
-//     <ThemedView className="flex-row justify-center items-center">
-
-//       {/* Previous */}
-//       <Button
-//         variant="outline"
-//         className="
-//           px-[12px] py-[8px]
-//           rounded-[12px]
-//           border border-[#d1d5db]
-//           bg-white
-//           opacity-50
-//         "
-//       >
-//         <Ionicons name="chevron-back" size={20} color="gray" />
-//       </Button>
-
-//       {/* Pages */}
-//       <ThemedView className="flex-row items-center ml-2">
-
-//         {/* Page 1 */}
-//         <Button
-//           variant="outline"
-//           className="
-//             px-[12px] py-[8px]
-//             rounded-[12px]
-//             border border-[#d1d5db]
-//             mr-2
-//             bg-white
-//             justify-center items-center
-//           "
-//         >
-//           <ButtonText className="text-black">1</ButtonText>
-//         </Button>
-
-//         {/* Page 2 (active) */}
-//         <Button
-//           variant="outline"
-//           className="
-//             px-[12px] py-[8px]
-//             rounded-[12px]
-//             border border-[#d1d5db]
-//             mr-2
-//             bg-[#d55b35]
-//             justify-center items-center
-//           "
-//         >
-//           <ButtonText className="text-white">2</ButtonText>
-//         </Button>
-
-//         {/* Page 3 */}
-//         <Button
-//           variant="outline"
-//           className="
-//             px-[12px] py-[8px]
-//             rounded-[12px]
-//             border border-[#d1d5db]
-//             mr-2
-//             bg-white
-//             justify-center items-center
-//           "
-//         >
-//           <ButtonText className="text-black">3</ButtonText>
-//         </Button>
-//       </ThemedView>
-
-//       {/* Next */}
-//       <Button
-//         variant="outline"
-//         className="
-//           px-[12px] py-[8px]
-// rounded-xl          border border-[#d1d5db]
-//           bg-white
-//           opacity-100
-//           ml-2
-//         "
-//       >
-//         <Ionicons name="chevron-forward" size={20} color="black" />
-//       </Button>
-
-//     </ThemedView>
-//   );
-// }

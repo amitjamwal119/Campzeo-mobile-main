@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 
-export interface Invoice {
+export interface InvoiceRecord {
   id: number;
   organisation: string;
   plan: string;
@@ -10,7 +10,7 @@ export interface Invoice {
   dueDate: string;
 }
 
-export default function InvoiceCard({ invoice }: { invoice: Invoice }) {
+export default function InvoiceCard({ invoice }: { invoice: InvoiceRecord }) {
   const statusColor =
     invoice.status === "paid"
       ? { bg: "#d1fae5", color: "#065f46" } // green

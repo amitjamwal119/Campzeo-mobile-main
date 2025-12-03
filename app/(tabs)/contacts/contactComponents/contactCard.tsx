@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-export interface Record {
+export interface ContactsRecord {
   id: number;
   name: string;
   email: string;
@@ -11,11 +11,11 @@ export interface Record {
 }
 
 interface RecordCardProps {
-  record: Record;
-  onEdit: (record: Record) => void;
-  onDelete: (record: Record) => void;
-  onCopy: (record: Record) => void;
-  onToggleShow: (record: Record) => void;
+  record: ContactsRecord;
+  onEdit: (record: ContactsRecord) => void;
+  onDelete: (record: ContactsRecord) => void;
+  onCopy: (record: ContactsRecord) => void;
+  onToggleShow: (record: ContactsRecord) => void;
 }
 
 export default function ContactCard({
