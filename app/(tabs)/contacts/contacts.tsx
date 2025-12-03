@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import RecordCard, { Record } from "./contactComponents/contactCard";
 import Pagination from "./contactComponents/pagination";
 import { router } from "expo-router";
-import { ThemedText } from "@/components/themed-text";
+
 
 export default function Contacts() {
   const [page, setPage] = useState(1);
@@ -28,21 +28,6 @@ export default function Contacts() {
   { id: 13, name: "Isabella Moore", email: "isabella@example.com", mobile: "1213141516", whatsapp: "1213141516", show: true },
   { id: 14, name: "Ethan Jackson", email: "ethan@example.com", mobile: "1314151617", whatsapp: "1314151617", show: true },
   { id: 15, name: "Ava White", email: "ava@example.com", mobile: "1415161718", whatsapp: "1415161718", show: true },
-  // { id: 16, name: "James Harris", email: "james@example.com", mobile: "1516171819", whatsapp: "1516171819", show: true },
-  // { id: 17, name: "Mia Martin", email: "mia@example.com", mobile: "1617181920", whatsapp: "1617181920", show: true },
-  // { id: 18, name: "Benjamin Thompson", email: "benjamin@example.com", mobile: "1718192021", whatsapp: "1718192021", show: true },
-  // { id: 19, name: "Amelia Garcia", email: "amelia@example.com", mobile: "1819202122", whatsapp: "1819202122", show: true },
-  // { id: 20, name: "Lucas Martinez", email: "lucas@example.com", mobile: "1920212223", whatsapp: "1920212223", show: true },
-  // { id: 21, name: "Harper Robinson", email: "harper@example.com", mobile: "2021222324", whatsapp: "2021222324", show: true },
-  // { id: 22, name: "Henry Clark", email: "henry@example.com", mobile: "2122232425", whatsapp: "2122232425", show: true },
-  // { id: 23, name: "Evelyn Rodriguez", email: "evelyn@example.com", mobile: "2223242526", whatsapp: "2223242526", show: true },
-  // { id: 24, name: "Alexander Lewis", email: "alex@example.com", mobile: "2324252627", whatsapp: "2324252627", show: true },
-  // { id: 25, name: "Ella Lee", email: "ella@example.com", mobile: "2425262728", whatsapp: "2425262728", show: true },
-  // { id: 26, name: "Daniel Walker", email: "daniel@example.com", mobile: "2526272829", whatsapp: "2526272829", show: true },
-  // { id: 27, name: "Grace Hall", email: "grace@example.com", mobile: "2627282930", whatsapp: "2627282930", show: true },
-  // { id: 28, name: "Matthew Allen", email: "matthew@example.com", mobile: "2728293031", whatsapp: "2728293031", show: true },
-  // { id: 29, name: "Chloe Young", email: "chloe@example.com", mobile: "2829303132", whatsapp: "2829303132", show: true },
-  // { id: 30, name: "Samuel King", email: "samuel@example.com", mobile: "2930313233", whatsapp: "2930313233", show: true },
 ]);
 
   const pageLimit = 5;

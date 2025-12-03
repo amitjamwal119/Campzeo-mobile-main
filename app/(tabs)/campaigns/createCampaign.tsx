@@ -13,6 +13,7 @@ import { Input, InputField, FormControl } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
+
 type Campaign = {
   name: string;
   startDate: string;
@@ -142,7 +143,7 @@ export default function CreateCampaign({
         </View>
 
         {/* Form Fields */}
-        <View className="space-y-6">
+        <View className="gap-y-5">
 
           {/* Name */}
           <FormControl>

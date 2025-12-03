@@ -40,7 +40,7 @@ export default function AllNotifications() {
 
   return (
     <ThemedView style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
-      <ThemedView className="flex-1 px-4">
+      <ThemedView className="flex-1 px-4 pt-10">
 
         {/* ---------------- CUSTOM HEADER ---------------- */}
         <View className="flex-row items-center justify-between my-5">

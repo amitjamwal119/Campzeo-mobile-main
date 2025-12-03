@@ -10,6 +10,7 @@ import {
   Modal,
   ModalBackdrop,
   ModalContent,
+  Pressable,
   VStack,
 } from "@gluestack-ui/themed";
 import {
@@ -17,7 +18,7 @@ import {
   LockKeyhole,
   Mail,
   Phone,
-  UserPen
+  UserPen,
 } from "lucide-react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 
@@ -26,22 +27,32 @@ import { useState } from "react";
 import ChangePassword from "../(auth)/changePassword";
 import EditProfile from "../(auth)/editProfile";
 
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+
 export default function UserProfile() {
   const [ShowEditProfile, setEditProfile] = useState(false);
 
   const [showChangePas, setChangePas] = useState(false);
 
+  const routePage = useRouter();
+
   return (
-    <ThemedView className="flex-1 p-5">
+    <ThemedView className="flex-1 p-5 pt-20">
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* ---------- Profile Header ---------- */}
+        <HStack>
+          <Pressable onPress={() => {routePage.back()}}>
+            <Ionicons name="arrow-back-outline" size={22} color="#334155" />
+          </Pressable>
+        </HStack>
         <VStack className="items-center mb-8">
           <Avatar size="xl" className="mb-4">
             <AvatarImage
               source={{ uri: "https://i.pravatar.cc/300?img=12" }}
               alt="Profile Picture"
             />
-            <AvatarFallbackText>AJ</AvatarFallbackText>
+            <AvatarFallbackText>A</AvatarFallbackText>
           </Avatar>
 
           <ThemedText className="text-2xl font-semibold">
@@ -127,7 +138,11 @@ export default function UserProfile() {
               </ModalHeader>
               <ModalBody>
                 {/* =====EPF Form Child====== */}
-                <EditProfile closeEPF={() => {setEditProfile(false)}}/>
+                <EditProfile
+                  closeEPF={() => {
+                    setEditProfile(false);
+                  }}
+                />
               </ModalBody>
 
               {/* <ModalFooter>
@@ -149,7 +164,6 @@ export default function UserProfile() {
                   <ButtonText>Save</ButtonText>
                 </Button>
               </ModalFooter> */}
-
             </ModalContent>
           </Modal>
 
@@ -184,9 +198,12 @@ export default function UserProfile() {
                   here.
                 </ThemedText> */}
 
-                <ChangePassword closeCP={() => {setChangePas(false)}}/>
+                <ChangePassword
+                  closeCP={() => {
+                    setChangePas(false);
+                  }}
+                />
               </ModalBody>
-
 
               {/* <ModalFooter>
                 <Button

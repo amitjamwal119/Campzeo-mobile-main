@@ -238,12 +238,12 @@ export default function Logs() {
   const renderHeader = () => (
     <View>
       {/* PAGE TITLE */}
-      <ThemedText
+      {/* <ThemedText
         style={{ fontSize: 30, lineHeight: 36, fontWeight: 700 }}
         className="text-center mt-5 mb-9"
       >
         Logs
-      </ThemedText>
+      </ThemedText> */}
 
       {/* ICONS */}
       <View className="flex-row flex-wrap justify-between mb-4">

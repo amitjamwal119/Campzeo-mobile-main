@@ -30,18 +30,18 @@ export default function Dashboard() {
 
   const routes = [
     { key: "first", title: "Calendar" },
-    { key: "second", title: "Second" },
+    { key: "second", title: "Insights" },
   ];
   
   return (
     <>
       <ThemedView className="flex-1">
-          <ThemedText
+          {/* <ThemedText
             style={{ fontSize: 30, lineHeight: 36, fontWeight: 700 }}
             className="text-center mt-5 mb-9"
           >
             Dashboard
-          </ThemedText>
+          </ThemedText> */}
 
           <TabView
             navigationState={{ index, routes }}

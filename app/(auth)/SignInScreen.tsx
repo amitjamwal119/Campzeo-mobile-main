@@ -3,12 +3,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { Input, Button, InputField } from "@gluestack-ui/themed";
 import { useState } from "react";
-import { useSignIn } from "@clerk/clerk-expo";
+// import { useSignIn } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 
 export default function SignInScreen() {
   const router = useRouter();
-  const { signIn, setActive, isLoaded } = useSignIn();
+  // const { signIn, setActive, isLoaded } = useSignIn();
 
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -16,61 +16,61 @@ export default function SignInScreen() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSendCode = async () => {
-    if (!isLoaded) return;
+  // const handleSendCode = async () => {
+  //   if (!isLoaded) return;
 
-    setLoading(true);
-    setErrorMsg("");
+  //   setLoading(true);
+  //   setErrorMsg("");
 
-    try {
-      const result = await signIn.create({
-        identifier: email,
-      });
+  //   try {
+  //     const result = await signIn.create({
+  //       identifier: email,
+  //     });
 
-      if (result.firstFactorVerification) {
-        setPendingVerification(true);
-      }
-    } catch (err) {
-      console.log("Error sending code:", err);
-      const msg =
-        (err as any)?.errors?.[0]?.message ||
-        (err as any)?.message ||
-        "Failed to send code";
+  //     if (result.firstFactorVerification) {
+  //       setPendingVerification(true);
+  //     }
+  //   } catch (err) {
+  //     console.log("Error sending code:", err);
+  //     const msg =
+  //       (err as any)?.errors?.[0]?.message ||
+  //       (err as any)?.message ||
+  //       "Failed to send code";
 
-      setErrorMsg(msg);
-    }
+  //     setErrorMsg(msg);
+  //   }
 
-    setLoading(false);
-  };
+  //   setLoading(false);
+  // };
 
-  const handleVerifyCode = async () => {
-    if (!isLoaded) return;
+  // const handleVerifyCode = async () => {
+  //   if (!isLoaded) return;
 
-    setLoading(true);
-    setErrorMsg("");
+  //   setLoading(true);
+  //   setErrorMsg("");
 
-    try {
-      const result = await signIn.attemptFirstFactor({
-        strategy: "email_code",
-        code,
-      });
+  //   try {
+  //     const result = await signIn.attemptFirstFactor({
+  //       strategy: "email_code",
+  //       code,
+  //     });
 
-      if (result.status === "complete") {
-        await setActive({ session: result.createdSessionId });
-        router.replace("/(tabs)/dashboard");
-      }
-    } catch (err) {
-      console.log("Code verify error:", err);
-      const msg =
-        (err as any)?.errors?.[0]?.message ||
-        (err as any)?.message ||
-        "Invalid code";
+  //     if (result.status === "complete") {
+  //       await setActive({ session: result.createdSessionId });
+  //       router.replace("/(tabs)/dashboard");
+  //     }
+  //   } catch (err) {
+  //     console.log("Code verify error:", err);
+  //     const msg =
+  //       (err as any)?.errors?.[0]?.message ||
+  //       (err as any)?.message ||
+  //       "Invalid code";
 
-      setErrorMsg(msg);
-    }
+  //     setErrorMsg(msg);
+  //   }
 
-    setLoading(false);
-  };
+  //   setLoading(false);
+  // };
 
   return (
     <View className="flex-1">
@@ -128,7 +128,7 @@ export default function SignInScreen() {
           {/* Main Auth Button */}
           {!pendingVerification ? (
             <Button
-              onPress={handleSendCode}
+              // onPress={handleSendCode}
               className="bg-orange-500 rounded-2xl py-3"
               isDisabled={loading}
             >
@@ -138,7 +138,7 @@ export default function SignInScreen() {
             </Button>
           ) : (
             <Button
-              onPress={handleVerifyCode}
+              // onPress={handleVerifyCode}
               className="bg-green-500 rounded-2xl py-3"
               isDisabled={loading}
             >

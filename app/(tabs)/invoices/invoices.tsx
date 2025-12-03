@@ -236,12 +236,7 @@ const handlePageChange = (page: number) => {
 
   return (
     <View className="flex-1 p-4 bg-gray-100">
-      <ThemedText
-        style={{ fontSize: 30, fontWeight: 700, lineHeight: 36 }}
-        className="text-center my-5"
-      >
-        Invoices
-      </ThemedText>
+      {/*                                                                                                                                                                                                                                                                                                             */}
 
       {/* Search Bar */}
       <View className="flex-row items-center mb-4 gap-5">

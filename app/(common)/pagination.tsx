@@ -1,6 +1,5 @@
-import { ThemedView } from "@/components/themed-view";
 import { Ionicons } from "@expo/vector-icons";
-import {  Pressable, Text } from "@gluestack-ui/themed";
+import {  Pressable, Text, View } from "@gluestack-ui/themed";
 
 interface Props {
   currentPage: number;
@@ -18,7 +17,7 @@ export default function Pagination({
   const pagesArray = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <ThemedView
+    <View
       style={{
         flexDirection: "row",
         justifyContent: "center",
@@ -39,23 +38,12 @@ export default function Pagination({
           opacity: currentPage === 1 ? 0.5 : 1,
         }}
       >
-        {/* <Button
-          style={{
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: "#d1d5db",
-            backgroundColor: "#ffffff",
-            opacity: currentPage === 1 ? 0.5 : 1,
-          }}
-        >
-        </Button> */}
+       
         <Ionicons name="chevron-back" size={20} color="gray" />
       </Pressable>
 
       {/* Page Numbers */}
-      <ThemedView
+      <View
         style={{
           flexDirection: "row",
           alignItems: "center",
@@ -79,26 +67,14 @@ export default function Pagination({
                 backgroundColor: isActive ? "#d55b35" : "#ffffff",
               }}
             >
-              {/* <Button
-                style={{
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  borderRadius: 12,
-                  borderWidth: 1,
-                  borderColor: "#d1d5db",
-                  marginRight: 8,
-                  backgroundColor: isActive ? "#d55b35" : "#ffffff",
-                }}
-              >
-                
-              </Button> */}
+             
               <Text style={{ color: isActive ? "white" : "black" }}>
                 {page}
               </Text>
             </Pressable>
           );
         })}
-      </ThemedView>
+      </View>
 
       {/* Next */}
       <Pressable
@@ -115,21 +91,9 @@ export default function Pagination({
           marginLeft: 8,
         }}
       >
-        {/* <Button
-          style={{
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: "#d1d5db",
-            backgroundColor: "#ffffff",
-            opacity: currentPage === totalPages ? 0.5 : 1,
-            marginLeft: 8,
-          }}
-        >
-        </Button> */}
+        
         <Ionicons name="chevron-forward" size={20} color="black" />
       </Pressable>
-    </ThemedView>
+    </View>
   );
 }

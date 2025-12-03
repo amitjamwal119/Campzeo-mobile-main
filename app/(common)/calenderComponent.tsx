@@ -13,7 +13,7 @@ type Campaign = {
 type CampaignMap = Record<string, Campaign[]>;
 
 export default function CalendarComponent() {
-  // ⭐ Dummy campaigns
+  //  Dummy campaigns
   const campaignData: CampaignMap = {
     "2025-01-05": [
       {
@@ -50,7 +50,7 @@ export default function CalendarComponent() {
 
   const [selectedDate, setSelectedDate] = useState("");
 
-  // ⭐ Marked Dates
+  //  Marked Dates
   const markedDates = useMemo(() => {
     const marks: Record<string, any> = {};
 
@@ -73,13 +73,13 @@ export default function CalendarComponent() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* 📅 Calendar */}
+      {/* Calendar */}
       <Calendar
         onDayPress={(day: DateData) => setSelectedDate(day.dateString)}
         markedDates={markedDates}
       />
 
-      {/* 📜 Campaign List */}
+      {/*  Campaign List */}
       <View className="flex-1 px-4 mt-4">
         {selectedDate ? (
           <>

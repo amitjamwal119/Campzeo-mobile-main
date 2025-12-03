@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   View,
   Text,
@@ -13,12 +12,11 @@ import { Input, InputField, FormControl } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-type Contact = {
-  name: string;
-  email: string;
-  mobile: string;
-  whatsapp: string;
-};
+// RHF + Zod
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { contactSchema, ContactSchemaType } from "@/validations/contactSchema";
+
 
 type RootStackParamList = {
   Contacts: undefined;
@@ -33,66 +31,50 @@ type CreateContactScreenProp = NativeStackNavigationProp<
 export default function CreateContact({
   onCreate,
 }: {
-  onCreate?: (c: Contact) => void;
+  onCreate?: (c: ContactSchemaType) => void;
 }) {
   const navigation = useNavigation<CreateContactScreenProp>();
 
-  const [form, setForm] = useState<Contact>({
-    name: "",
-    email: "",
-    mobile: "",
-    whatsapp: "",
+  // -------------------------------------
+  // 👇 React Hook Form setup with Zod
+  // -------------------------------------
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setValue,
+    reset,
+  } = useForm<ContactSchemaType>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      mobile: "",
+      whatsapp: "",
+    },
   });
 
-  const [errors, setErrors] = useState<Partial<Record<keyof Contact, string>>>(
-    {}
-  );
-  const [submitting, setSubmitting] = useState(false);
-
-  const validate = () => {
-    const e: Partial<Record<keyof Contact, string>> = {};
-    if (!form.name.trim()) e.name = "Name is required";
-    if (!form.email.trim()) e.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = "Invalid email";
-    if (!form.mobile.trim()) e.mobile = "Mobile is required";
-    else if (!/^\d{7,15}$/.test(form.mobile.replace(/\s+/g, "")))
-      e.mobile = "Enter 7–15 digits";
-    if (!form.whatsapp.trim()) e.whatsapp = "WhatsApp is required";
-    else if (!/^\d{7,15}$/.test(form.whatsapp.replace(/\s+/g, "")))
-      e.whatsapp = "Enter 7–15 digits";
-
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
-
-  const handleCreate = () => {
-    if (!validate()) return;
-
-    setSubmitting(true);
-
-    setTimeout(() => {
-      setSubmitting(false);
-
-      // ✅ Show alert and navigate back on OK
-      Alert.alert(
-        "Contact Created",
-        `${form.name} has been added successfully`,
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              onCreate?.(form); // optionally pass data to parent
-              setForm({ name: "", email: "", mobile: "", whatsapp: "" });
-              setErrors({});
-              navigation.navigate("Contacts"); // navigate back
-            },
+  // -------------------------------------
+  // 👇 Submit Handler
+  // -------------------------------------
+  const handleCreate = handleSubmit((values) => {
+    Alert.alert(
+      "Contact Created",
+      `${values.name} has been added successfully`,
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            onCreate?.(values);
+            reset();
+            navigation.navigate("Contacts");
           },
-        ],
-        { cancelable: false }
-      );
-    }, 600);
-  };
+        },
+      ],
+      { cancelable: false }
+    );
+  });
 
   const requiredLabel = (label: string) => (
     <Text className="text-sm font-semibold text-gray-700">
@@ -105,20 +87,18 @@ export default function CreateContact({
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       className="flex-1 bg-gray-50"
     >
-      <ScrollView className="flex-1 px-6 py-8" keyboardShouldPersistTaps="handled">
-
-        {/* Top Right Close Button */}
+      <ScrollView
+        className="flex-1 px-6 py-8"
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Close Button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{
             position: "absolute",
-            // top: 10,
             right: 10,
             zIndex: 10,
-            // backgroundColor: "#e2e8f0",
             padding: 8,
-            // borderRadius: 30,
-            // elevation: 4,
           }}
         >
           <Ionicons name="close" size={22} color="#334155" />
@@ -139,29 +119,79 @@ export default function CreateContact({
           </View>
         </View>
 
-        {/* Form Fields */}
-        <View className="space-y-6">
-          {["Name", "Email", "Mobile", "WhatsApp"].map((field) => (
-            <FormControl key={field}>
-              <FormControl.Label>{requiredLabel(field)}</FormControl.Label>
-              <Input className="border border-gray-300 rounded-xl">
-                <InputField
-                  placeholder={`Enter ${field}`}
-                  value={form[field.toLowerCase() as keyof Contact]}
-                  keyboardType={field === "Email" ? "email-address" : "phone-pad"}
-                  autoCapitalize={field === "Email" ? "none" : "sentences"}
-                  onChangeText={(text) =>
-                    setForm({ ...form, [field.toLowerCase()]: text })
-                  }
-                />
-              </Input>
-              {errors[field.toLowerCase() as keyof Contact] && (
-                <Text className="text-red-500 text-xs mt-1">
-                  {errors[field.toLowerCase() as keyof Contact]}
-                </Text>
-              )}
-            </FormControl>
-          ))}
+        {/* Form */}
+        <View className="gap-y-5">
+          {/* Name */}
+          <FormControl>
+            <FormControl.Label>{requiredLabel("Name")}</FormControl.Label>
+            <Input className="border border-gray-300 rounded-xl">
+              <InputField
+                placeholder="Enter Name"
+                {...register("name")}
+                onChangeText={(text) => setValue("name", text)}
+              />
+            </Input>
+            {errors.name && (
+              <Text className="text-red-500 text-xs mt-1">
+                {errors.name.message}
+              </Text>
+            )}
+          </FormControl>
+
+          {/* Email */}
+          <FormControl>
+            <FormControl.Label>{requiredLabel("Email")}</FormControl.Label>
+            <Input className="border border-gray-300 rounded-xl">
+              <InputField
+                placeholder="Enter Email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                {...register("email")}
+                onChangeText={(text) => setValue("email", text)}
+              />
+            </Input>
+            {errors.email && (
+              <Text className="text-red-500 text-xs mt-1">
+                {errors.email.message}
+              </Text>
+            )}
+          </FormControl>
+
+          {/* Mobile */}
+          <FormControl>
+            <FormControl.Label>{requiredLabel("Mobile")}</FormControl.Label>
+            <Input className="border border-gray-300 rounded-xl">
+              <InputField
+                placeholder="Enter Mobile Number"
+                keyboardType="phone-pad"
+                {...register("mobile")}
+                onChangeText={(text) => setValue("mobile", text)}
+              />
+            </Input>
+            {errors.mobile && (
+              <Text className="text-red-500 text-xs mt-1">
+                {errors.mobile.message}
+              </Text>
+            )}
+          </FormControl>
+
+          {/* WhatsApp */}
+          <FormControl>
+            <FormControl.Label>{requiredLabel("WhatsApp")}</FormControl.Label>
+            <Input className="border border-gray-300 rounded-xl">
+              <InputField
+                placeholder="Enter WhatsApp Number"
+                keyboardType="phone-pad"
+                {...register("whatsapp")}
+                onChangeText={(text) => setValue("whatsapp", text)}
+              />
+            </Input>
+            {errors.whatsapp && (
+              <Text className="text-red-500 text-xs mt-1">
+                {errors.whatsapp.message}
+              </Text>
+            )}
+          </FormControl>
         </View>
 
         {/* Create Button */}
@@ -179,7 +209,7 @@ export default function CreateContact({
           }}
         >
           <Text className="text-white font-semibold text-lg">
-            {submitting ? "Creating..." : "Create Contact"}
+            {isSubmitting ? "Creating..." : "Create Contact"}
           </Text>
         </TouchableOpacity>
       </ScrollView>
