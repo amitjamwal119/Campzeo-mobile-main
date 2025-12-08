@@ -2,9 +2,8 @@ import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
-import Pagination from "../contacts/contactComponents/pagination";
 import CampaignCard, { Campaign } from "./campaignComponents/campaignCard";
-
+ 
 // Map type to icon
 const platformIcons: Record<string, { Icon: any; color: string; name: string }> = {
   Whatsapp: { Icon: Ionicons, name: "logo-whatsapp", color: "#25D366" },
@@ -16,7 +15,7 @@ const platformIcons: Record<string, { Icon: any; color: string; name: string }> 
   Email: { Icon: Ionicons, name: "mail", color: "#F59E0B" },
   SMS: { Icon: Ionicons, name: "chatbubble-ellipses-outline", color: "#10B981" },
 };
-
+ 
 // TEMPORARY post data
 const tempPosts = [
   { id: 1, subject: "New Year Offer Campaign", scheduledTime: "2025-01-15  (10:00)", type: "Whatsapp", description: "Promote New Year Offer on Whatsapp." },
@@ -28,30 +27,22 @@ const tempPosts = [
   { id: 7, subject: "Flash Sale", scheduledTime: "2025-03-10  (12:00)", type: "SMS", description: "Send flash sale SMS." },
   { id: 8, subject: "Email Blast", scheduledTime: "2025-03-12  (09:00)", type: "Email", description: "Email campaign blast." },
 ];
-
-
+ 
 export default function CampaignsDetails() {
   const { campaign: campaignStr } = useLocalSearchParams();
   const campaign: Campaign = JSON.parse(campaignStr as string);
-
-  const [currentPage, setCurrentPage] = useState(1);
+ 
   const [posts, setPosts] = useState(tempPosts); // state to handle delete
-
-  const postsPerPage = 5;
-
-  const totalPages = Math.ceil(posts.length / postsPerPage);
-  const currentPosts = posts.slice(
-    (currentPage - 1) * postsPerPage,
-    currentPage * postsPerPage
-  );
-
+  const [visibleCount, setVisibleCount] = useState(5); // initial number of posts
+ 
+  // Handlers
   const handleEditPost = (post: any) => {
     router.push({
       pathname: "/campaigns/campaignComponents/campaignPost",
       params: { platform: post.type, editPostId: post.id.toString() },
     });
   };
-
+ 
   const handleDeletePost = (postId: number) => {
     Alert.alert(
       "Confirm Delete",
@@ -63,18 +54,19 @@ export default function CampaignsDetails() {
           style: "destructive",
           onPress: () => {
             setPosts(posts.filter(p => p.id !== postId));
+            if (visibleCount > posts.length - 1) setVisibleCount(posts.length - 1);
           }
         }
       ]
     );
   };
-
+ 
   const renderPostItem = ({ item }: { item: any }) => {
     const platform = platformIcons[item.type];
-
+ 
     return (
       <View className="bg-white p-4 rounded-xl mb-4 shadow relative">
-
+ 
         {/* Top-right edit/delete icons */}
         <View className="absolute top-3 right-3 flex-row space-x-2">
           <TouchableOpacity onPress={() => handleEditPost(item)} className="mx-1">
@@ -84,18 +76,18 @@ export default function CampaignsDetails() {
             <Ionicons name="trash-outline" size={22} color="#ef4444" />
           </TouchableOpacity>
         </View>
-
+ 
         {/* Subject */}
         <Text className="text-lg font-bold mb-2">{item.subject}</Text>
-
+ 
         {/* Description */}
         <Text className="text-black font-semibold mb-1">Description</Text>
         <Text className="text-gray-900 mb-2">{item.description}</Text>
-
+ 
         {/* Schedule */}
         <Text className="text-black font-semibold mb-1">Schedule</Text>
         <Text className="text-gray-900 mb-2">{item.scheduledTime}</Text>
-
+ 
         {/* Platform */}
         <View className="flex-row items-center">
           <Text className="font-semibold mr-2">Type</Text>
@@ -108,11 +100,17 @@ export default function CampaignsDetails() {
       </View>
     );
   };
-
+ 
+  const visiblePosts = posts.slice(0, visibleCount);
+  const isAllVisible = visibleCount >= posts.length;
+ 
+  const handleLoadMore = () => setVisibleCount(prev => prev + 5);
+  const handleShowLess = () => setVisibleCount(5);
+ 
   return (
     <View className="flex-1 p-4 bg-gray-100">
       <Text className="text-xl font-bold mb-3">Campaign Details</Text>
-
+ 
       {/* Campaign Card */}
       <CampaignCard
         campaign={campaign}
@@ -125,28 +123,30 @@ export default function CampaignsDetails() {
         onPressPost={() => router.push("/campaigns/campaignComponents/campaignPost")}
         hidePostsHeading={true}
       />
-
+ 
       {/* Posts */}
       <View className="mt-4 flex-1">
         <Text className="text-xl font-bold mb-3">Created Posts</Text>
-
+ 
         {posts.length === 0 ? (
           <Text className="text-gray-500 text-center">No records found</Text>
         ) : (
           <FlatList
-            data={currentPosts}
+            data={visiblePosts}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderPostItem}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 16 }}
             ListFooterComponent={
-              <View className="mt-4">
-                <Pagination
-                  totalPages={totalPages}
-                  currentPage={currentPage}
-                  onPageChange={(page: number) => setCurrentPage(page)}
-                />
-              </View>
+              posts.length > 5 ? (
+                <TouchableOpacity
+                  onPress={isAllVisible ? handleShowLess : handleLoadMore}
+                  className={`py-3 my-2 rounded-xl items-center ${isAllVisible ? "bg-red-100" : "bg-blue-100"}`}
+                >
+                  <Text className={`font-semibold ${isAllVisible ? "text-red-700" : "text-blue-700"}`}>
+                    {isAllVisible ? "Show Less" : "Load More"}
+                  </Text>
+                </TouchableOpacity>
+              ) : null
             }
           />
         )}

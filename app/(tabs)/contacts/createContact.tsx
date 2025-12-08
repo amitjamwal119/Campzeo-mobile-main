@@ -1,203 +1,238 @@
+import React, { useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
-  View,
-  Text,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Text,
   TouchableOpacity,
+  View,
   Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { Input, InputField, FormControl } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
-// RHF + Zod
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { contactSchema, ContactSchemaType } from "@/validations/contactSchema";
-
-
+import { useForm, Controller } from "react-hook-form";
+import { useLocalSearchParams, router } from "expo-router";
+ 
+type Contact = {
+  name: string;
+  email: string;
+  mobile: string;
+  whatsapp: string;
+};
+ 
 type RootStackParamList = {
   Contacts: undefined;
   CreateContact: undefined;
 };
-
+ 
 type CreateContactScreenProp = NativeStackNavigationProp<
   RootStackParamList,
   "CreateContact"
 >;
-
-export default function CreateContact({
-  onCreate,
-}: {
-  onCreate?: (c: ContactSchemaType) => void;
-}) {
+ 
+export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) => void }) {
   const navigation = useNavigation<CreateContactScreenProp>();
-
-  // -------------------------------------
-  // 👇 React Hook Form setup with Zod
-  // -------------------------------------
+ 
+  // ✅ Fetch record from params for editing
+  const { record: recordStr } = useLocalSearchParams();
+  const editingContact: Contact | null = recordStr ? JSON.parse(recordStr as string) : null;
+ 
   const {
     control,
-    register,
     handleSubmit,
-    formState: { errors, isSubmitting },
     setValue,
+    formState: { errors, isSubmitting },
     reset,
-  } = useForm<ContactSchemaType>({
-    resolver: zodResolver(contactSchema),
-    defaultValues: {
+  } = useForm<Contact>({
+    defaultValues: editingContact ?? {
       name: "",
       email: "",
       mobile: "",
       whatsapp: "",
     },
+    mode: "onChange",
   });
-
-  // -------------------------------------
-  // 👇 Submit Handler
-  // -------------------------------------
-  const handleCreate = handleSubmit((values) => {
+ 
+  // ✅ Prefill form when editing
+  useEffect(() => {
+    if (editingContact) {
+      setValue("name", editingContact.name);
+      setValue("email", editingContact.email);
+      setValue("mobile", editingContact.mobile);
+      setValue("whatsapp", editingContact.whatsapp);
+    }
+  }, [editingContact, setValue]);
+ 
+  const onSubmit = (data: Contact) => {
     Alert.alert(
-      "Contact Created",
-      `${values.name} has been added successfully`,
+      editingContact ? "Contact Updated" : "Contact Created",
+      `${data.name} has been ${editingContact ? "updated" : "added"} successfully`,
       [
         {
           text: "OK",
           onPress: () => {
-            onCreate?.(values);
+            onCreate?.(data);
             reset();
-            navigation.navigate("Contacts");
+            router.back(); // navigate back after submission
           },
         },
       ],
       { cancelable: false }
     );
-  });
-
+  };
+ 
   const requiredLabel = (label: string) => (
-    <Text className="text-sm font-semibold text-gray-700">
+    <Text className="text-base mt-3 font-semibold text-gray-700">
       {label} <Text className="text-red-500">*</Text>
     </Text>
   );
-
+ 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       className="flex-1 bg-gray-50"
     >
       <ScrollView
-        className="flex-1 px-6 py-8"
+        className="flex-1 px-6 py-6"
         keyboardShouldPersistTaps="handled"
       >
         {/* Close Button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={{
-            position: "absolute",
-            right: 10,
-            zIndex: 10,
-            padding: 8,
-          }}
+          style={{ position: "absolute", right: 10, zIndex: 10, padding: 8 }}
         >
-          <Ionicons name="close" size={22} color="#334155" />
+          <Ionicons name="close" size={24} color="#334155" />
         </TouchableOpacity>
-
+ 
         {/* Header */}
-        <View className="flex-row items-center mb-8">
+        <View className="flex-row items-center mb-6">
           <View className="w-14 h-14 rounded-xl bg-[#d55b35] items-center justify-center">
             <Ionicons name="person-add" size={28} color="#fff" />
           </View>
           <View className="ml-4">
             <Text className="text-2xl font-bold text-gray-800">
-              Create Contact
+              {editingContact ? "Edit Contact" : "Create Contact"}
             </Text>
             <Text className="text-sm text-gray-500">
-              Add a new contact to your list
+              {editingContact
+                ? "Update the contact details"
+                : "Add a new contact to your list"}
             </Text>
           </View>
         </View>
-
-        {/* Form */}
-        <View className="gap-y-5">
+ 
+        {/* Form Fields */}
+        <View className="space-y-6">
           {/* Name */}
-          <FormControl>
+          <FormControl isInvalid={!!errors.name}>
             <FormControl.Label>{requiredLabel("Name")}</FormControl.Label>
-            <Input className="border border-gray-300 rounded-xl">
-              <InputField
-                placeholder="Enter Name"
-                {...register("name")}
-                onChangeText={(text) => setValue("name", text)}
-              />
-            </Input>
+            <Controller
+              control={control}
+              name="name"
+              rules={{
+                required: "Name is required",
+                minLength: { value: 3, message: "Minimum 3 letters" },
+                pattern: { value: /^[A-Za-z\s]+$/i, message: "Only letters allowed" },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <Input className="border border-gray-300 rounded-xl">
+                  <InputField placeholder="Enter Name" value={value} onChangeText={onChange} />
+                </Input>
+              )}
+            />
             {errors.name && (
-              <Text className="text-red-500 text-xs mt-1">
-                {errors.name.message}
-              </Text>
+              <Text className="text-red-500 text-xs mt-1">{errors.name.message}</Text>
             )}
           </FormControl>
-
+ 
           {/* Email */}
-          <FormControl>
+          <FormControl isInvalid={!!errors.email}>
             <FormControl.Label>{requiredLabel("Email")}</FormControl.Label>
-            <Input className="border border-gray-300 rounded-xl">
-              <InputField
-                placeholder="Enter Email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                {...register("email")}
-                onChangeText={(text) => setValue("email", text)}
-              />
-            </Input>
+            <Controller
+              control={control}
+              name="email"
+              rules={{
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Invalid email",
+                },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <Input className="border border-gray-300 rounded-xl">
+                  <InputField
+                    placeholder="Enter Email"
+                    value={value}
+                    onChangeText={onChange}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                </Input>
+              )}
+            />
             {errors.email && (
-              <Text className="text-red-500 text-xs mt-1">
-                {errors.email.message}
-              </Text>
+              <Text className="text-red-500 text-xs mt-1">{errors.email.message}</Text>
             )}
           </FormControl>
-
+ 
           {/* Mobile */}
-          <FormControl>
+          <FormControl isInvalid={!!errors.mobile}>
             <FormControl.Label>{requiredLabel("Mobile")}</FormControl.Label>
-            <Input className="border border-gray-300 rounded-xl">
-              <InputField
-                placeholder="Enter Mobile Number"
-                keyboardType="phone-pad"
-                {...register("mobile")}
-                onChangeText={(text) => setValue("mobile", text)}
-              />
-            </Input>
+            <Controller
+              control={control}
+              name="mobile"
+              rules={{
+                required: "Mobile is required",
+                pattern: { value: /^\d{7,15}$/, message: "Not a valid number" },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <Input className="border border-gray-300 rounded-xl">
+                  <InputField
+                    placeholder="Enter Mobile"
+                    value={value}
+                    onChangeText={onChange}
+                    keyboardType="phone-pad"
+                  />
+                </Input>
+              )}
+            />
             {errors.mobile && (
-              <Text className="text-red-500 text-xs mt-1">
-                {errors.mobile.message}
-              </Text>
+              <Text className="text-red-500 text-xs mt-1">{errors.mobile.message}</Text>
             )}
           </FormControl>
-
+ 
           {/* WhatsApp */}
-          <FormControl>
+          <FormControl isInvalid={!!errors.whatsapp}>
             <FormControl.Label>{requiredLabel("WhatsApp")}</FormControl.Label>
-            <Input className="border border-gray-300 rounded-xl">
-              <InputField
-                placeholder="Enter WhatsApp Number"
-                keyboardType="phone-pad"
-                {...register("whatsapp")}
-                onChangeText={(text) => setValue("whatsapp", text)}
-              />
-            </Input>
+            <Controller
+              control={control}
+              name="whatsapp"
+              rules={{
+                required: "WhatsApp is required",
+                pattern: { value: /^\d{10,15}$/, message: "Not a valid number" },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <Input className="border border-gray-300 rounded-xl">
+                  <InputField
+                    placeholder="Enter WhatsApp"
+                    value={value}
+                    onChangeText={onChange}
+                    keyboardType="phone-pad"
+                  />
+                </Input>
+              )}
+            />
             {errors.whatsapp && (
-              <Text className="text-red-500 text-xs mt-1">
-                {errors.whatsapp.message}
-              </Text>
+              <Text className="text-red-500 text-xs mt-1">{errors.whatsapp.message}</Text>
             )}
           </FormControl>
         </View>
-
-        {/* Create Button */}
+ 
+        {/* Submit Button */}
         <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={handleCreate}
+          onPress={handleSubmit(onSubmit)}
           className="w-full mt-10 rounded-xl items-center justify-center py-4"
           style={{
             backgroundColor: "#d55b35",
@@ -207,12 +242,21 @@ export default function CreateContact({
             shadowRadius: 12,
             elevation: 6,
           }}
+          disabled={isSubmitting}
         >
           <Text className="text-white font-semibold text-lg">
-            {isSubmitting ? "Creating..." : "Create Contact"}
+            {isSubmitting
+              ? editingContact
+                ? "Updating..."
+                : "Creating..."
+              : editingContact
+              ? "Update Contact"
+              : "Create Contact"}
           </Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
+ 
+ 

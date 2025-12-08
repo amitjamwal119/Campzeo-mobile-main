@@ -3,121 +3,68 @@ import { Text, View } from "@gluestack-ui/themed";
 import { router } from "expo-router";
 import { useState } from "react";
 import { FlatList, Share, TextInput, TouchableOpacity } from "react-native";
-import Pagination from "../contacts/contactComponents/pagination";
 import CampaignCard, { Campaign } from "./campaignComponents/campaignCard";
-
+ 
 export default function Campaigns() {
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
   const [filter, setFilter] = useState<"all" | "show" | "hide">("all");
-
+  const [visibleCount, setVisibleCount] = useState(5); // initial number of campaigns
+ 
   const [campaigns, setCampaigns] = useState<Campaign[]>([
-    {
-      id: 1,
-      details: "New Year Offer",
-      dates: "01 Jan 2025 - 10 Jan 2025",
-      description: "Celebrate the new year with amazing discounts!",
-      posts: [],
-      show: true,
-    },
-    {
-      id: 2,
-      details: "Summer Promo",
-      dates: "15 Jun 2025 - 30 Jun 2025",
-      description: "Hot summer deals on all products.",
-      posts: [],
-      show: true,
-    },
-    {
-      id: 3,
-      details: "Holiday Sale",
-      dates: "20 Dec 2025 - 31 Dec 2025",
-      description: "End-of-year holiday sale for all customers.",
-      posts: [],
-      show: true,
-    },
-    {
-      id: 4,
-      details: "Winter Fest",
-      dates: "01 Dec 2025 - 15 Dec 2025",
-      description: "Warm up your winter with festive offers.",
-      posts: [],
-      show: true,
-    },
-    {
-      id: 5,
-      details: "Spring Offer",
-      dates: "01 Mar 2025 - 15 Mar 2025",
-      description: "Fresh spring collection discounts.",
-      posts: [],
-      show: true,
-    },
-    {
-      id: 6,
-      details: "Black Friday",
-      dates: "25 Nov 2025 - 30 Nov 2025",
-      description: "Massive Black Friday deals for limited time.",
-      posts: [],
-      show: true,
-    },
+    { id: 1, details: "New Year Offer", dates: "01 Jan 2025 - 10 Jan 2025", description: "Celebrate the new year with amazing discounts!", posts: [], show: true },
+    { id: 2, details: "Summer Promo", dates: "15 Jun 2025 - 30 Jun 2025", description: "Hot summer deals on all products.", posts: [], show: true },
+    { id: 3, details: "Holiday Sale", dates: "20 Dec 2025 - 31 Dec 2025", description: "End-of-year holiday sale for all customers.", posts: [], show: true },
+    { id: 4, details: "Winter Fest", dates: "01 Dec 2025 - 15 Dec 2025", description: "Warm up your winter with festive offers.", posts: [], show: true },
+    { id: 5, details: "Spring Offer", dates: "01 Mar 2025 - 15 Mar 2025", description: "Fresh spring collection discounts.", posts: [], show: true },
+    { id: 6, details: "Black Friday", dates: "25 Nov 2025 - 30 Nov 2025", description: "Massive Black Friday deals for limited time.", posts: [], show: true },
   ]);
-
-  const pageLimit = 5;
-
+ 
   // Filter + Search
   let filtered = campaigns.filter((c) =>
     c.details.toLowerCase().includes(search.toLowerCase())
   );
   if (filter === "show") filtered = filtered.filter((c) => c.show);
   else if (filter === "hide") filtered = filtered.filter((c) => !c.show);
-
-  const totalPages = Math.ceil(filtered.length / pageLimit);
-  const currentCampaigns = filtered.slice(
-    (page - 1) * pageLimit,
-    page * pageLimit
-  );
-
+ 
+  const visibleCampaigns = filtered.slice(0, visibleCount);
+  const isAllVisible = visibleCount >= filtered.length;
+ 
   // Handlers
   const handleDelete = (c: Campaign) =>
     setCampaigns((prev) => prev.filter((x) => x.id !== c.id));
-
+ 
   const handleCopy = (c: Campaign) => {
-    const newCampaign = {
-      ...c,
-      id: campaigns.length + 1,
-      details: c.details + " (Copy)",
-      posts: [],
-      description: c.description,
-    };
-    setCampaigns((prev) => [newCampaign, ...prev]);
+    // const newCampaign = { ...c, id: campaigns.length + 1, details: c.details, posts: [], description: c.description };
+    // setCampaigns((prev) => [newCampaign, ...prev]);
   };
-
+ 
   const handleToggleShow = (c: Campaign) =>
     setCampaigns((prev) =>
       prev.map((x) => (x.id === c.id ? { ...x, show: !x.show } : x))
     );
-
+ 
   const handleShare = async () => {
     if (!campaigns.length) return;
     const header = "Details\tDates\tDescription\n";
     const message =
       header +
-      campaigns
-        .map((c) => `${c.details}\t${c.dates}\t${c.description}`)
-        .join("\n");
+      campaigns.map((c) => `${c.details}\t${c.dates}\t${c.description}`).join("\n");
     try {
       await Share.share({ message });
     } catch (e) {
       console.log(e);
     }
   };
-
+ 
   const toggleFilter = () => {
     const next = filter === "all" ? "show" : filter === "show" ? "hide" : "all";
     setFilter(next);
-    setPage(1);
+    setVisibleCount(5);
   };
-
+ 
+  const handleLoadMore = () => setVisibleCount((prev) => prev + 5);
+  const handleShowLess = () => setVisibleCount(5);
+ 
   return (
     <View className="flex-1 p-4 bg-gray-100">
       {/* Top Controls */}
@@ -129,24 +76,24 @@ export default function Campaigns() {
           <Ionicons name="add-circle" size={20} color="#0284c7" />
           <Text className="ml-2 font-semibold text-blue-700">New</Text>
         </TouchableOpacity>
-
+ 
         <TextInput
           value={search}
           onChangeText={(value) => {
             setSearch(value);
-            setPage(1);
+            setVisibleCount(5);
           }}
           placeholder="Search campaigns..."
           className="flex-1 px-3 py-2 rounded-xl border border-gray-300 bg-white mr-2"
         />
-
+ 
         <TouchableOpacity
           onPress={handleShare}
           className="px-3 py-2 rounded-xl bg-green-100 mr-2"
         >
           <Ionicons name="share-social" size={20} color="#16a34a" />
         </TouchableOpacity>
-
+ 
         <TouchableOpacity
           onPress={toggleFilter}
           className="flex-row items-center px-3 py-2 rounded-xl bg-yellow-100"
@@ -157,10 +104,10 @@ export default function Campaigns() {
           </Text>
         </TouchableOpacity>
       </View>
-
-      {/* Campaign List with Pagination as Footer */}
+ 
+      {/* Campaign List */}
       <FlatList
-        data={currentCampaigns}
+        data={visibleCampaigns}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <CampaignCard
@@ -168,14 +115,34 @@ export default function Campaigns() {
             onDelete={handleDelete}
             onCopy={handleCopy}
             onToggleShow={handleToggleShow}
+            onEdit={(campaign) =>
+              router.push({
+                pathname: "/campaigns/createCampaign",
+                params: {
+                  campaign: JSON.stringify({
+                    name: campaign.details,       // map details to name
+                    startDate: campaign.dates?.split(" - ")[0] || "", // extract start date
+                    endDate: campaign.dates?.split(" - ")[1] || "",   // extract end date
+                    description: campaign.description || "",
+                  }),
+                },
+              })
+            }
           />
+ 
         )}
         ListFooterComponent={
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
+          filtered.length > 5 ? (
+            <TouchableOpacity
+              onPress={isAllVisible ? handleShowLess : handleLoadMore}
+              className={`py-3 my-2 rounded-xl items-center ${isAllVisible ? "bg-red-100" : "bg-blue-100"
+                }`}
+            >
+              <Text className={`font-semibold ${isAllVisible ? "text-red-700" : "text-blue-700"}`}>
+                {isAllVisible ? "Show Less" : "Load More"}
+              </Text>
+            </TouchableOpacity>
+          ) : null
         }
       />
     </View>

@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-
+ 
 // Define Campaign type
 export interface Campaign {
   id: number;
@@ -12,7 +12,7 @@ export interface Campaign {
   posts: string[];
   show?: boolean;
 }
-
+ 
 interface CampaignCardProps {
   campaign: Campaign;
   onDelete: (c: Campaign) => void;
@@ -24,11 +24,12 @@ interface CampaignCardProps {
   hidePostsHeading?: boolean;  // optional prop to hide "Posts" heading text
   postButtonTopRight?: boolean; // optional prop to move Post button to top-right
   onPressPost?: () => void;     // optional custom handler for Post button
+ 
+  onEdit?: (campaign: Campaign) => void; // ✅ Added onEdit to props
 }
-
+ 
 export default function CampaignCard({
   campaign,
-  // onEdit,
   onDelete,
   onCopy,
   onToggleShow,
@@ -38,15 +39,28 @@ export default function CampaignCard({
   hidePostsHeading = false,
   postButtonTopRight = false,
   onPressPost,
+  onEdit, // ✅ added
 }: CampaignCardProps) {
-
+ 
+  // ✅ Updated: call onEdit if provided, fallback to router.push
   const handleEdit = () => {
-    router.push({
-      pathname: "/campaigns/createCampaign",
-      params: { campaignId: campaign.id.toString() },
-    });
+    if (onEdit) {
+      onEdit(campaign);
+    } else {
+      router.push({
+        pathname: "/campaigns/createCampaign",
+        params: {
+          campaign: JSON.stringify({
+            name: campaign.details,
+            startDate: campaign.dates?.split(" - ")[0] || "",
+            endDate: campaign.dates?.split(" - ")[1] || "",
+            description: campaign.description,
+          }),
+        },
+      });
+    }
   };
-
+ 
   const handleDelete = () => {
     Alert.alert(
       "Confirm Delete",
@@ -57,8 +71,7 @@ export default function CampaignCard({
       ]
     );
   };
-
-  // Default add post behavior if no custom handler is provided
+ 
   const handleAddPost = () => {
     if (onPressPost) {
       onPressPost();
@@ -69,16 +82,16 @@ export default function CampaignCard({
       });
     }
   };
-
+ 
   const isExpanded = alwaysExpanded || campaign.show;
-
+ 
   return (
     <View className="bg-white p-4 rounded-xl mb-4 shadow">
-
+ 
       {/* Title + Actions + Top-right Post button */}
       <View className="flex-row justify-between items-center mb-2">
         <Text className="font-bold text-lg">{campaign.details}</Text>
-
+ 
         <View className="flex-row items-center">
           {postButtonTopRight && showPostButton && (
             <TouchableOpacity onPress={handleAddPost} className="flex-row items-center mr-2">
@@ -86,21 +99,22 @@ export default function CampaignCard({
               <Text className="text-[#0284c7] font-semibold ml-1">Post</Text>
             </TouchableOpacity>
           )}
-
+ 
           {showActions && (
             <View className="flex-row">
+              {/* ✅ Edit Button */}
               <TouchableOpacity onPress={handleEdit} className="mx-1">
                 <Ionicons name="create-outline" size={22} color="#10b981" />
               </TouchableOpacity>
-
+ 
               <TouchableOpacity onPress={handleDelete} className="mx-1">
                 <Ionicons name="trash-outline" size={22} color="#ef4444" />
               </TouchableOpacity>
-
+ 
               <TouchableOpacity onPress={() => onCopy(campaign)} className="mx-1">
                 <Ionicons name="copy-outline" size={22} color="#3b82f6" />
               </TouchableOpacity>
-
+ 
               <TouchableOpacity onPress={() => onToggleShow(campaign)} className="mx-1">
                 <Ionicons
                   name={campaign.show ? "eye-off-outline" : "eye-outline"}
@@ -112,19 +126,16 @@ export default function CampaignCard({
           )}
         </View>
       </View>
-
+ 
       {/* Expandable Content */}
       {isExpanded && (
         <View>
-          {/* Description */}
           <Text className="font-bold text-gray-900 mb-1">Description</Text>
           <Text className="text-gray-700 mb-3">{campaign.description}</Text>
-
-          {/* Dates */}
+ 
           <Text className="font-bold text-gray-900 mb-1">Dates</Text>
           <Text className="text-gray-700 mb-3">{campaign.dates}</Text>
-
-          {/* Posts heading + Add Post button at bottom */}
+ 
           {showPostButton && !postButtonTopRight && (
             <View className="flex-row justify-between items-center">
               {!hidePostsHeading && (
@@ -141,3 +152,5 @@ export default function CampaignCard({
     </View>
   );
 }
+ 
+ 
