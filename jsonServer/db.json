@@ -1,0 +1,316 @@
+{
+  "logs": [
+    {
+      "id": 1,
+      "event": "Campaign Sent",
+      "recipient": "john@example.com",
+      "timestamp": "2025-01-10 14:22"
+    },
+    {
+      "id": 2,
+      "event": "Message Delivered",
+      "recipient": "+91 9876543210",
+      "timestamp": "2025-01-10 14:25"
+    },
+    {
+      "id": 3,
+      "event": "Instagram Post Published",
+      "recipient": "Instagram Account",
+      "timestamp": "2025-01-11 09:45"
+    },
+    {
+      "id": 4,
+      "event": "Email Opened",
+      "recipient": "alice@example.com",
+      "timestamp": "2025-01-11 10:02"
+    },
+    {
+      "id": 5,
+      "event": "SMS Failed",
+      "recipient": "+91 9123456780",
+      "timestamp": "2025-01-11 10:15"
+    },
+    {
+      "id": 6,
+      "event": "WhatsApp Message Sent",
+      "recipient": "+91 9988776655",
+      "timestamp": "2025-01-11 11:30"
+    },
+    {
+      "id": 7,
+      "event": "User Subscribed",
+      "recipient": "mark@example.com",
+      "timestamp": "2025-01-11 12:10"
+    },
+    {
+      "id": 8,
+      "event": "Campaign Scheduled",
+      "recipient": "Marketing Team",
+      "timestamp": "2025-01-11 13:40"
+    },
+    {
+      "id": 9,
+      "event": "Attachment Downloaded",
+      "recipient": "sarah@example.com",
+      "timestamp": "2025-01-11 14:05"
+    },
+    {
+      "id": 10,
+      "event": "Post Boosted",
+      "recipient": "Facebook Page",
+      "timestamp": "2025-01-11 15:30"
+    },
+    {
+      "id": 11,
+      "event": "SMS Delivered",
+      "recipient": "+91 9001122334",
+      "timestamp": "2025-01-11 16:45"
+    },
+    {
+      "id": 12,
+      "event": "Email Bounced",
+      "recipient": "invalid@mail.com",
+      "timestamp": "2025-01-11 17:00"
+    },
+    {
+      "id": 13,
+      "event": "Story Uploaded",
+      "recipient": "Instagram Account",
+      "timestamp": "2025-01-12 09:10"
+    },
+    {
+      "id": 14,
+      "event": "Message Queued",
+      "recipient": "+91 9200112233",
+      "timestamp": "2025-01-12 09:40"
+    },
+    {
+      "id": 15,
+      "event": "User Unsubscribed",
+      "recipient": "peter@example.com",
+      "timestamp": "2025-01-12 10:25"
+    },
+    {
+      "id": 16,
+      "event": "Campaign Paused",
+      "recipient": "Marketing Dashboard",
+      "timestamp": "2025-01-12 11:55"
+    },
+    {
+      "id": 17,
+      "event": "Template Updated",
+      "recipient": "Admin Panel",
+      "timestamp": "2025-01-12 12:20"
+    },
+    {
+      "id": 18,
+      "event": "Message Read",
+      "recipient": "+91 8080776655",
+      "timestamp": "2025-01-12 12:55"
+    },
+    {
+      "id": 19,
+      "event": "Newsletter Sent",
+      "recipient": "subscriber-list",
+      "timestamp": "2025-01-12 13:35"
+    },
+    {
+      "id": 20,
+      "event": "Email Clicked",
+      "recipient": "emma@example.com",
+      "timestamp": "2025-01-12 14:05"
+    },
+    {
+      "id": 21,
+      "event": "New Follower",
+      "recipient": "Instagram Account",
+      "timestamp": "2025-01-12 15:10"
+    },
+    {
+      "id": 22,
+      "event": "Comment Replied",
+      "recipient": "Facebook Page",
+      "timestamp": "2025-01-12 16:30"
+    },
+    {
+      "id": 23,
+      "event": "Message Deleted",
+      "recipient": "+91 7654321098",
+      "timestamp": "2025-01-12 17:20"
+    }
+  ],
+  
+  "invoices": [
+    {
+      "id": 1,
+      "organisation": "TechSoft Pvt Ltd",
+      "plan": "Premium",
+      "amount": "₹ 4,999",
+      "status": "paid",
+      "invoiceDate": "2025-01-10",
+      "dueDate": "2025-02-10"
+    },
+    {
+      "id": 2,
+      "organisation": "Alpha Enterprises",
+      "plan": "Basic",
+      "amount": "₹ 999",
+      "status": "pending",
+      "invoiceDate": "2025-01-15",
+      "dueDate": "2025-02-15"
+    },
+    {
+      "id": 3,
+      "organisation": "NeoTech Innovations",
+      "plan": "Standard",
+      "amount": "₹ 2,499",
+      "status": "paid",
+      "invoiceDate": "2025-01-20",
+      "dueDate": "2025-02-20"
+    },
+    {
+      "id": 4,
+      "organisation": "Creative Labs",
+      "plan": "Premium",
+      "amount": "₹ 4,999",
+      "status": "pending",
+      "invoiceDate": "2025-01-25",
+      "dueDate": "2025-02-25"
+    },
+    {
+      "id": 5,
+      "organisation": "PixelWave Studios",
+      "plan": "Standard",
+      "amount": "₹ 2,999",
+      "status": "paid",
+      "invoiceDate": "2025-01-28",
+      "dueDate": "2025-02-28"
+    },
+    {
+      "id": 6,
+      "organisation": "SoftCraft Technologies",
+      "plan": "Basic",
+      "amount": "₹ 1,299",
+      "status": "pending",
+      "invoiceDate": "2025-02-02",
+      "dueDate": "2025-03-02"
+    },
+    {
+      "id": 7,
+      "organisation": "BrightVision Pvt Ltd",
+      "plan": "Premium",
+      "amount": "₹ 4,999",
+      "status": "paid",
+      "invoiceDate": "2025-02-05",
+      "dueDate": "2025-03-05"
+    },
+    {
+      "id": 8,
+      "organisation": "Quantum Solutions",
+      "plan": "Standard",
+      "amount": "₹ 2,499",
+      "status": "pending",
+      "invoiceDate": "2025-02-08",
+      "dueDate": "2025-03-08"
+    },
+    {
+      "id": 9,
+      "organisation": "GreenLeaf Corp",
+      "plan": "Basic",
+      "amount": "₹ 999",
+      "status": "paid",
+      "invoiceDate": "2025-02-10",
+      "dueDate": "2025-03-10"
+    },
+    {
+      "id": 10,
+      "organisation": "UrbanTech Pvt Ltd",
+      "plan": "Premium",
+      "amount": "₹ 4,999",
+      "status": "pending",
+      "invoiceDate": "2025-02-12",
+      "dueDate": "2025-03-12"
+    },
+    {
+      "id": 11,
+      "organisation": "NextGen Enterprises",
+      "plan": "Standard",
+      "amount": "₹ 2,499",
+      "status": "paid",
+      "invoiceDate": "2025-02-15",
+      "dueDate": "2025-03-15"
+    },
+    {
+      "id": 12,
+      "organisation": "Omega IT Services",
+      "plan": "Basic",
+      "amount": "₹ 1,499",
+      "status": "pending",
+      "invoiceDate": "2025-02-18",
+      "dueDate": "2025-03-18"
+    },
+    {
+      "id": 13,
+      "organisation": "Skyline Digital",
+      "plan": "Premium",
+      "amount": "₹ 4,999",
+      "status": "paid",
+      "invoiceDate": "2025-02-20",
+      "dueDate": "2025-03-20"
+    },
+    {
+      "id": 14,
+      "organisation": "Vertex Industries",
+      "plan": "Standard",
+      "amount": "₹ 2,499",
+      "status": "pending",
+      "invoiceDate": "2025-02-22",
+      "dueDate": "2025-03-22"
+    },
+    {
+      "id": 15,
+      "organisation": "InnovateHub Pvt Ltd",
+      "plan": "Basic",
+      "amount": "₹ 999",
+      "status": "paid",
+      "invoiceDate": "2025-02-25",
+      "dueDate": "2025-03-25"
+    },
+    {
+      "id": 16,
+      "organisation": "CyberWave Technologies",
+      "plan": "Premium",
+      "amount": "₹ 4,999",
+      "status": "pending",
+      "invoiceDate": "2025-02-26",
+      "dueDate": "2025-03-26"
+    },
+    {
+      "id": 17,
+      "organisation": "Matrix Solutions",
+      "plan": "Standard",
+      "amount": "₹ 2,499",
+      "status": "paid",
+      "invoiceDate": "2025-02-28",
+      "dueDate": "2025-03-28"
+    },
+    {
+      "id": 18,
+      "organisation": "DigitalCore Systems",
+      "plan": "Basic",
+      "amount": "₹ 1,299",
+      "status": "pending",
+      "invoiceDate": "2025-03-01",
+      "dueDate": "2025-04-01"
+    },
+    {
+      "id": 19,
+      "organisation": "BlueOcean Innovations",
+      "plan": "Premium",
+      "amount": "₹ 4,999",
+      "status": "paid",
+      "invoiceDate": "2025-03-03",
+      "dueDate": "2025-04-03"
+    }
+  ]
+}

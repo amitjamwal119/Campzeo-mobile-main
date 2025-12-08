@@ -56,3 +56,39 @@ export default function LogsCards({ record }: { record: LogRecord }) {
     </View>
   );
 }
+
+
+
+
+//  import { View } from "react-native";
+// import { Skeleton, VStack, HStack } from "@gluestack-ui/themed";
+
+// export function LogsCardSkeleton() {
+//   return (
+//     <View
+//       style={{
+//         backgroundColor: "white",
+//         padding: 16,
+//         borderRadius: 12,
+//         marginBottom: 12,
+//       }}
+//     >
+//       <VStack space="md">
+//         {/* Event Title */}
+//         <Skeleton h={20} w={150} rounded="$md" />
+
+//         {/* Recipient Row */}
+//         <HStack justifyContent="space-between" alignItems="center">
+//           <Skeleton h={16} w={100} rounded="$md" />
+//           <Skeleton h={16} w={120} rounded="$md" />
+//         </HStack>
+
+//         {/* Timestamp Row */}
+//         <HStack justifyContent="space-between" alignItems="center">
+//           <Skeleton h={16} w={100} rounded="$md" />
+//           <Skeleton h={16} w={140} rounded="$md" />
+//         </HStack>
+//       </VStack>
+//     </View>
+//   );
+// }

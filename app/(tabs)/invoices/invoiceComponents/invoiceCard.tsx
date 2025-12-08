@@ -111,3 +111,61 @@ export default function InvoiceCard({ invoice }: { invoice: InvoiceRecord }) {
     </View>
   );
 }
+
+
+
+
+// import { View } from "react-native";
+// import { Skeleton, VStack, HStack } from "@gluestack-ui/themed";
+
+// export function InvoiceCardSkeleton() {
+//   return (
+//     <View
+//       style={{
+//         backgroundColor: "white",
+//         padding: 16,
+//         borderRadius: 12,
+//         marginBottom: 12,
+//       }}
+//     >
+//       <VStack space="lg">
+//         {/* Organisation + Status */}
+//         <HStack
+//           justifyContent="space-between"
+//           alignItems="center"
+//           mb="$2"
+//         >
+//           {/* Organisation Name */}
+//           <Skeleton h={20} w={180} rounded="$md" />
+
+//           {/* Status Badge */}
+//           <Skeleton h={20} w={70} rounded="$sm" />
+//         </HStack>
+
+//         {/* Plan */}
+//         <HStack justifyContent="space-between">
+//           <Skeleton h={16} w={100} rounded="$md" />
+//           <Skeleton h={16} w={120} rounded="$md" />
+//         </HStack>
+
+//         {/* Amount */}
+//         <HStack justifyContent="space-between">
+//           <Skeleton h={16} w={100} rounded="$md" />
+//           <Skeleton h={16} w={90} rounded="$md" />
+//         </HStack>
+
+//         {/* Invoice Date */}
+//         <HStack justifyContent="space-between">
+//           <Skeleton h={16} w={110} rounded="$md" />
+//           <Skeleton h={16} w={130} rounded="$md" />
+//         </HStack>
+
+//         {/* Due Date */}
+//         <HStack justifyContent="space-between">
+//           <Skeleton h={16} w={100} rounded="$md" />
+//           <Skeleton h={16} w={130} rounded="$md" />
+//         </HStack>
+//       </VStack>
+//     </View>
+//   );
+// }
