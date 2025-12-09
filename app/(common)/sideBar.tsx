@@ -80,6 +80,7 @@ export default function Sidebar() {
             <Pressable
               style={styles.menuItem}
               onPress={() => {
+                closeSidebar();
                 routePage.push("/(profile)/userProfile");
               }}
             >
@@ -91,6 +92,7 @@ export default function Sidebar() {
             <Pressable
               style={styles.menuItem}
               onPress={() => {
+                closeSidebar();
                 routePage.push("/(accounts)/accounts");
               }}
             >
@@ -111,6 +113,7 @@ export default function Sidebar() {
             <Pressable
               style={styles.menuItem}
               onPress={() => {
+                closeSidebar();
                 routePage.push("/(calander)/calanderPage");
               }}
             >
@@ -123,6 +126,7 @@ export default function Sidebar() {
             <Pressable
               style={styles.menuItem}
               onPress={() => {
+                closeSidebar();
                 routePage.push("/(settings)/settings");
               }}
             >
@@ -136,7 +140,10 @@ export default function Sidebar() {
             style={styles.logoutButton}
             variant="outline"
             action="secondary"
-            onPress={handleLogout}
+            onPress={() => {
+              closeSidebar();
+              handleLogout();
+            }}
           >
             <ButtonText>Logout</ButtonText>
             <ButtonIcon as={LogOut} />
