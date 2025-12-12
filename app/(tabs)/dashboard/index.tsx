@@ -1,12 +1,12 @@
-import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { Button } from "@gluestack-ui/themed";
 import { useRouter } from "expo-router";
 
 import { View, useWindowDimensions } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
 import { useState } from "react";
 import CalendarComponent from "@/app/(common)/calenderComponent";
+import CalendarWrapper from "@/app/(common)/calendarWrapper";
+import Insights from "./dashboardComponents/insights";
 
 export default function Dashboard() {
   const routePage = useRouter();
@@ -15,12 +15,17 @@ export default function Dashboard() {
 
   const FirstRoute = () => (
     <View style={{ flex: 1, backgroundColor: "#ff4081" }}>
-      <CalendarComponent/>
+      {/* <CalendarComponent/> */}
+      <Insights/>
     </View>
   );
 
   const SecondRoute = () => (
-    <View style={{ flex: 1, backgroundColor: "#673ab7" }} />
+    <View style={{ flex: 1}} >
+      {/* , backgroundColor: "#673ab7"  */}
+      <CalendarWrapper />
+        </View>
+
   );
 
   const renderScene = SceneMap({
@@ -29,8 +34,8 @@ export default function Dashboard() {
   });
 
   const routes = [
-    { key: "first", title: "Calendar" },
-    { key: "second", title: "Insights" },
+    { key: "first", title: "Insights" },
+    { key: "second", title: "Calander" },
   ];
   
   return (
@@ -50,13 +55,13 @@ export default function Dashboard() {
             initialLayout={{ width: layout.width }}
           />
 
-          <Button
+          {/* <Button
             onPress={() => {
               routePage.push("/(auth)/SignInScreen");
             }}
           >
             <ThemedText>Go to Signin Page</ThemedText>
-          </Button>
+          </Button> */}
       </ThemedView>
     </>
   );

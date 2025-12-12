@@ -30,7 +30,7 @@ import { StyleSheet, View } from "react-native";
 import { useSidebarStore } from "../../store/sidebarStore";
 import { useRouter } from "expo-router";
 import { ThemedView } from "@/components/themed-view";
-import { useAuth } from "@clerk/clerk-expo";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 
 export default function Sidebar() {
   const sidebarOpen = useSidebarStore((state) => state.sidebarOpen);
@@ -50,6 +50,10 @@ export default function Sidebar() {
     }
   };
 
+  const { user } = useUser();
+
+  if (!user) return null;
+
   return (
     <Drawer isOpen={sidebarOpen} onClose={closeSidebar} anchor="right">
       <DrawerBackdrop />
@@ -61,12 +65,13 @@ export default function Sidebar() {
               <AvatarFallbackText>Amit Jamwal</AvatarFallbackText>
               <AvatarImage
                 source={{
-                  uri: "https://i.pravatar.cc/300?img=12",
+                  uri: user.imageUrl,
+                  // "https://i.pravatar.cc/300?img=12"
                 }}
               />
             </Avatar>
             <VStack style={styles.userInfo}>
-              <Text size="lg">Amit Jamwal</Text>
+              <Text size="lg">{user.username}</Text>
               {/* <Text size="sm" style={styles.emailText}>
                 abc@gmail.com
               </Text> */}
@@ -123,7 +128,7 @@ export default function Sidebar() {
 
             {/* ===Settings=== */}
 
-            <Pressable
+            {/* <Pressable
               style={styles.menuItem}
               onPress={() => {
                 closeSidebar();
@@ -132,7 +137,8 @@ export default function Sidebar() {
             >
               <Icon as={Settings} size="lg" style={styles.icon} />
               <Text>Settings</Text>
-            </Pressable>
+            </Pressable> */}
+            
           </ThemedView>
         </DrawerBody>
         <DrawerFooter>

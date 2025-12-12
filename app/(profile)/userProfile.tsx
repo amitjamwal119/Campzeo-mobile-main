@@ -15,9 +15,11 @@ import {
 } from "@gluestack-ui/themed";
 import {
   Briefcase,
+  CircleChevronLeft,
   LockKeyhole,
   Mail,
   Phone,
+  User,
   UserPen,
 } from "lucide-react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
@@ -29,6 +31,7 @@ import EditProfile from "../(auth)/editProfile";
 
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function UserProfile() {
   const [ShowEditProfile, setEditProfile] = useState(false);
@@ -37,26 +40,37 @@ export default function UserProfile() {
 
   const routePage = useRouter();
 
+  const { user } = useUser();
+
+  if (!user) return null;
+
   return (
     <ThemedView className="flex-1 p-5 pt-20">
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* ---------- Profile Header ---------- */}
         <HStack>
-          <Pressable onPress={() => {routePage.back()}}>
+          <Pressable
+            onPress={() => {
+              routePage.back();
+            }}
+          >
             <Ionicons name="arrow-back-outline" size={22} color="#334155" />
           </Pressable>
         </HStack>
         <VStack className="items-center mb-8">
           <Avatar size="xl" className="mb-4">
             <AvatarImage
-              source={{ uri: "https://i.pravatar.cc/300?img=12" }}
+              source={{
+                uri: user.imageUrl,
+                // "https://i.pravatar.cc/300?img=12"
+              }}
               alt="Profile Picture"
             />
-            <AvatarFallbackText>A</AvatarFallbackText>
+            {/* <AvatarFallbackText>A</AvatarFallbackText> */}
           </Avatar>
 
           <ThemedText className="text-2xl font-semibold">
-            Amit Jamwal
+            {user.firstName} {user.lastName}
           </ThemedText>
 
           <ThemedText className="text-base text-gray-500">
@@ -67,13 +81,29 @@ export default function UserProfile() {
         {/* ---------- Details Card ---------- */}
         <Box className="bg-white/10 px-4 py-5 rounded-2xl">
           <VStack space="md">
+            {/* UserName */}
+            <HStack className="items-center gap-3">
+              <User size={22} color="#D55B35" />              
+              
+              <VStack>
+                <ThemedText className="text-sm text-gray-400">
+                  Username
+                </ThemedText>
+                <ThemedText className="text-base font-medium">
+                 {user.username}
+                </ThemedText>
+              </VStack>
+            </HStack>
+
+            <Divider />
+
             {/* EMAIL */}
             <HStack className="items-center gap-3">
               <Mail size={20} color="#D55B35" />
               <VStack>
                 <ThemedText className="text-sm text-gray-400">Email</ThemedText>
                 <ThemedText className="text-base font-medium">
-                  amitjamwal@example.com
+                  {user.primaryEmailAddress?.emailAddress}
                 </ThemedText>
               </VStack>
             </HStack>
@@ -81,24 +111,23 @@ export default function UserProfile() {
             <Divider />
 
             {/* PHONE */}
-            <HStack className="items-center gap-3">
+            {/* <HStack className="items-center gap-3">
               <Phone size={20} color="#D55B35" />
               <VStack>
                 <ThemedText className="text-sm text-gray-400">Phone</ThemedText>
                 <ThemedText className="text-base font-medium">
-                  +91 78072 71261
+                  +91 78072 71261 
                 </ThemedText>
               </VStack>
             </HStack>
+            <Divider /> */}
 
-            <Divider />
-
-            {/* OCCUPATION */}
+            {/* Organisation */}
             <HStack className="items-center gap-3">
               <Briefcase size={20} color="#D55B35" />
               <VStack>
                 <ThemedText className="text-sm text-gray-400">
-                  Occupation
+                  Organisation
                 </ThemedText>
                 <ThemedText className="text-base font-medium">
                   Software Engineer
@@ -131,9 +160,7 @@ export default function UserProfile() {
             <ModalBackdrop />
             <ModalContent>
               <ModalHeader>
-                {/* <Heading size="lg">Edit Profile</Heading> */}
                 <ModalCloseButton>
-                  {/* <Icon as={CloseIcon} /> */}
                 </ModalCloseButton>
               </ModalHeader>
               <ModalBody>

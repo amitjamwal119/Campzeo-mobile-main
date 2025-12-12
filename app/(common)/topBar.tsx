@@ -16,6 +16,7 @@ import {
   ButtonText,
 } from "@gluestack-ui/themed";
 import { Button } from "@gluestack-ui/themed";
+import { useUser } from "@clerk/clerk-expo";
 
 // type PopoverHandle = {
 //   close: () => void;
@@ -31,6 +32,9 @@ export default function TopBar() {
 
   // const popoverRef = React.useRef<PopoverHandle | null>(null);
 
+  const { user } = useUser();
+
+  if (!user) return null;
   return (
     <>
       <ThemedView
@@ -135,7 +139,9 @@ export default function TopBar() {
           <TouchableOpacity activeOpacity={0.7} onPress={openSidebar}>
             <Image
               source={{
-                uri: "https://i.pravatar.cc/300?img=12",
+                uri: user.imageUrl,
+
+                // "https://i.pravatar.cc/300?img=12"
               }}
               className="w-10 h-10 rounded-full border border-gray-300"
               alt="User"

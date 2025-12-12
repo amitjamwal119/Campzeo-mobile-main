@@ -1,0 +1,72 @@
+import React from "react";
+import { 
+  Modal, 
+  ModalBackdrop, 
+  ModalContent, 
+  ModalHeader, 
+  ModalCloseButton, 
+  ModalBody, 
+  ModalFooter, 
+  Button, 
+  ButtonText, 
+  Heading, 
+  Text 
+} from "@gluestack-ui/themed";
+
+// import { CalendarEvent } from "@/types/CalendarEvent";
+import { formatReadableDate, formatReadableTime } from "./utils/dateHelpers";
+import { CalendarEvent } from "@/types/types";
+
+interface EventModalProps {
+  event: CalendarEvent | null;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const EventModal: React.FC<EventModalProps> = ({ event, isOpen, onClose }) => {
+  if (!event) return null;
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalBackdrop />
+
+      <ModalContent>
+        <ModalHeader>
+          <Heading size="lg">{event.campaign}</Heading>
+          <ModalCloseButton />
+        </ModalHeader>
+
+        <ModalBody>
+          {/* PLATFORM */}
+          <Text style={{ fontSize: 16, marginBottom: 8 }}>
+            <Text style={{ fontWeight: "bold" }}>Platform:</Text> {event.platform.toUpperCase()}
+          </Text>
+
+          {/* DATE */}
+          <Text style={{ fontSize: 16, marginBottom: 8 }}>
+            <Text style={{ fontWeight: "bold" }}>Date:</Text> {formatReadableDate(event.start)}
+          </Text>
+
+          {/* TIME */}
+          <Text style={{ fontSize: 16, marginBottom: 8 }}>
+            <Text style={{ fontWeight: "bold" }}>Time:</Text> {formatReadableTime(event.start)}
+          </Text>
+
+          {/* MESSAGE */}
+          <Text style={{ fontSize: 16, marginTop: 12 }}>
+            <Text style={{ fontWeight: "bold" }}>Message:</Text>
+            {"\n"}{event.message}
+          </Text>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button action="primary" onPress={onClose}>
+            <ButtonText>Close</ButtonText>
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+export default EventModal;
