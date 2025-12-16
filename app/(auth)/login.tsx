@@ -12,6 +12,7 @@ import {
   Text,
   View,
 } from "react-native";
+import GoogleAuth from "./googleAuth";
 
 export default function LoginScreen() {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -227,7 +228,8 @@ export default function LoginScreen() {
             </>
           )}
 
-          {/* DEV MODE SKIP */}
+          {/* Google Auth Button */}
+          <GoogleAuth />
         </BlurView>
       </LinearGradient>
     </KeyboardAvoidingView>

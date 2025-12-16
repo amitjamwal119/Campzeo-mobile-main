@@ -2,7 +2,6 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import {
   Avatar,
-  AvatarFallbackText,
   AvatarImage,
   Box,
   Divider,
@@ -15,10 +14,8 @@ import {
 } from "@gluestack-ui/themed";
 import {
   Briefcase,
-  CircleChevronLeft,
   LockKeyhole,
   Mail,
-  Phone,
   User,
   UserPen,
 } from "lucide-react-native";
@@ -83,14 +80,14 @@ export default function UserProfile() {
           <VStack space="md">
             {/* UserName */}
             <HStack className="items-center gap-3">
-              <User size={22} color="#D55B35" />              
-              
+              <User size={22} color="#D55B35" />
+
               <VStack>
                 <ThemedText className="text-sm text-gray-400">
                   Username
                 </ThemedText>
                 <ThemedText className="text-base font-medium">
-                 {user.username}
+                  {user.username}
                 </ThemedText>
               </VStack>
             </HStack>
@@ -120,7 +117,8 @@ export default function UserProfile() {
                 </ThemedText>
               </VStack>
             </HStack>
-            <Divider /> */}
+            <Divider /> 
+            */}
 
             {/* Organisation */}
             <HStack className="items-center gap-3">
@@ -134,6 +132,7 @@ export default function UserProfile() {
                 </ThemedText>
               </VStack>
             </HStack>
+            <Divider />
           </VStack>
         </Box>
 
@@ -160,8 +159,7 @@ export default function UserProfile() {
             <ModalBackdrop />
             <ModalContent>
               <ModalHeader>
-                <ModalCloseButton>
-                </ModalCloseButton>
+                <ModalCloseButton></ModalCloseButton>
               </ModalHeader>
               <ModalBody>
                 {/* =====EPF Form Child====== */}

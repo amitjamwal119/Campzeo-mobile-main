@@ -1,4 +1,4 @@
-import http from "./http";
+import http from "./https";
 
 
 export const fetchLogs = async () => {

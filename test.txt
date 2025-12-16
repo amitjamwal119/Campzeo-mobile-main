@@ -1,214 +1,281 @@
-create contact old 
-<View className="gap-7">
-          {["Name", "Email", "Mobile", "WhatsApp"].map((field) => (
-            <FormControl key={field}>
-              <VStack className="gap-2">
-                <Text>{field}</Text>
-                <Input className="border border-gray-300 rounded-xl">
-                  <InputField
-                    placeholder={`Enter ${field}`}
-                    // value={form[field.toLowerCase() as keyof Contact]}
-                    keyboardType={
-                      field === "Email" ? "email-address" : "phone-pad"
-                    }
-                    autoCapitalize={field === "Email" ? "none" : "sentences"}
-                    // onChangeText={(text) =>
-                    //   setForm({ ...form, [field.toLowerCase()]: text })
-                    // }
-                  />
-                </Input>
-                {/* {errors[field.toLowerCase() as keyof Contact] && (
-                <Text className="text-red-500 text-xs mt-1">
-                  {errors[field.toLowerCase() as keyof Contact]}
-                </Text>
-              )} */}
-              </VStack>
-            </FormControl>
-          ))}
-        </View>
-
-
-
-
-
-        campaigns
-
-
-        import { useState } from "react";
-import { FlatList, TextInput, TouchableOpacity, Share } from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ActivityIndicator, FlatList, TextInput, TouchableOpacity } from "react-native";
 import { View, Text } from "@gluestack-ui/themed";
-import { Ionicons } from "@expo/vector-icons";
-import CampaignCard, { Campaign } from "./campaign-components/campaignCard";
-import { router } from "expo-router";
+// import InvoiceCard, { Invoice } from "./invoiceComponents/InvoiceCard";
 import { ThemedText } from "@/components/themed-text";
+// import Pagination from "@/app/(common)/pagination";
+import InvoiceCard, { InvoiceRecord } from "./invoiceComponents/invoiceCard";
+import { Ionicons } from "@expo/vector-icons";
 import Pagination from "@/app/(common)/pagination";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { fetchInvoices } from "@/api/invoicesApi";
+import { fetchLogs } from "@/api/logsApi";
+import { useUser } from "@clerk/clerk-expo";
+// import { Skeleton, VStack, HStack } from "@gluestack-ui/themed";
 
-export default function Campaigns() {
+
+export default function Invoices() {
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [filter, setFilter] = useState<"all" | "show" | "hide">("all");
+  // const[invoices, setInvoices] = useState([]);
 
-  const [campaigns, setCampaigns] = useState<Campaign[]>([
-    {
-      id: 1,
-      details: "New Year Offer",
-      dates: "01 Jan 2025 - 10 Jan 2025",
-      posts: ["Initial post", "Promo image"],
-      show: true,
-    },
-    {
-      id: 2,
-      details: "Summer Promo",
-      dates: "15 Jun 2025 - 30 Jun 2025",
-      posts: ["Buy 1 Get 1 offer"],
-      show: true,
-    },
-    {
-      id: 3,
-      details: "Holiday Sale",
-      dates: "20 Dec 2025 - 31 Dec 2025",
-      posts: ["Promo post 1", "Promo post 2"],
-      show: true,
-    },
-    {
-      id: 4,
-      details: "Winter Fest",
-      dates: "01 Dec 2025 - 15 Dec 2025",
-      posts: ["Winter discounts", "New arrivals"],
-      show: true,
-    },
-    {
-      id: 5,
-      details: "Spring Offer",
-      dates: "01 Mar 2025 - 15 Mar 2025",
-      posts: ["Spring collection"],
-      show: true,
-    },
-    {
-      id: 6,
-      details: "Black Friday",
-      dates: "25 Nov 2025 - 30 Nov 2025",
-      posts: ["Huge Black Friday deals", "Limited stock"],
-      show: true,
-    },
-  ]);
 
-  const pageLimit = 5;
+ const { user, isLoaded } = useUser();
 
-  // Filter + Search
-  let filtered = campaigns.filter((c) =>
-    c.details.toLowerCase().includes(search.toLowerCase())
-  );
-  if (filter === "show") filtered = filtered.filter((c) => c.show);
-  else if (filter === "hide") filtered = filtered.filter((c) => !c.show);
+  const [invoices, setInvoices] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const totalPages = Math.ceil(filtered.length / pageLimit);
-  const currentCampaigns = filtered.slice(
-    (page - 1) * pageLimit,
-    page * pageLimit
-  );
 
-  // Handlers
-  const handleEdit = (c: Campaign) => console.log("Edit:", c);
-  const handleDelete = (c: Campaign) =>
-    setCampaigns((prev) => prev.filter((x) => x.id !== c.id));
-  const handleCopy = (c: Campaign) => {
-    const newCampaign = {
-      ...c,
-      id: campaigns.length + 1,
-      details: c.details + " (Copy)",
-      posts: [...c.posts],
+  useEffect(() => {
+    if (!isLoaded) return; // Wait for Clerk to finish loading auth state
+    if (!user) return;     // No logged-in user
+
+    const loadInvoices = async () => {
+      try {
+        const data = await fetchInvoices(user.id); // Pass userId here
+        setInvoices(data?.invoices || []);
+      } catch (error) {
+        console.log("Error loading invoices:", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    setCampaigns((prev) => [newCampaign, ...prev]);
-  };
-  const handleToggleShow = (c: Campaign) =>
-    setCampaigns((prev) =>
-      prev.map((x) => (x.id === c.id ? { ...x, show: !x.show } : x))
+
+    loadInvoices();
+  }, [isLoaded]);
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
     );
+  }
 
-  const handleShare = async () => {
-    if (!campaigns.length) return;
-    const header = "Details\tDates\n";
-    const message =
-      header + campaigns.map((c) => `${c.details}\t${c.dates}`).join("\n");
-    try {
-      await Share.share({ message });
-    } catch (e) {
-      console.log(e);
+
+  const loadInvoices = async () => {
+    const data = await fetchInvoices();
+    if (data) {
+      setInvoices(data);        // set API response in state
     }
+    setLoading(false);
   };
 
-  const toggleFilter = () => {
-    const next = filter === "all" ? "show" : filter === "show" ? "hide" : "all";
-    setFilter(next);
-    setPage(1);
-  };
+  if (loading) {
+    return <ActivityIndicator size="large" color="blue" />;
+  }
+
+  // Pagination New state
+  // const [page, setPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const itemsPerPage = 5;
+
+
+  // Total pages
+  // const totalPages = useMemo(() => {
+  //   return Math.max(1, Math.ceil(invoices.length / itemsPerPage));
+  // }, [invoices.length, itemsPerPage]);
+
+  // Clamp invalid page numbers
+  // useEffect(() => {
+  //   if (currentPage > totalPages) setCurrentPage(totalPages);
+  //   if (currentPage < 1) setCurrentPage(1);
+  // }, [currentPage, totalPages]);
+
+  // Slice paginated logs
+  // const paginatedInvoices = useMemo(() => {
+  //   const startIndex = (currentPage - 1) * itemsPerPage;
+  //   const endIndex = startIndex + itemsPerPage;
+  //   return invoices.slice(startIndex, endIndex);
+  // }, [invoices, currentPage, itemsPerPage]);
+
+  // Button Handler
+  // const handlePageChange = (page: number) => {
+  //   if (page < 1) page = 1;
+  //   if (page > totalPages) page = totalPages ;
+  //   setCurrentPage(page);
+  // };
+
+  // const pageLimit = 5;
+
+  // Filter by search
+  // const filtered = invoices.filter((x) =>
+  //   x.organisation.toLowerCase().includes(search.toLowerCase())
+  // );
+
+  // const totalPages = Math.ceil(filtered.length / pageLimit);
+
+  // const currentInvoices = filtered.slice(
+  //   (page - 1) * pageLimit,
+  //   page * pageLimit
+  // );
+
+  
+  // STEP 3 — Infinite Query Setup
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["logs"],
+
+    //queryKey: A unique key for caching and controlling this infinite scroll query.
+
+    queryFn: fetchInvoices,
+
+    // TanStack will call your fetchLogs({ pageParam }) function automatically.
+
+    initialPageParam: 1, //To tell TanStack Query what the first page is.
+
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+
+    // This tells TanStack:
+    // If lastPage.nextPage is a number → fetch next page
+    // If null → stop infinite scroll
+  });
+
+  // STEP 4 — Flatten all pages into a single array
+  const mergedInvoices = useMemo(() => {
+    if (!data?.pages) return [];
+    return data.pages.flatMap((page) => page.items);
+  }, [data]);
+
+  // STEP 5 — Trigger fetchNextPage() on scroll
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage]);
+
+  // STEP 6 — Footer Loader Component
+const renderFooter = () => {
+  // When next page is loading
+  if (isFetchingNextPage) {
+    return (
+      <View style={{ padding: 20, alignItems: "center" }}>
+        <Text>Loading more Invoices...</Text>
+      </View>
+    );
+  }
+
+// Step 7 - skeleton design 
+const invoicesSkeleton = () => (
+    // <View
+    //   style={{
+    //     backgroundColor: "white",
+    //     padding: 16,
+    //     borderRadius: 12,
+    //     marginBottom: 12,
+    //   }}
+    // >
+    //   <VStack space="lg">
+    //     {/* Organisation + Status */}
+    //     <HStack
+    //       justifyContent="space-between"
+    //       alignItems="center"
+    //       mb="$2"
+    //     >
+    //       {/* Organisation Name */}
+    //       <Skeleton h={20} w={180} rounded="$md" />
+
+    //       {/* Status Badge */}
+    //       <Skeleton h={20} w={70} rounded="$sm" />
+    //     </HStack>
+
+    //     {/* Plan */}
+    //     <HStack justifyContent="space-between">
+    //       <Skeleton h={16} w={100} rounded="$md" />
+    //       <Skeleton h={16} w={120} rounded="$md" />
+    //     </HStack>
+
+    //     {/* Amount */}
+    //     <HStack justifyContent="space-between">
+    //       <Skeleton h={16} w={100} rounded="$md" />
+    //       <Skeleton h={16} w={90} rounded="$md" />
+    //     </HStack>
+
+    //     {/* Invoice Date */}
+    //     <HStack justifyContent="space-between">
+    //       <Skeleton h={16} w={110} rounded="$md" />
+    //       <Skeleton h={16} w={130} rounded="$md" />
+    //     </HStack>
+
+    //     {/* Due Date */}
+    //     <HStack justifyContent="space-between">
+    //       <Skeleton h={16} w={100} rounded="$md" />
+    //       <Skeleton h={16} w={130} rounded="$md" />
+    //     </HStack>
+    //   </VStack>
+    // </View>
+        <View><Text>Loading Invoices...</Text></View>
+    
+)
+
+  // When no more pages left
+  if (!hasNextPage) {
+    return (
+      <View style={{ padding: 20, alignItems: "center" }}>
+        <Text style={{ color: "#6b7280" }}>No more Invoices</Text>
+      </View>
+    );
+  }
+
+  return null;
+};
 
   return (
     <View className="flex-1 p-4 bg-gray-100">
-      <ThemedText
-        style={{ fontSize: 30, lineHeight: 36, fontWeight: 700 }}
-        className="text-center mt-5 mb-9"
-      >
-        Campaigns
-      </ThemedText>
-      {/* Top Controls */}
-      <View className="flex-row items-center mb-4">
-        <TouchableOpacity
-          onPress={() => router.push("/campaigns/createCampaign")}
-          className="flex-row items-center justify-center px-3 py-2 rounded-xl bg-blue-100 mr-2"
-        >
-          <Ionicons name="add-circle" size={20} color="#0284c7" />
-          <Text className="ml-2 font-semibold text-blue-700">New</Text>
-        </TouchableOpacity>
+      {/*                                                                                                                                                                                                                                                                                                             */}
 
-{/* Search */}
+      {/* Search Bar */}
+      <View className="flex-row items-center mb-4 gap-5">
         <TextInput
           value={search}
           onChangeText={(value) => {
             setSearch(value);
-            setPage(1);
+            // setPage(1);
           }}
-          placeholder="Search campaigns..."
-          className="flex-1 px-3 py-2 rounded-xl border border-gray-300 bg-white mr-2"
+          placeholder="Search organisation..."
+          className="flex-1 px-3 py-2 rounded-xl border border-gray-300 bg-white"
         />
 
-
-{/* Share */}
+        {/* Share */}
         <TouchableOpacity
-          onPress={handleShare}
+          // onPress={handleShare}
           className="px-3 py-2 rounded-xl bg-green-100 mr-2"
         >
           <Ionicons name="share-social" size={20} color="#16a34a" />
         </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={toggleFilter}
-          className="flex-row items-center px-3 py-2 rounded-xl bg-yellow-100"
-        >
-          <Ionicons name="funnel-outline" size={20} color="#f59e0b" />
-          <Text className="ml-2 font-semibold text-yellow-700">
-            {filter === "all" ? "All" : filter === "show" ? "Show" : "Hide"}
-          </Text>
-        </TouchableOpacity>
       </View>
 
-      {/* Campaign List with Pagination as Footer */}
+      {/* List */}
       <FlatList
-        data={currentCampaigns}
+        data={mergedInvoices}
+        // paginatedInvoices
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <CampaignCard
-            campaign={item}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onCopy={handleCopy}
-            onToggleShow={handleToggleShow}
-          />
+        renderItem={({ item }) => <InvoiceCard invoice={item} />}
+         // STEP 5 — Infinite Scroll Trigger
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5} // triggers before reaching bottom
+          onMomentumScrollBegin={() => {}}
+
+        ListEmptyComponent={
+          <Text className="text-center mt-12 text-gray-500">
+            No invoices found
+          </Text>
+        }
+        ListFooterComponent={() => (
+          //    <Pagination
+          // currentPage={currentPage}
+          // totalPages={totalPages}
+          // onPageChange={handlePageChange}
+          //         />
+          // <Text>Foomter</Text>
+          renderFooter()
         )}
-         ListFooterComponent={
-         <Pagination/>
-         }
       />
     </View>
   );
@@ -217,118 +284,79 @@ export default function Campaigns() {
 
 
 
-campaign card-------------------
-import React from "react";
-import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 
-// Define Campaign type
-export interface Campaign {
-  id: number;
-  details: string;
-  dates: string;
-  posts: string[];
-  show?: boolean;
-}
 
-interface CampaignCardProps {
-  campaign: Campaign;
-  onEdit: (c: Campaign) => void;
-  onDelete: (c: Campaign) => void;
-  onCopy: (c: Campaign) => void;
-  onToggleShow: (c: Campaign) => void;
-}
 
-export default function CampaignCard({
-  campaign,
-  onEdit,
-  onDelete,
-  onCopy,
-  onToggleShow,
-}: CampaignCardProps) {
-  // Delete handler
-  const handleDelete = () => {
-    Alert.alert(
-      "Confirm Delete",
-      `Are you sure you want to delete "${campaign.details}"?`,
-      [
-        { text: "No", style: "cancel" },
-        { text: "Yes", style: "destructive", onPress: () => onDelete(campaign) },
-      ],
-      { cancelable: true }
-    );
-  };
 
-  // Navigate to campaignPost.tsx
-  const handleAddPost = () => {
-    router.push({
-      pathname: "/campaigns/campaignPost",
-      params: { campaignId: campaign.id.toString() },
-    });
-  };
 
-  return (
-    <View className="bg-white p-4 rounded-xl mb-4 shadow">
-      {/* Details + Action Icons */}
-      <View className="flex-row justify-between items-center mb-2">
-        <Text className="font-bold text-lg">{campaign.details}</Text>
-        <View className="flex-row">
-          <TouchableOpacity onPress={() => onEdit(campaign)} className="mx-1">
-            <Ionicons name="create-outline" size={22} color="#10b981" />
-          </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleDelete} className="mx-1">
-            <Ionicons name="trash-outline" size={22} color="#ef4444" />
-          </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => onCopy(campaign)} className="mx-1">
-            <Ionicons name="copy-outline" size={22} color="#3b82f6" />
-          </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => onToggleShow(campaign)} className="mx-1">
-            <Ionicons
-              name={campaign.show ? "eye-off-outline" : "eye-outline"}
-              size={22}
-              color="#6b7280"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Campaign Details */}
-      {campaign.show && (
-        <View className="mt-2">
-          <Text className="font-bold text-gray-900 mb-1">Dates</Text>
-          <Text className="text-gray-700 mb-2">{campaign.dates}</Text>
-
-          {/* Posts Section */}
-          <View>
-            <View className="flex-row justify-between items-center">
-              <Text className="font-bold text-gray-900 mb-1">Posts</Text>
-              <TouchableOpacity
-                onPress={handleAddPost}
-                className="flex-row items-center space-x-1"
-              >
-                <Ionicons name="add-circle-outline" size={20} color="#0284c7" />
-                <Text className="text-[#0284c7] font-semibold">Post</Text>
-              </TouchableOpacity>
-            </View>
-
-            {campaign.posts.length === 0 ? (
-              <Text className="text-gray-500 mt-1">No posts yet</Text>
-            ) : (
-              <FlatList
-                data={campaign.posts}
-                keyExtractor={(_, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <Text className="text-gray-700 mt-1">• {item}</Text>
-                )}
-              />
-            )}
-          </View>
-        </View>
-      )}
-    </View>
-  );
+import { currentUser } from "@clerk/nextjs/server";
+import { NextResponse, NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
+ 
+export async function GET(req: NextRequest) {
+    try {
+        let userId: string | null = null;
+        const user = await currentUser();
+ 
+        if (user) {
+            userId = user.id;
+        } else {
+            // Check for Mobile API Key
+            const apiKey = req.headers.get('x-api-key');
+            const validApiKey = process.env.MOBILE_API_KEY;
+ 
+            if (apiKey && validApiKey && apiKey === validApiKey) {
+                // If API Key is valid, allow fetching for a specific clerkId (userId) passed in query
+                const { searchParams } = new URL(req.url);
+                const queryUserId = searchParams.get('userId');
+ 
+                if (queryUserId) {
+                    userId = queryUserId;
+                } else {
+                    return NextResponse.json({ error: "Missing userId query parameter for API Key access" }, { status: 400 });
+                }
+            }
+        }
+ 
+        if (!userId) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+ 
+        const dbUser = await prisma.user.findUnique({
+            where: { clerkId: userId },
+            include: { organisation: true },
+        });
+ 
+        if (!dbUser || !dbUser.organisationId) {
+            return NextResponse.json({ error: "User not found or no tenant" }, { status: 404 });
+        }
+ 
+        const invoices = await prisma.invoice.findMany({
+            where: {
+                subscription: {
+                    organisationId: dbUser.organisationId
+                }
+            },
+            include: {
+                subscription: {
+                    include: {
+                        plan: true,
+                        organisation: true
+                    }
+                }
+            },
+            orderBy: { invoiceDate: 'desc' }
+        });
+ 
+        return NextResponse.json({ invoices });
+    } catch (error) {
+        console.error("Error fetching invoices:", error);
+        return NextResponse.json(
+            { error: "Failed to fetch invoices" },
+            { status: 500 }
+        );
+    }
 }

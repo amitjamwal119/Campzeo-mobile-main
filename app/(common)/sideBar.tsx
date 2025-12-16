@@ -22,7 +22,6 @@ import {
 import {
   LogOut,
   User,
-  Settings,
   Calendar,
   Notebook,
 } from "lucide-react-native";
@@ -31,6 +30,7 @@ import { useSidebarStore } from "../../store/sidebarStore";
 import { useRouter } from "expo-router";
 import { ThemedView } from "@/components/themed-view";
 import { useAuth, useUser } from "@clerk/clerk-expo";
+import { getSocialStatus } from "@/api/accountsApi";
 
 export default function Sidebar() {
   const sidebarOpen = useSidebarStore((state) => state.sidebarOpen);
@@ -96,7 +96,8 @@ export default function Sidebar() {
             {/* ===Accounts=== */}
             <Pressable
               style={styles.menuItem}
-              onPress={() => {
+              onPress={() => { 
+                getSocialStatus() ;              
                 closeSidebar();
                 routePage.push("/(accounts)/accounts");
               }}
