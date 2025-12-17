@@ -1,11 +1,10 @@
 import { ThemedText } from "@/components/themed-text";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import CalendarComponent from "../(common)/calenderComponent";
+import CalendarComponent from "../(common)/calenderComponent";
 import { HStack } from "@gluestack-ui/themed";
 import { Pressable } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import CalendarWrapper from "../(common)/calendarWrapper";
 
 export default function CalendarScreen() {
   const routePage = useRouter();
@@ -32,8 +31,7 @@ export default function CalendarScreen() {
       </HStack>
 
       {/*  Calendar */}
-      {/* <CalendarComponent /> */}
-      <CalendarWrapper/>
+      <CalendarComponent />
     </SafeAreaView>
   );
 }

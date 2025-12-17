@@ -1,73 +1,149 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
-import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
+import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { Alert, FlatList, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import CampaignCard, { Campaign } from "./campaignComponents/campaignCard";
- 
+import { useAuth } from "@clerk/clerk-expo";
+import { getCampaignByIdApi, getPostsByCampaignIdApi } from "@/api/campaign/campaignApi";
+
 // Map type to icon
 const platformIcons: Record<string, { Icon: any; color: string; name: string }> = {
-  Whatsapp: { Icon: Ionicons, name: "logo-whatsapp", color: "#25D366" },
-  Instagram: { Icon: FontAwesome, name: "instagram", color: "#C13584" },
-  Facebook: { Icon: FontAwesome, name: "facebook-square", color: "#1877F2" },
-  YouTube: { Icon: FontAwesome, name: "youtube-play", color: "#FF0000" },
-  LinkedIn: { Icon: FontAwesome, name: "linkedin-square", color: "#0A66C2" },
-  Pinterest: { Icon: FontAwesome, name: "pinterest", color: "#E60023" },
-  Email: { Icon: Ionicons, name: "mail", color: "#F59E0B" },
+  WHATSAPP: { Icon: Ionicons, name: "logo-whatsapp", color: "#25D366" },
+  INSTAGRAM: { Icon: FontAwesome, name: "instagram", color: "#C13584" },
+  FACEBOOK: { Icon: FontAwesome, name: "facebook-square", color: "#1877F2" },
+  YOUTUBE: { Icon: FontAwesome, name: "youtube-play", color: "#FF0000" },
+  LINKEDIN: { Icon: FontAwesome, name: "linkedin-square", color: "#0A66C2" },
+  PINTEREST: { Icon: FontAwesome, name: "pinterest", color: "#E60023" },
+  EMAIL: { Icon: Ionicons, name: "mail", color: "#F59E0B" },
   SMS: { Icon: Ionicons, name: "chatbubble-ellipses-outline", color: "#10B981" },
 };
- 
-// TEMPORARY post data
-const tempPosts = [
-  { id: 1, subject: "New Year Offer Campaign", scheduledTime: "2025-01-15  (10:00)", type: "Whatsapp", description: "Promote New Year Offer on Whatsapp." },
-  { id: 2, subject: "Winter Sale Post", scheduledTime: "2025-01-20  (14:30)", type: "YouTube", description: "Upload Winter Sale video on YouTube." },
-  { id: 3, subject: "Spring Launch Post", scheduledTime: "2025-02-05  (11:00)", type: "Instagram", description: "Post Spring launch on Instagram stories." },
-  { id: 4, subject: "Summer Promo", scheduledTime: "2025-02-10  (15:00)", type: "Facebook", description: "Facebook summer promo post." },
-  { id: 5, subject: "Autumn Campaign", scheduledTime: "2025-03-01  (13:00)", type: "LinkedIn", description: "LinkedIn autumn campaign post." },
-  { id: 6, subject: "Winter Discount", scheduledTime: "2025-03-05  (16:00)", type: "Pinterest", description: "Pinterest winter discount pin." },
-  { id: 7, subject: "Flash Sale", scheduledTime: "2025-03-10  (12:00)", type: "SMS", description: "Send flash sale SMS." },
-  { id: 8, subject: "Email Blast", scheduledTime: "2025-03-12  (09:00)", type: "Email", description: "Email campaign blast." },
-];
- 
+
 export default function CampaignsDetails() {
-  const { campaign: campaignStr } = useLocalSearchParams();
-  const campaign: Campaign = JSON.parse(campaignStr as string);
- 
-  const [posts, setPosts] = useState(tempPosts); // state to handle delete
-  const [visibleCount, setVisibleCount] = useState(5); // initial number of posts
- 
-  // Handlers
+  const { getToken } = useAuth();
+  const params = useLocalSearchParams();
+
+  /** Safe param parsing */
+  const campaignStr = typeof params.campaign === "string" ? params.campaign : null;
+  const campaignIdParam = typeof params.campaignId === "string" ? params.campaignId : null;
+
+  /** Try to parse campaign JSON string */
+  const initialCampaign = useMemo<Campaign | null>(() => {
+    if (!campaignStr) return null;
+    try {
+      return JSON.parse(campaignStr) as Campaign;
+    } catch (e) {
+      console.warn("Failed to parse campaign JSON", e);
+      return null;
+    }
+  }, [campaignStr]);
+
+  const [campaign, setCampaign] = useState<Campaign | null>(initialCampaign);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [visibleCount, setVisibleCount] = useState(5);
+  const [loadingCampaign, setLoadingCampaign] = useState(false);
+
+  /** Determine final campaignId */
+  const resolvedCampaignId = useMemo<number | undefined>(() => {
+    if (campaign?.id) return campaign.id;
+
+    if (campaignIdParam) {
+      const num = Number(campaignIdParam);
+      return Number.isFinite(num) ? num : undefined;
+    }
+    return undefined;
+  }, [campaign, campaignIdParam]);
+
+  // ========= FETCH CAMPAIGN DETAILS =========
+  useEffect(() => {
+    const fetchCampaign = async () => {
+      if (campaign || !resolvedCampaignId) return;
+
+      setLoadingCampaign(true);
+      try {
+        const token = await getToken();
+        if (!token) throw new Error("Token missing");
+
+        const data = await getCampaignByIdApi(resolvedCampaignId, token);
+        if (!data) return;
+
+        const mapped: Campaign = {
+          id: Number(data.id ?? data._id ?? resolvedCampaignId),
+          details: data.name ?? "Untitled Campaign",
+          dates: `${(data.startDate || "").split("T")[0]} - ${(data.endDate || "").split("T")[0]}`,
+          description: data.description ?? "",
+          posts: data.posts ?? [],
+          show: true,
+        };
+
+        setCampaign(mapped);
+      } catch (error) {
+        console.log("CAMPAIGN LOAD ERROR", error);
+      } finally {
+        setLoadingCampaign(false);
+      }
+    };
+
+    fetchCampaign();
+  }, [campaign, resolvedCampaignId]);
+
+  // ========= FETCH POSTS =========
+  const fetchPosts = useCallback(async () => {
+    if (!resolvedCampaignId) return;
+    try {
+      const token = await getToken();
+      if (!token) throw new Error("Token missing");
+
+      const res = await getPostsByCampaignIdApi(resolvedCampaignId, token);
+      const apiPosts = res?.posts ?? res?.data?.posts ?? [];
+      setPosts(apiPosts);
+    } catch (error) {
+      console.log("POSTS LOAD ERROR:", error);
+      setPosts([]);
+    }
+  }, [resolvedCampaignId, getToken]);
+
+  // UseFocusEffect ensures posts refresh when navigating back
+  useFocusEffect(
+    useCallback(() => {
+      fetchPosts();
+    }, [fetchPosts])
+  );
+
+  // ========= POST ACTIONS =========
   const handleEditPost = (post: any) => {
+    if (!campaign) return;
+
     router.push({
       pathname: "/campaigns/campaignComponents/campaignPost",
-      params: { platform: post.type, editPostId: post.id.toString() },
+      params: {
+        platform: post.type,
+        editPostId: String(post.id),
+        campaignId: campaign.id?.toString(),
+      },
     });
   };
- 
+
   const handleDeletePost = (postId: number) => {
-    Alert.alert(
-      "Confirm Delete",
-      "Are you sure you want to delete this post?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            setPosts(posts.filter(p => p.id !== postId));
-            if (visibleCount > posts.length - 1) setVisibleCount(posts.length - 1);
-          }
-        }
-      ]
-    );
+    Alert.alert("Delete Post?", "Are you sure?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => {
+          const updated = posts.filter((p) => p.id !== postId);
+          setPosts(updated);
+          if (visibleCount > updated.length) setVisibleCount(updated.length);
+        },
+      },
+    ]);
   };
- 
+
+  // ========= RENDER POST =========
   const renderPostItem = ({ item }: { item: any }) => {
     const platform = platformIcons[item.type];
- 
+
     return (
       <View className="bg-white p-4 rounded-xl mb-4 shadow relative">
- 
-        {/* Top-right edit/delete icons */}
         <View className="absolute top-3 right-3 flex-row space-x-2">
           <TouchableOpacity onPress={() => handleEditPost(item)} className="mx-1">
             <Ionicons name="create-outline" size={22} color="#10b981" />
@@ -76,23 +152,23 @@ export default function CampaignsDetails() {
             <Ionicons name="trash-outline" size={22} color="#ef4444" />
           </TouchableOpacity>
         </View>
- 
-        {/* Subject */}
+
         <Text className="text-lg font-bold mb-2">{item.subject}</Text>
- 
-        {/* Description */}
-        <Text className="text-black font-semibold mb-1">Description</Text>
-        <Text className="text-gray-900 mb-2">{item.description}</Text>
- 
-        {/* Schedule */}
-        <Text className="text-black font-semibold mb-1">Schedule</Text>
-        <Text className="text-gray-900 mb-2">{item.scheduledTime}</Text>
- 
-        {/* Platform */}
+
+        <Text className="font-semibold mb-1">Description</Text>
+        <Text className="mb-2">{item.message}</Text>
+
+        <Text className="font-semibold mb-1">Schedule</Text>
+        <Text className="mb-2">
+          {item.scheduledPostTime
+            ? new Date(item.scheduledPostTime).toLocaleString()
+            : "No schedule"}
+        </Text>
+
         <View className="flex-row items-center">
           <Text className="font-semibold mr-2">Type</Text>
           {platform ? (
-            <platform.Icon name={platform.name as any} size={22} color={platform.color} />
+            <platform.Icon name={platform.name} size={22} color={platform.color} />
           ) : (
             <Text>{item.type}</Text>
           )}
@@ -100,47 +176,58 @@ export default function CampaignsDetails() {
       </View>
     );
   };
- 
+
   const visiblePosts = posts.slice(0, visibleCount);
   const isAllVisible = visibleCount >= posts.length;
- 
-  const handleLoadMore = () => setVisibleCount(prev => prev + 5);
-  const handleShowLess = () => setVisibleCount(5);
- 
+
+  if (!campaign) {
+    return (
+      <View className="flex-1 items-center justify-center bg-gray-100">
+        <ActivityIndicator size="large" />
+        <Text className="mt-3">Loading campaign...</Text>
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1 p-4 bg-gray-100">
       <Text className="text-xl font-bold mb-3">Campaign Details</Text>
- 
-      {/* Campaign Card */}
+
       <CampaignCard
         campaign={campaign}
-        onDelete={() => { }}
-        onCopy={() => { }}
-        onToggleShow={() => { }}
         showActions={false}
         alwaysExpanded={true}
         postButtonTopRight={true}
-        onPressPost={() => router.push("/campaigns/campaignComponents/campaignPost")}
         hidePostsHeading={true}
+        onDelete={() => { }}
+        onCopy={() => { }}
+        onToggleShow={() => { }}
+        onPressPost={() =>
+          router.push({
+            pathname: "/campaigns/campaignComponents/campaignPost",
+            params: { campaignId: String(campaign.id) },
+          })
+        }
       />
- 
-      {/* Posts */}
+
+      {/* POSTS */}
       <View className="mt-4 flex-1">
         <Text className="text-xl font-bold mb-3">Created Posts</Text>
- 
+
         {posts.length === 0 ? (
           <Text className="text-gray-500 text-center">No records found</Text>
         ) : (
           <FlatList
             data={visiblePosts}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => String(item.id)}
             renderItem={renderPostItem}
             showsVerticalScrollIndicator={false}
             ListFooterComponent={
               posts.length > 5 ? (
                 <TouchableOpacity
-                  onPress={isAllVisible ? handleShowLess : handleLoadMore}
-                  className={`py-3 my-2 rounded-xl items-center ${isAllVisible ? "bg-red-100" : "bg-blue-100"}`}
+                  onPress={isAllVisible ? () => setVisibleCount(5) : () => setVisibleCount((v) => v + 5)}
+                  className={`py-3 my-2 rounded-xl items-center ${isAllVisible ? "bg-red-100" : "bg-blue-100"
+                    }`}
                 >
                   <Text className={`font-semibold ${isAllVisible ? "text-red-700" : "text-blue-700"}`}>
                     {isAllVisible ? "Show Less" : "Load More"}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // ✅ Added useEffect
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,108 +7,133 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Input, InputField, FormControl } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useForm, Controller } from "react-hook-form";
+import { router, useLocalSearchParams } from "expo-router";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { useLocalSearchParams, router } from "expo-router"; // ✅ Added useLocalSearchParams
- 
-type Campaign = {
+import { useAuth } from "@clerk/clerk-expo";
+import {
+  createCampaignApi,
+  updateCampaignApi,
+  getCampaignByIdApi,
+} from "@/api/campaign/campaignApi";
+
+type CampaignFormValues = {
+  id?: number;
   name: string;
   startDate: string;
   endDate: string;
   description: string;
+  contactIds: number[];
 };
- 
-type RootStackParamList = {
-  Campaigns: undefined;
-  CreateCampaign: undefined;
-};
- 
-type CreateCampaignScreenProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "CreateCampaign"
->;
- 
-export default function CreateCampaign({
-  onCreate,
-}: {
-  onCreate?: (c: Campaign) => void;
-}) {
-  const navigation = useNavigation<CreateCampaignScreenProp>();
- 
-  const { campaign: campaignStr } = useLocalSearchParams(); // ✅ Added: fetch campaign data from params
-  const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null); // ✅ Added state for edit
- 
+
+export default function CreateCampaign() {
+  const navigation = useNavigation();
+  const { getToken } = useAuth();
+
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const campaignId = id ? Number(id) : undefined;
+  const isEditMode = !!campaignId;
+
+  const [loadingCampaign, setLoadingCampaign] = useState(false);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [startDateObj, setStartDateObj] = useState<Date | null>(null);
- 
+
+  const today = new Date();
+
   const {
     control,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitting },
     reset,
-  } = useForm<Campaign>({
+    formState: { errors, isSubmitting },
+  } = useForm<CampaignFormValues>({
     defaultValues: {
       name: "",
       startDate: "",
       endDate: "",
       description: "",
+      contactIds: [],
     },
     mode: "onChange",
   });
- 
-  const today = new Date();
- 
-  // ✅ Prefill form when editing
+
+  // Fetch campaign if editing
   useEffect(() => {
-    if (campaignStr) {
-      const campaignData: Campaign = JSON.parse(campaignStr as string);
-      setEditingCampaign(campaignData);
- 
-      // Set form values
-      setValue("name", campaignData.name);
-      setValue("startDate", campaignData.startDate);
-      setValue("endDate", campaignData.endDate);
-      setValue("description", campaignData.description);
- 
-      // Set startDateObj for date picker minimum date
-      if (campaignData.startDate) {
-        setStartDateObj(new Date(campaignData.startDate));
+    if (!isEditMode || !campaignId) return;
+
+    const fetchCampaign = async () => {
+      try {
+        setLoadingCampaign(true);
+        const token = await getToken();
+        if (!token) throw new Error("Auth token missing");
+
+        const data = await getCampaignByIdApi(campaignId, token);
+        if (!data) throw new Error("Campaign not found");
+
+        const prefill: CampaignFormValues = {
+          id: data.id,
+          name: data.name || "",
+          startDate: data.startDate ? data.startDate.split("T")[0] : "",
+          endDate: data.endDate ? data.endDate.split("T")[0] : "",
+          description: data.description || "",
+          contactIds: data.contactIds || [],
+        };
+
+        // Prefill the form
+        reset(prefill);
+
+        // Update date picker state
+        if (data.startDate) setStartDateObj(new Date(data.startDate));
+      } catch (error: any) {
+        Alert.alert("Error", error.message || "Failed to load campaign");
+        router.back();
+      } finally {
+        setLoadingCampaign(false);
       }
+    };
+
+    fetchCampaign();
+  }, [campaignId, getToken, isEditMode, reset]);
+
+  const onSubmit: SubmitHandler<CampaignFormValues> = async (data) => {
+    try {
+      const token = await getToken();
+      if (!token) throw new Error("Authentication token not found");
+
+      if (isEditMode && campaignId) {
+        await updateCampaignApi(campaignId, data, token);
+      } else {
+        await createCampaignApi(data, token);
+      }
+
+      router.back();
+    } catch (error: any) {
+      console.error("Campaign Submit Error:", error);
+      Alert.alert("Error", error.message || "Something went wrong");
     }
-  }, [campaignStr, setValue]);
- 
-  const onSubmit = (data: Campaign) => {
-    Alert.alert(
-      editingCampaign ? "Campaign Updated" : "Campaign Created", // ✅ Changed title dynamically
-      `${data.name} has been ${editingCampaign ? "updated" : "added"} successfully`, // ✅ Changed message
-      [
-        {
-          text: "OK",
-          onPress: () => {
-            onCreate?.(data);
-            reset();
-            setStartDateObj(null);
-            router.back();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
   };
- 
+
   const requiredLabel = (label: string) => (
     <Text className="text-base mt-3 font-semibold text-gray-700">
       {label} <Text className="text-red-500">*</Text>
     </Text>
   );
- 
+
+  // Show loader while fetching
+  if (loadingCampaign) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-50">
+        <ActivityIndicator size="large" color="#0284c7" />
+      </View>
+    );
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -125,7 +150,7 @@ export default function CreateCampaign({
         >
           <Ionicons name="close" size={24} color="#334155" />
         </TouchableOpacity>
- 
+
         {/* Header */}
         <View className="flex-row items-center mb-6">
           <View className="w-14 h-14 rounded-xl bg-[#0284c7] items-center justify-center">
@@ -133,14 +158,16 @@ export default function CreateCampaign({
           </View>
           <View className="ml-4">
             <Text className="text-2xl font-bold text-gray-800">
-              {editingCampaign ? "Edit Campaign" : "Create Campaign"} {/* ✅ Dynamic header */}
+              {isEditMode ? "Update Campaign" : "Create Campaign"}
             </Text>
             <Text className="text-sm text-gray-500">
-              Add all campaign details
+              {isEditMode
+                ? "Update campaign details"
+                : "Add all campaign details"}
             </Text>
           </View>
         </View>
- 
+
         {/* Form Fields */}
         <View className="space-y-6">
           {/* Name */}
@@ -149,22 +176,19 @@ export default function CreateCampaign({
             <Controller
               control={control}
               name="name"
-              rules={{
-                required: "Name is required",
-                minLength: { value: 3, message: "Minimum 3 letters" },
-                pattern: { value: /^[A-Za-z\s]+$/i, message: "Only letters allowed" },
-              }}
+              rules={{ required: "Name is required" }}
               render={({ field: { onChange, value } }) => (
                 <Input className="border border-gray-300 rounded-xl">
-                  <InputField placeholder="Enter Name" value={value} onChangeText={onChange} />
+                  <InputField
+                    value={value}
+                    placeholder="Enter Name"
+                    onChangeText={onChange}
+                  />
                 </Input>
               )}
             />
-            {errors.name && (
-              <Text className="text-red-500 text-xs mt-1">{errors.name.message}</Text>
-            )}
           </FormControl>
- 
+
           {/* Start Date */}
           <FormControl isInvalid={!!errors.startDate}>
             <FormControl.Label>{requiredLabel("Start Date")}</FormControl.Label>
@@ -177,10 +201,9 @@ export default function CreateCampaign({
                   <TouchableOpacity onPress={() => setShowStartPicker(true)}>
                     <Input className="border border-gray-300 rounded-xl">
                       <InputField
-                        placeholder="YYYY-MM-DD"
                         value={value}
+                        placeholder="YYYY-MM-DD"
                         editable={false}
-                        pointerEvents="none"
                       />
                     </Input>
                   </TouchableOpacity>
@@ -191,21 +214,16 @@ export default function CreateCampaign({
                     onConfirm={(date) => {
                       setShowStartPicker(false);
                       setStartDateObj(date);
-                      setValue("startDate", date.toISOString().split("T")[0], {
-                        shouldValidate: true,
-                      });
-                      setValue("endDate", "", { shouldValidate: true });
+                      setValue("startDate", date.toISOString().split("T")[0]);
+                      setValue("endDate", "");
                     }}
                     onCancel={() => setShowStartPicker(false)}
                   />
                 </>
               )}
             />
-            {errors.startDate && (
-              <Text className="text-red-500 text-xs mt-1">{errors.startDate.message}</Text>
-            )}
           </FormControl>
- 
+
           {/* End Date */}
           <FormControl isInvalid={!!errors.endDate}>
             <FormControl.Label>{requiredLabel("End Date")}</FormControl.Label>
@@ -218,10 +236,9 @@ export default function CreateCampaign({
                   <TouchableOpacity onPress={() => setShowEndPicker(true)}>
                     <Input className="border border-gray-300 rounded-xl">
                       <InputField
-                        placeholder="YYYY-MM-DD"
                         value={value}
+                        placeholder="YYYY-MM-DD"
                         editable={false}
-                        pointerEvents="none"
                       />
                     </Input>
                   </TouchableOpacity>
@@ -231,20 +248,15 @@ export default function CreateCampaign({
                     minimumDate={startDateObj || today}
                     onConfirm={(date) => {
                       setShowEndPicker(false);
-                      setValue("endDate", date.toISOString().split("T")[0], {
-                        shouldValidate: true,
-                      });
+                      setValue("endDate", date.toISOString().split("T")[0]);
                     }}
                     onCancel={() => setShowEndPicker(false)}
                   />
                 </>
               )}
             />
-            {errors.endDate && (
-              <Text className="text-red-500 text-xs mt-1">{errors.endDate.message}</Text>
-            )}
           </FormControl>
- 
+
           {/* Description */}
           <FormControl isInvalid={!!errors.description}>
             <FormControl.Label>{requiredLabel("Description")}</FormControl.Label>
@@ -253,47 +265,39 @@ export default function CreateCampaign({
               name="description"
               rules={{ required: "Description is required" }}
               render={({ field: { onChange, value } }) => (
-                <Input className="border border-gray-300 rounded-xl" style={{ height: 90 }}>
+                <Input
+                  className="border border-gray-300 rounded-xl"
+                  style={{ height: 90 }}
+                >
                   <InputField
-                    placeholder="Enter Description"
                     multiline
-                    numberOfLines={3}
-                    style={{ textAlignVertical: "top" }}
                     value={value}
+                    placeholder="Enter Description"
                     onChangeText={onChange}
+                    style={{ textAlignVertical: "top" }}
                   />
                 </Input>
               )}
             />
-            {errors.description && (
-              <Text className="text-red-500 text-xs mt-1">{errors.description.message}</Text>
-            )}
           </FormControl>
         </View>
- 
+
         {/* Submit Button */}
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={handleSubmit(onSubmit)}
-          className="w-full mt-10 rounded-xl items-center justify-center py-4"
-          style={{
-            backgroundColor: "#0284c7",
-            shadowColor: "#000",
-            shadowOpacity: 0.18,
-            shadowOffset: { width: 0, height: 6 },
-            shadowRadius: 12,
-            elevation: 6,
-          }}
-          disabled={isSubmitting}
+          className="w-full my-10 rounded-xl items-center justify-center py-4"
+          style={{ backgroundColor: "#0284c7" }}
+          disabled={isSubmitting || loadingCampaign}
         >
           <Text className="text-white font-semibold text-lg">
             {isSubmitting
-              ? editingCampaign
+              ? isEditMode
                 ? "Updating..."
                 : "Creating..."
-              : editingCampaign
+              : isEditMode
               ? "Update Campaign"
-              : "Create Campaign"} {/* ✅ Dynamic button text */}
+              : "Create Campaign"}
           </Text>
         </TouchableOpacity>
       </ScrollView>

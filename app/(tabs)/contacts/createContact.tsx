@@ -10,35 +10,24 @@ import {
   Alert,
 } from "react-native";
 import { Input, InputField, FormControl } from "@gluestack-ui/themed";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useForm, Controller } from "react-hook-form";
-import { useLocalSearchParams, router } from "expo-router";
- 
+import { router, useLocalSearchParams } from "expo-router";
+import { useAuth } from "@clerk/clerk-expo";
+import { createContactApi } from "@/api/contact/contactApi";
+
 type Contact = {
+  id?: number; // optional for new contacts
   name: string;
   email: string;
   mobile: string;
   whatsapp: string;
 };
- 
-type RootStackParamList = {
-  Contacts: undefined;
-  CreateContact: undefined;
-};
- 
-type CreateContactScreenProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "CreateContact"
->;
- 
-export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) => void }) {
-  const navigation = useNavigation<CreateContactScreenProp>();
- 
-  // ✅ Fetch record from params for editing
+
+export default function CreateContact() {
+  const { getToken } = useAuth();
   const { record: recordStr } = useLocalSearchParams();
   const editingContact: Contact | null = recordStr ? JSON.parse(recordStr as string) : null;
- 
+
   const {
     control,
     handleSubmit,
@@ -54,8 +43,7 @@ export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) =>
     },
     mode: "onChange",
   });
- 
-  // ✅ Prefill form when editing
+
   useEffect(() => {
     if (editingContact) {
       setValue("name", editingContact.name);
@@ -64,49 +52,42 @@ export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) =>
       setValue("whatsapp", editingContact.whatsapp);
     }
   }, [editingContact, setValue]);
- 
-  const onSubmit = (data: Contact) => {
-    Alert.alert(
-      editingContact ? "Contact Updated" : "Contact Created",
-      `${data.name} has been ${editingContact ? "updated" : "added"} successfully`,
-      [
-        {
-          text: "OK",
-          onPress: () => {
-            onCreate?.(data);
-            reset();
-            router.back(); // navigate back after submission
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  };
- 
+
+ const onSubmit = async (data: Contact) => {
+  try {
+    const token = await getToken();
+    if (!token) throw new Error("Authentication token not found");
+
+    const response = await createContactApi({ ...data, campaignIds: [1] }, token);
+    const newContact = response?.data ? response.data : response;
+console.log("response of contact ",response);
+
+router.back();
+  } catch (error: any) {
+    console.error("Create Contact Error:", error);
+    Alert.alert("Error", error.message || "Something went wrong");
+  }
+};
+
   const requiredLabel = (label: string) => (
     <Text className="text-base mt-3 font-semibold text-gray-700">
       {label} <Text className="text-red-500">*</Text>
     </Text>
   );
- 
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       className="flex-1 bg-gray-50"
     >
-      <ScrollView
-        className="flex-1 px-6 py-6"
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* Close Button */}
+      <ScrollView className="flex-1 px-6 py-6" keyboardShouldPersistTaps="handled">
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => router.back()}
           style={{ position: "absolute", right: 10, zIndex: 10, padding: 8 }}
         >
           <Ionicons name="close" size={24} color="#334155" />
         </TouchableOpacity>
- 
-        {/* Header */}
+
         <View className="flex-row items-center mb-6">
           <View className="w-14 h-14 rounded-xl bg-[#d55b35] items-center justify-center">
             <Ionicons name="person-add" size={28} color="#fff" />
@@ -116,14 +97,11 @@ export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) =>
               {editingContact ? "Edit Contact" : "Create Contact"}
             </Text>
             <Text className="text-sm text-gray-500">
-              {editingContact
-                ? "Update the contact details"
-                : "Add a new contact to your list"}
+              {editingContact ? "Update the contact details" : "Add a new contact to your list"}
             </Text>
           </View>
         </View>
- 
-        {/* Form Fields */}
+
         <View className="space-y-6">
           {/* Name */}
           <FormControl isInvalid={!!errors.name}>
@@ -146,7 +124,7 @@ export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) =>
               <Text className="text-red-500 text-xs mt-1">{errors.name.message}</Text>
             )}
           </FormControl>
- 
+
           {/* Email */}
           <FormControl isInvalid={!!errors.email}>
             <FormControl.Label>{requiredLabel("Email")}</FormControl.Label>
@@ -155,10 +133,7 @@ export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) =>
               name="email"
               rules={{
                 required: "Email is required",
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "Invalid email",
-                },
+                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" },
               }}
               render={({ field: { onChange, value } }) => (
                 <Input className="border border-gray-300 rounded-xl">
@@ -176,7 +151,7 @@ export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) =>
               <Text className="text-red-500 text-xs mt-1">{errors.email.message}</Text>
             )}
           </FormControl>
- 
+
           {/* Mobile */}
           <FormControl isInvalid={!!errors.mobile}>
             <FormControl.Label>{requiredLabel("Mobile")}</FormControl.Label>
@@ -202,7 +177,7 @@ export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) =>
               <Text className="text-red-500 text-xs mt-1">{errors.mobile.message}</Text>
             )}
           </FormControl>
- 
+
           {/* WhatsApp */}
           <FormControl isInvalid={!!errors.whatsapp}>
             <FormControl.Label>{requiredLabel("WhatsApp")}</FormControl.Label>
@@ -229,11 +204,10 @@ export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) =>
             )}
           </FormControl>
         </View>
- 
-        {/* Submit Button */}
+
         <TouchableOpacity
           onPress={handleSubmit(onSubmit)}
-          className="w-full mt-10 rounded-xl items-center justify-center py-4"
+          className="w-full mt-10 mb-10 rounded-xl items-center justify-center py-4"
           style={{
             backgroundColor: "#d55b35",
             shadowColor: "#000",
@@ -258,5 +232,3 @@ export default function CreateContact({ onCreate }: { onCreate?: (c: Contact) =>
     </KeyboardAvoidingView>
   );
 }
- 
- 

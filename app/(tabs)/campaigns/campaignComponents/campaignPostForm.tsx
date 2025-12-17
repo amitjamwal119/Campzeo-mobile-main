@@ -6,66 +6,118 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  View,
+  View as RNView,
 } from "react-native";
-import { Text, Button } from "@gluestack-ui/themed";
+import { Text, Button, View } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
- 
+import { router } from "expo-router";
+import { useAuth } from "@clerk/clerk-expo";
+import { createPostForCampaignApi } from "@/api/campaign/campaignApi";
+
+// Define CampaignPostData type
+interface CampaignPostData {
+  subject: string;
+  message: string;
+  scheduledPostTime: string; // ISO format
+  type: string;
+  board?: string | null;
+}
+
 interface CampaignFormProps {
   platform: string;
-  onClose: (newPost?: any) => void;
+  campaignId?: string;
+  onClose?: (newPost?: any) => void;
+  onCreatedNavigate?: () => void;
 }
- 
-export default function CampaignPostForm({ platform, onClose }: CampaignFormProps) {
+
+export default function CampaignPostForm({
+  platform,
+  campaignId,
+  onClose,
+  onCreatedNavigate,
+}: CampaignFormProps) {
+  const { getToken } = useAuth();
+
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [postDate, setPostDate] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [postDate, setPostDate] = useState<Date | null>(null); // store as Date
   const [showPicker, setShowPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
- 
-  // Pinterest dropdown state
   const [selectedBoard, setSelectedBoard] = useState("");
- 
-  const showWhatsAppContent = platform === "Whatsapp";
- 
+
+  const showWhatsAppContent = platform === "WHATSAPP";
   const platformsWithFileOption = [
-    "Instagram",
-    "Whatsapp",
-    "Facebook",
-    "YouTube",
-    "LinkedIn",
-    "Pinterest",
+    "INSTAGRAM",
+    "WHATSAPP",
+    "FACEBOOK",
+    "YOUTUBE",
+    "LINKEDIN",
+    "PINTEREST",
   ];
- 
+
   const showFileButton = platformsWithFileOption.includes(platform);
- 
-  const handleCreate = () => {
-    if (!subject || !postDate || !message) {
+
+  // ---------- HANDLE CREATE POST ----------
+  const handleCreate = async () => {
+    if (!subject || !message || !postDate) {
       Alert.alert("⚠️ Please fill in all fields.");
       return;
     }
- 
-    const newPost = {
-      id: Date.now().toString(),
+
+    if (!campaignId) {
+      console.log("❌ Campaign ID missing — received:", campaignId);
+      Alert.alert("Campaign ID missing");
+      return;
+    }
+
+    // Base object
+    const newPostData: CampaignPostData = {
       subject,
       message,
-      postDate,
-      platform,
-      board: selectedBoard || null,
+      scheduledPostTime: postDate.toISOString(), // ISO format
+      type: platform,
     };
- 
-    Alert.alert(`✅ Campaign Created!\nPlatform: ${platform}\nPost Date: ${postDate}`);
- 
-    setSubject("");
-    setMessage("");
-    setPostDate("");
- 
-    onClose(newPost);
+
+    // Only include "board" WHEN platform === Pinterest
+    if (platform === "PINTEREST") {
+      newPostData.board = selectedBoard || null;
+    }
+
+    try {
+      const token = await getToken();
+      if (!token) throw new Error("Authentication token missing");
+
+      const createdPost = await createPostForCampaignApi(
+        Number(campaignId),
+        newPostData,
+        token
+      );
+
+      console.log("Post successfully created:", createdPost);
+
+      onClose && onClose(createdPost);
+
+      // Clear form
+      setSubject("");
+      setMessage("");
+      setPostDate(null);
+
+      if (onCreatedNavigate) {
+        onCreatedNavigate();
+      } else {
+        router.back();
+      }
+
+      Alert.alert("✅ Post created successfully!");
+    } catch (error: any) {
+      console.error("Error creating post:", error);
+      Alert.alert("Error creating post", error?.message || "Unknown error");
+    }
   };
- 
+
+  // ---------- AI MESSAGE/IMAGE ----------
   const handleAIGenerateMessage = () => {
     if (!subject) {
       Alert.alert("Enter a subject first to generate with AI!");
@@ -73,13 +125,12 @@ export default function CampaignPostForm({ platform, onClose }: CampaignFormProp
     }
     setMessage(`Generated AI message for "${subject}" on ${platform}.`);
   };
- 
+
   const handleAIGenerateImage = () =>
     Alert.alert("AI Image generation not implemented yet.");
- 
   const handleChooseFile = () =>
-    Alert.alert("📁 File picker", "File picker will be implemented here.");
- 
+    Alert.alert("📁 File picker will be implemented here.");
+
   return (
     <KeyboardAvoidingView
       className="flex-1"
@@ -87,20 +138,14 @@ export default function CampaignPostForm({ platform, onClose }: CampaignFormProp
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1">
- 
+        <View className="flex-1  bg-gray-100">
+
           {/* Subject */}
           <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "bold",
-              marginBottom: 8,
-              color: "black",
-            }}
+            style={{ fontSize: 14, fontWeight: "bold", marginBottom: 8, color: "black" }}
           >
             Subject
           </Text>
- 
           <View className="flex-row items-center mb-4">
             <TextInput
               placeholder="Enter subject title to generate with AI"
@@ -120,52 +165,38 @@ export default function CampaignPostForm({ platform, onClose }: CampaignFormProp
                 borderBottomRightRadius: 8,
               }}
             >
-              <Text style={{ color: "#fff", fontWeight: "bold" }}>AI</Text>
+              <RNView>
+                <Ionicons name="sparkles" size={24} color="#fff" />
+              </RNView>
             </TouchableOpacity>
           </View>
- 
+
           {/* WhatsApp extra buttons */}
           {showWhatsAppContent && (
-            <>
-              <View className="flex-row mb-3">
-                <Button
-                  onPress={handleAIGenerateMessage}
-                  style={{
-                    flex: 1,
-                    backgroundColor: "#3b82f6",
-                    borderRadius: 8,
-                    marginRight: 8,
-                  }}
-                >
-                  <Text style={{ color: "#fff", fontWeight: "bold", textAlign: "center" }}>
-                    Generate with AI
-                  </Text>
-                </Button>
- 
-                <Button
-                  onPress={handleAIGenerateImage}
-                  style={{
-                    flex: 1,
-                    backgroundColor: "#16a34a",
-                    borderRadius: 8,
-                  }}
-                >
-                  <Text style={{ color: "#fff", fontWeight: "bold", textAlign: "center" }}>
-                    Generate Image
-                  </Text>
-                </Button>
-              </View>
-            </>
+            <RNView className="flex-row mb-3">
+              <Button
+                onPress={handleAIGenerateMessage}
+                style={{ flex: 1, backgroundColor: "#3b82f6", borderRadius: 8, marginRight: 8 }}
+              >
+                <Text style={{ color: "#fff", fontWeight: "bold", textAlign: "center" }}>
+                  Generate with AI
+                </Text>
+              </Button>
+              <Button
+                onPress={handleAIGenerateImage}
+                style={{ flex: 1, backgroundColor: "#16a34a", borderRadius: 8 }}
+              >
+                <Text style={{ color: "#fff", fontWeight: "bold", textAlign: "center" }}>
+                  Generate Image
+                </Text>
+              </Button>
+            </RNView>
           )}
- 
-          {/* -------- Pinterest ONLY: Board Dropdown -------- */}
-          {platform === "Pinterest" && (
-            <View style={{ marginBottom: 15 }}>
-              {/* <Text style={{ fontSize: 14, fontWeight: "bold", marginBottom: 8, color: "black" }}>
-              Select Board
-              </Text> */}
- 
-              <View
+
+          {/* Pinterest board selection */}
+          {platform === "PINTEREST" && (
+            <RNView style={{ marginBottom: 15 }}>
+              <RNView
                 style={{
                   borderWidth: 1,
                   borderColor: "#ccc",
@@ -178,10 +209,7 @@ export default function CampaignPostForm({ platform, onClose }: CampaignFormProp
                 <Picker
                   selectedValue={selectedBoard}
                   onValueChange={(value: string) => setSelectedBoard(value)}
-                  style={{
-                    height: 100,
-                    width: "100%",
-                  }}
+                  style={{ height: 100, width: "100%" }}
                 >
                   <Picker.Item label="Select Board" value="" />
                   <Picker.Item label="Travel Ideas" value="travel" />
@@ -190,26 +218,23 @@ export default function CampaignPostForm({ platform, onClose }: CampaignFormProp
                   <Picker.Item label="Home Decor" value="decor" />
                   <Picker.Item label="Fitness & Health" value="fitness" />
                 </Picker>
-              </View>
-            </View>
+              </RNView>
+            </RNView>
           )}
- 
+
           {/* Choose File button */}
           {showFileButton && (
             <Button
               onPress={handleChooseFile}
               className="rounded-lg mb-4"
-              style={{
-                backgroundColor: "#aaaaaa",
-                borderRadius: 8,
-              }}
+              style={{ backgroundColor: "#aaaaaa", borderRadius: 8 }}
             >
               <Text style={{ color: "#fff", fontWeight: "bold", textAlign: "center" }}>
                 Choose File
               </Text>
             </Button>
           )}
- 
+
           {/* Message */}
           <TextInput
             placeholder={`Enter your ${platform} content here...`}
@@ -220,95 +245,71 @@ export default function CampaignPostForm({ platform, onClose }: CampaignFormProp
             className="border border-gray-300 rounded-lg p-3 mb-4 min-h-[120px] bg-white text-black"
             style={{ textAlignVertical: "top" }}
           />
- 
+
           {/* Post Time */}
           <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "bold",
-              marginBottom: 8,
-              color: "black",
-            }}
+            style={{ fontSize: 14, fontWeight: "bold", marginBottom: 8, color: "black" }}
           >
             Post Time
           </Text>
- 
           <View className="flex-row items-center mb-4">
             <TouchableOpacity
               onPress={() => setShowPicker(true)}
               className="flex-1 border border-gray-300 rounded-lg px-3 py-3 bg-white flex-row justify-between items-center"
             >
-              <Text>{postDate || "Select Date & Time"}</Text>
+              <Text>{postDate ? postDate.toLocaleString() : "Select Date & Time"}</Text>
               {postDate && (
-                <TouchableOpacity onPress={() => setPostDate("")}>
+                <TouchableOpacity onPress={() => setPostDate(null)}>
                   <Ionicons name="close-circle" size={20} color="gray" />
                 </TouchableOpacity>
               )}
             </TouchableOpacity>
           </View>
- 
+
           {/* Date Picker */}
           {showPicker && (
             <DateTimePicker
-              value={selectedDate}
+              value={postDate || new Date()}
               mode="date"
               display="default"
+              minimumDate={new Date()} // ✅ Disable past dates
               onChange={(event, date) => {
                 setShowPicker(false);
                 if (date) {
-                  setSelectedDate(date);
+                  setPostDate(date);
                   setShowTimePicker(true);
                 }
               }}
             />
           )}
- 
+
           {/* Time Picker */}
           {showTimePicker && (
             <DateTimePicker
-              value={selectedDate}
+              value={postDate || new Date()}
               mode="time"
               display="default"
               onChange={(event, time) => {
                 setShowTimePicker(false);
-                if (time) {
+                if (time && postDate) {
                   const finalDateTime = new Date(
-                    selectedDate.getFullYear(),
-                    selectedDate.getMonth(),
-                    selectedDate.getDate(),
+                    postDate.getFullYear(),
+                    postDate.getMonth(),
+                    postDate.getDate(),
                     time.getHours(),
                     time.getMinutes()
                   );
- 
-                  const formattedDateTime = `${finalDateTime.getFullYear()}-${(
-                    finalDateTime.getMonth() + 1
-                  )
-                    .toString()
-                    .padStart(2, "0")}-${finalDateTime
-                      .getDate()
-                      .toString()
-                      .padStart(2, "0")}  (${finalDateTime
-                        .getHours()
-                        .toString()
-                        .padStart(2, "0")}:${finalDateTime
-                          .getMinutes()
-                          .toString()
-                          .padStart(2, "0")})`;
- 
-                  setPostDate(formattedDateTime);
+                  setPostDate(finalDateTime); // store as Date
                 }
               }}
             />
           )}
- 
-          {/* Submit */}
+
+          {/* Submit Button */}
           <Button
             onPress={handleCreate}
             className="rounded-lg mb-8"
-            style={{
-              backgroundColor: "#d55b35",
-              borderRadius: 8,
-            }}
+            style={{ backgroundColor: "#d55b35", borderRadius: 8 }}
           >
             <Text style={{ color: "#fff", fontWeight: "bold", textAlign: "center" }}>
               Create Campaign Post
@@ -319,4 +320,3 @@ export default function CampaignPostForm({ platform, onClose }: CampaignFormProp
     </KeyboardAvoidingView>
   );
 }
- 
