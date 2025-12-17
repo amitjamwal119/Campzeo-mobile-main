@@ -14,9 +14,9 @@ const sampleNotifications = [
 ];
 
 // ---------------- DISABLE AUTO HEADER ----------------
-export const unstable_settings = {
-  headerShown: false,
-};
+// export const unstable_settings = {
+//   headerShown: false,
+// };
 
 export default function AllNotifications() {
   const navigation = useNavigation();
@@ -40,7 +40,7 @@ export default function AllNotifications() {
 
   return (
     <ThemedView style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
-      <ThemedView className="flex-1 px-4 pt-10">
+      <ThemedView className="flex-1 px-4 pt-5">
 
         {/* ---------------- CUSTOM HEADER ---------------- */}
         <View className="flex-row items-center justify-between my-5">
