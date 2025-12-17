@@ -20,6 +20,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect } from "react";
+import { setTokenGetter } from "@/lib/authToken";
 
 // Secure token cache for Clerk
 const tokenCache = {
@@ -62,7 +63,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
       router.replace("/(auth)/login");
     } else if (isSignedIn && inAuthGroup) {
       // Redirect to main app
-      router.replace("/(auth)/login");
+      router.replace("/(tabs)/dashboard");
     }
   }, [isSignedIn, isLoaded, segments]);
 
@@ -72,6 +73,17 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 export const unstable_settings = {
   anchor: "(tabs)",
 };
+
+// set token getter function
+function AuthBridge() {
+  const { getToken } = useAuth();
+
+  useEffect(() => {
+    setTokenGetter(getToken);
+  }, [getToken]);
+
+  return null;
+}
 
 export default function RootLayout() {
   const publishableKey = Constants.expoConfig?.extra?.clerkPublishableKey;
@@ -85,6 +97,9 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={publishableKey!} tokenCache={tokenCache}>
       <ClerkLoaded>
+
+        <AuthBridge />
+
         <AuthGuard>
           <GluestackUIProvider config={config}>
             <SafeAreaProvider>

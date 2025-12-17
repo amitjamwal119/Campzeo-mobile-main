@@ -1,9 +1,8 @@
 import Constants from 'expo-constants';
 
-export const BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl ||
+const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl ||
     'https://campzeo-v1-oym2-89z2z69ei-rahulsteves-projects.vercel.app';
-
-export const MOBILE_API_KEY = Constants.expoConfig?.extra?.mobileApiKey || '';
+const MOBILE_API_KEY = Constants.expoConfig?.extra?.mobileApiKey || '';
 
 interface ApiOptions extends RequestInit {
     userId?: string;
@@ -32,7 +31,7 @@ async function apiRequest<T = any>(
     };
 
     try {
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             ...fetchOptions,
             headers,
         });
@@ -230,7 +229,7 @@ export const api = {
                 type: file.type,
             } as any);
 
-            const response = await fetch(`${BASE_URL}/api/socialmedia/upload-media-file`, {
+            const response = await fetch(`${API_BASE_URL}/api/socialmedia/upload-media-file`, {
                 method: 'POST',
                 headers: {
                     'x-api-key': MOBILE_API_KEY,

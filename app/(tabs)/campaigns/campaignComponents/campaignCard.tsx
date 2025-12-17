@@ -50,14 +50,26 @@ export default function CampaignCard({
       router.push({
         pathname: "/campaigns/createCampaign",
         params: {
-          campaign: JSON.stringify({}),
+          campaign: JSON.stringify({
+            name: campaign.details,
+            startDate: campaign.dates?.split(" - ")[0] || "",
+            endDate: campaign.dates?.split(" - ")[1] || "",
+            description: campaign.description,
+          }),
         },
       });
     }
   };
  
   const handleDelete = () => {
-    onDelete(campaign);
+    Alert.alert(
+      "Confirm Delete",
+      `Are you sure you want to delete "${campaign.details}"?`,
+      [
+        { text: "No", style: "cancel" },
+        { text: "Yes", style: "destructive", onPress: () => onDelete(campaign) },
+      ]
+    );
   };
  
   const handleAddPost = () => {
@@ -140,3 +152,5 @@ export default function CampaignCard({
     </View>
   );
 }
+ 
+ 

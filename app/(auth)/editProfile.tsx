@@ -1,69 +1,86 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { ScrollView, Pressable } from "react-native";
-import { VStack, Input, InputField } from "@gluestack-ui/themed";
-import { Phone } from "lucide-react-native";
-import { Heading } from "@gluestack-ui/themed";
+import { ScrollView, Pressable, Image } from "react-native";
+import { VStack, Input, InputField, Heading } from "@gluestack-ui/themed";
 import { Controller, useForm } from "react-hook-form";
-import {
-  editProfileSchema,
-  EditProfileSchemaType,
-} from "@/validations/profileSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-
+import { useUser } from "@clerk/clerk-expo";
+import * as ImagePicker from "expo-image-picker";
 import { Text } from "react-native";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { editProfileSchema, EditProfileSchemaType } from "@/validations/profileSchema";
 
 type closeEPFType = {
-  closeEPF: () => void; // function with no args, returns nothing
+  closeEPF: () => void;
 };
 
 export default function EditProfile({ closeEPF }: closeEPFType) {
-  const {
-    control,
-    handleSubmit,
-    // formState: { errors },
-  } = useForm<EditProfileSchemaType>({
+  const { user } = useUser();
+
+  const { control, handleSubmit, formState: { errors } } = useForm<EditProfileSchemaType>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      phone: "",
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      username: user?.username || "",
     },
   });
 
-  type editProfileField = {
-    name: "firstName" | "lastName" | "phone";
-    label: string;
-    placeholder: string;
-    keyboardType: "default" | "phone-pad";
-    icon?: React.ReactNode; // ⭐ This is the correct type
+  // =====================
+  // PICK PROFILE IMAGE
+  // =====================
+  const pickImage = async () => {
+    const res = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!res.canceled) {
+      const asset = res.assets[0];
+
+      const response = await fetch(asset.uri);
+      const blob = await response.blob();
+
+      await user?.setProfileImage({ file: blob });
+    }
   };
 
-  const fields: editProfileField[] = [
+  // =====================
+  // SUBMIT → CLERK UPDATE
+  // =====================
+  const onSubmit = async (data: EditProfileSchemaType) => {
+    try {
+      await user?.update({
+        firstName: data.firstName || null,
+        lastName: data.lastName || null,
+        username: data.username,
+      });
+
+      closeEPF();
+    } catch (err: any) {
+      console.log("Clerk update error:", err);
+    }
+  };
+
+  const fields = [
     {
       name: "firstName",
       label: "First Name",
-      placeholder: "Enter First Name",
-      keyboardType: "default",
+      placeholder: "Enter your first name",
     },
     {
       name: "lastName",
       label: "Last Name",
-      placeholder: "Enter Last Name",
-      keyboardType: "default",
+      placeholder: "Enter your last name",
     },
     {
-      name: "phone",
-      label: "Phone Number",
-      placeholder: "+91 XXXXX XXXXX",
-      icon: <Phone size={18} color="#D55B35" />,
-      keyboardType: "phone-pad",
+      name: "username",
+      label: "Username",
+      placeholder: "Enter your username",
     },
   ];
 
-  const onSubmit = (data: EditProfileSchemaType) => {
-    console.log("Submitted:", data);
-  };
   return (
     <ThemedView className="flex-1 p-5 rounded-lg">
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -71,37 +88,54 @@ export default function EditProfile({ closeEPF }: closeEPFType) {
           Edit Profile
         </Heading>
 
-        <VStack space="lg">
+        <VStack space="lg" className="my-5">
+          {/* =====================
+              PROFILE IMAGE PICKER
+          ====================== */}
+          <VStack>
+            <Pressable onPress={pickImage} className="self-center mb-4">
+              <Image
+                source={{ uri: user?.imageUrl }}
+                style={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: 100,
+                  borderWidth: 2,
+                  borderColor: "#D55B35",
+                }}
+              />
+            </Pressable>
+            <Text className="text-center text-gray-600 mt-1">
+              Tap to change picture
+            </Text>
+          </VStack>
+
+          {/* =====================
+              FORM FIELDS
+          ====================== */}
           {fields.map((field, idx) => (
             <VStack space="xs" key={idx}>
               <ThemedText className="text-gray-400">{field.label}</ThemedText>
 
               <Controller
                 control={control}
-                name={field.name}
+                name={field.name as any}
                 render={({
                   field: { value, onChange },
-                  fieldState: { error },
                 }) => (
                   <>
-                    <Input className="bg-white/10 rounded-xl px-3 py-2 flex-row items-center">
-                      {/* Icon for phone field */}
-                      {field.icon}
-
+                    <Input className="bg-white/10 rounded-xl px-1 py-2">
                       <InputField
-                        className={`${field.icon ? "ml-2 flex-1" : ""}`}
                         placeholder={field.placeholder}
                         value={value}
                         onChangeText={onChange}
-                        keyboardType={
-                          field.name === "phone" ? "phone-pad" : "default"
-                        }
                       />
                     </Input>
 
-                    {error && (
+                    {/* Show validation error */}
+                    {errors[field.name as keyof EditProfileSchemaType] && (
                       <Text className="text-red-500 text-sm mt-1">
-                        *{error.message}
+                        *{errors[field.name as keyof EditProfileSchemaType]?.message}
                       </Text>
                     )}
                   </>
@@ -110,12 +144,13 @@ export default function EditProfile({ closeEPF }: closeEPFType) {
             </VStack>
           ))}
 
-          {/* ====Buttons==== */}
+          {/* =====================
+              BUTTONS
+          ====================== */}
           <VStack>
             <Pressable
               className="bg-[#D55B35] rounded-xl py-4 mt-4 items-center"
-              // onPress={handleSubmit(onSubmit)}
-              onPress={handleSubmit(onSubmit)} // ⭐ This triggers Zod validation
+              onPress={handleSubmit(onSubmit)}
             >
               <ThemedText style={{ color: "white", fontWeight: "600" }}>
                 Save Changes

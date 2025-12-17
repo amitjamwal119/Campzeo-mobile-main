@@ -312,5 +312,64 @@
       "invoiceDate": "2025-03-03",
       "dueDate": "2025-04-03"
     }
+  ],
+  
+  "posts": [
+    {
+      "id": 1,
+      "platform": "sms",
+      "campaign": "Winter Sale SMS Blast",
+      "message": "Get 40% OFF on all items today only!",
+      "scheduledTime": "2025-12-09T09:00:00"
+    },
+    {
+      "id": 2,
+      "platform": "whatsapp",
+      "campaign": "Christmas Offer",
+      "message": "Ho ho ho 🎄 Christmas sale up to 50% off!",
+      "scheduledTime": "2025-12-25T17:30:00"
+    },
+    {
+      "id": 3,
+      "platform": "youtube",
+      "campaign": "New Year Promo Video Launch",
+      "message": "Check out our 2026 promo video!",
+      "scheduledTime": "2025-12-30T12:00:00"
+    },
+    {
+      "id": 4,
+      "platform": "instagram",
+      "campaign": "Holiday Stories Campaign",
+      "message": "Share your holiday vibe ✨",
+      "scheduledTime": "2025-12-09T15:00:00"
+    },
+    {
+      "id": 5,
+      "platform": "email",
+      "campaign": "Monthly Newsletter",
+      "message": "Here's everything new in December!",
+      "scheduledTime": "2025-12-09T09:00:00"
+    },
+    {
+      "id": 6,
+      "platform": "linkedin",
+      "campaign": "Corporate Announcement",
+      "message": "We’re expanding our team this year!",
+      "scheduledTime": "2025-12-28T10:00:00"
+    },
+    {
+      "id": 7,
+      "platform": "facebook",
+      "campaign": "Flash Sale Banner",
+      "message": "⏳ Flash sale starts now!",
+      "scheduledTime": "2025-12-09T20:00:00"
+    },
+    {
+      "id": 8,
+      "platform": "pinterest",
+      "campaign": "Creative Holiday Pins",
+      "message": "Explore our holiday design collection 🎨",
+      "scheduledTime": "2025-12-18T14:00:00"
+    }
   ]
 }

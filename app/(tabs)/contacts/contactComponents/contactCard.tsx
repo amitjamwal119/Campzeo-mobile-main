@@ -1,6 +1,5 @@
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Contact } from "lucide-react-native";
 
 export interface ContactsRecord {
   id: number;
@@ -28,10 +27,18 @@ export default function ContactCard({
 }: RecordCardProps) {
 
   // Delete with confirmation
-const handleDelete = () => {
-  onDelete(record);
-};
-  
+  const handleDelete = () => {
+    Alert.alert(
+      "Confirm Delete",
+      `Are you sure you want to delete ${record.name}?`,
+      [
+        { text: "No", style: "cancel" },
+        { text: "Yes", style: "destructive", onPress: () => onDelete(record) },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <View
       style={{
@@ -47,6 +54,7 @@ const handleDelete = () => {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
+          marginBottom: 6,
         }}
       >
         <Text style={{ fontWeight: "bold", fontSize: 16 }}>{record.name}</Text>
@@ -57,7 +65,7 @@ const handleDelete = () => {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleDelete} style={{ marginHorizontal: 6 }}>
-            <Ionicons name="trash-outline" size={22} color="#ef4444" /> 
+            <Ionicons name="trash-outline" size={22} color="#ef4444" />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => onCopy(record)} style={{ marginHorizontal: 6 }}>
