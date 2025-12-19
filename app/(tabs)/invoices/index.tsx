@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-expo";
 import { fetchInvoices } from "@/api/invoicesApi";
 import { Invoice } from "@/types/types";
+import { ThemedView } from "@/components/themed-view";
+import { ThemedText } from "@/components/themed-text";
 
 export default function Invoices() {
   const { user, isLoaded } = useUser();
@@ -28,29 +30,29 @@ export default function Invoices() {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
+      <ThemedView className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" />
-      </View>
+      </ThemedView>
     );
   }
 
   return (
-    <ScrollView className="flex-1 bg-white px-4 py-4">
+    <ScrollView className="flex-1 px-4 py-4">
 
       {invoices.length === 0 ? (
-        <View className="items-center mt-10">
-          <Text className="text-gray-500">No invoices found</Text>
-        </View>
+        <ThemedView className="items-center mt-10">
+          <ThemedText>No invoices found</ThemedText>
+        </ThemedView>
       ) : (
         invoices.map((item) => (
-          <View
+          <ThemedView
             key={item.id}
             className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200"
           >
-            <View className="flex-row justify-between mb-2">
-              <Text className="font-semibold text-gray-800">
+            <ThemedView className="flex-row justify-between mb-2">
+              <ThemedText className="font-semibold text-gray-800">
                 Invoice ID: #{item.id}
-              </Text>
+              </ThemedText>
               <Text
                 className={`font-semibold ${
                   item.status === "PAID"
@@ -60,20 +62,20 @@ export default function Invoices() {
               >
                 {item.status}
               </Text>
-            </View>
+            </ThemedView>
 
-            <Text className="text-sm text-gray-600 mb-1">
+            <ThemedText className="text-sm text-gray-600 mb-1">
               Date: {new Date(item.invoiceDate).toLocaleDateString()}
-            </Text>
+            </ThemedText>
 
-            <Text className="text-sm text-gray-600 mb-1">
+            <ThemedText className="text-sm text-gray-600 mb-1">
               Description: {item.description}
-            </Text>
+            </ThemedText>
 
-            <Text className="text-base font-bold text-gray-900 mt-2">
+            <ThemedText className="text-base font-bold text-gray-900 mt-2">
               Amount: ₹{item.amount}
-            </Text>
-          </View>
+            </ThemedText>
+          </ThemedView>
         ))
       )}
     </ScrollView>

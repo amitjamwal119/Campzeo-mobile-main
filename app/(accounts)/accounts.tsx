@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import {
   Alert,
   ScrollView,
-  View,
   ActivityIndicator,
+  useColorScheme,
 } from "react-native";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -44,6 +44,7 @@ const backendKeyMap: Record<string, string> = {
 
 export default function Accounts() {
   const router = useRouter();
+  const colorScheme = useColorScheme();
 
   /* ----------------------------- STATE ----------------------------- */
 
@@ -89,7 +90,6 @@ export default function Accounts() {
   const [loadingAction, setLoadingAction] = useState<
     "connect" | "disconnect" | null
   >(null);
-
 
   useEffect(() => {
     const fetchConnections = async () => {
@@ -181,8 +181,16 @@ export default function Accounts() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Back */}
         <HStack>
-          <Pressable onPress={() => router.back()}>
-            <Ionicons name="arrow-back-outline" size={22} color="#334155" />
+          <Pressable
+            onPress={() => {
+              router.back();
+            }}
+          >
+            <Ionicons
+              name="arrow-back-outline"
+              size={22}
+              color={colorScheme === "dark" ? "#ffffff" : "#020617"}
+            />
           </Pressable>
         </HStack>
 
@@ -211,23 +219,19 @@ export default function Accounts() {
         </VStack>
 
         {/* Cards */}
-        <View className="flex-row flex-wrap justify-between gap-y-6">
+        <ThemedView className="flex-row flex-wrap justify-between gap-y-6">
           {platforms.map((item) => {
             const isLoading = loadingPlatform === item.platformKey;
 
             return (
-              <View
+              <ThemedView
                 key={item.platformKey}
                 className="w-[46%] rounded-2xl bg-white p-4 border border-gray-200"
                 pointerEvents={isLoading ? "none" : "auto"}
               >
                 {/* Icon + Title */}
                 <VStack space="sm" className="items-center">
-                  <FontAwesome
-                    name={item.icon}
-                    size={38}
-                    color={item.color}
-                  />
+                  <FontAwesome name={item.icon} size={38} color={item.color} />
                   <ThemedText style={{ fontSize: 16, fontWeight: "600" }}>
                     {item.title}
                   </ThemedText>
@@ -236,16 +240,13 @@ export default function Accounts() {
                 {/* Connected As */}
                 {item.connectedAs && (
                   <VStack className="mt-3">
-                    <HStack
-                      className="items-center justify-center"
-                      space="xs"
-                    >
+                    <HStack className="items-center justify-center" space="xs">
                       <Ionicons
                         name="checkmark-circle"
                         size={16}
                         color="#16a34a"
                       />
-                      <Text
+                      <ThemedText
                         style={{
                           fontSize: 12,
                           fontWeight: "500",
@@ -253,19 +254,18 @@ export default function Accounts() {
                         }}
                       >
                         Connected as
-                      </Text>
+                      </ThemedText>
                     </HStack>
 
-                    <Text
+                    <ThemedText
                       style={{
                         fontWeight: "600",
-                        color: "#374151",
                         textAlign: "center",
                         marginTop: 2,
                       }}
                     >
                       {item.connectedAs}
-                    </Text>
+                    </ThemedText>
                   </VStack>
                 )}
 
@@ -322,10 +322,10 @@ export default function Accounts() {
                     </Pressable>
                   )}
                 </VStack>
-              </View>
+              </ThemedView>
             );
           })}
-        </View>
+        </ThemedView>
       </ScrollView>
     </ThemedView>
   );

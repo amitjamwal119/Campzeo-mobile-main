@@ -4,7 +4,6 @@ import { useRouter } from "expo-router";
 import { View, useWindowDimensions } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
 import { useState } from "react";
-import CalendarComponent from "@/app/(common)/calenderComponent";
 import CalendarWrapper from "@/app/(common)/calendarWrapper";
 import Insights from "./dashboardComponents/insights";
 
@@ -14,15 +13,13 @@ export default function Dashboard() {
   const [index, setIndex] = useState(0);
 
   const FirstRoute = () => (
-    <View style={{ flex: 1, backgroundColor: "#ff4081" }}>
-      {/* <CalendarComponent/> */}
+    <View style={{ flex: 1 }}>
       <Insights/>
     </View>
   );
 
   const SecondRoute = () => (
     <View style={{ flex: 1}} >
-      {/* , backgroundColor: "#673ab7"  */}
       <CalendarWrapper />
         </View>
 
@@ -34,19 +31,13 @@ export default function Dashboard() {
   });
 
   const routes = [
-    { key: "first", title: "Insights" },
+    { key: "first", title: "Dashboard" },
     { key: "second", title: "Calander" },
   ];
   
   return (
     <>
       <ThemedView className="flex-1">
-          {/* <ThemedText
-            style={{ fontSize: 30, lineHeight: 36, fontWeight: 700 }}
-            className="text-center mt-5 mb-9"
-          >
-            Dashboard
-          </ThemedText> */}
 
           <TabView
             navigationState={{ index, routes }}
@@ -54,14 +45,6 @@ export default function Dashboard() {
             onIndexChange={setIndex}
             initialLayout={{ width: layout.width }}
           />
-
-          {/* <Button
-            onPress={() => {
-              routePage.push("/(auth)/SignInScreen");
-            }}
-          >
-            <ThemedText>Go to Signin Page</ThemedText>
-          </Button> */}
       </ThemedView>
     </>
   );

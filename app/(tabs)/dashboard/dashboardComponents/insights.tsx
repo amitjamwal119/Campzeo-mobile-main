@@ -1,219 +1,266 @@
-import { View } from "react-native";
 import {
   Box,
   Text,
   VStack,
   HStack,
-  Progress,
-  ProgressFilledTrack,
   ScrollView,
 } from "@gluestack-ui/themed";
 import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
+import { getCampaigns, getContacts, getUser } from "@/api/dashboardApi";
 
 export default function Insights() {
+  const [userData, setUserData] = useState<any>(null);
+  const [campaignData, setCampaignData] = useState<any>(null);
+  const [contactsData, setContactsData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const user = await getUser();
+        const campaigns = await getCampaigns();
+        const contacts = await getContacts();
+
+        setUserData(user);
+        setCampaignData(campaigns);
+        setContactsData(contacts);
+      } catch (error) {
+        console.error("Dashboard fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAll();
+  }, []);
+
+  if (loading) {
+    return (
+      <ThemedView style={styles.center}>
+        <Text style={styles.loadingText}>Loading dashboard...</Text>
+      </ThemedView>
+    );
+  }
+
+  const organisation = userData?.organisation;
+  const organisationName = organisation?.name ?? "Organisation";
+
+  const totalCampaigns =
+    campaignData?.pagination?.total ??
+    campaignData?.campaigns?.length ??
+    0;
+
+  const totalContacts =
+    contactsData?.pagination?.total ??
+    contactsData?.contacts?.length ??
+    0;
+
+  const planName =
+    organisation?.subscriptions?.[0]?.plan?.name ?? "FREE TRIAL";
+
+  const trialEndDate = organisation?.trialEndDate
+    ? new Date(organisation.trialEndDate).toLocaleDateString()
+    : "N/A";
+
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "#fff",
-        paddingHorizontal: 16,
-        paddingVertical: 16,
-      }}
-    >
-      {/* Greeting Section */}
-      <VStack space="xs" style={{ marginBottom: 24 }}>
-        <ThemedText style={{ fontWeight: "700", fontSize: 20, lineHeight: 28 }}>
-          Welcome back, Amit's Org
+    <ThemedView style={styles.container}>
+      {/* ================= HEADER ================= */}
+      <HStack space="xs" style={styles.header}>
+        <ThemedText style={styles.heading}>
+          Welcome back
         </ThemedText>
 
-        <Text style={{ fontSize: 14, color: "#6b7280", lineHeight: 20 }}>
-          Here's what's happening with your account today
-        </Text>
-      </VStack>
-        {/* Trial Plan Card */}
-        <Box
-          style={{
-            backgroundColor: "#dc2626",
-            padding: 20,
-            borderRadius: 16,
-            marginBottom: 24,
-          }}
-        >
-          <ThemedText
-            style={{ color: "white", fontSize: 16, fontWeight: "600" }}
-          >
-            FREE_TRIAL Plan
-          </ThemedText>
+        <ThemedText style={styles.orgName}>
+          {organisationName}
+        </ThemedText>
+      </HStack>
+    {/* <Text style={styles.subText}>
+          Here’s what’s happening with your account today
+        </Text> */}
 
-          <ThemedText style={{ color: "white", marginTop: 4, fontSize: 14 }}>
-            Trial ends on 12/23/2025
-          </ThemedText>
-        </Box>
       <ScrollView showsVerticalScrollIndicator={false}>
+        {/* ================= PLAN CARD ================= */}
+        <Box style={styles.planCard}>
+          <HStack justifyContent="space-between" alignItems="center">
+            <VStack>
+              <Text style={styles.planLabel}>Current Plan</Text>
+              <ThemedText style={styles.planName}>
+                {planName}
+              </ThemedText>
+            </VStack>
 
+            <Box style={styles.trialBadge}>
+              <Text style={styles.trialText}>Trial</Text>
+            </Box>
+          </HStack>
 
-        {/* Vertical Stats Cards */}
-        <VStack space="md" style={{ marginBottom: 24 }}>
-          {/* Total Campaigns */}
-          <Box
-            style={{
-              backgroundColor: "#fff",
-              padding: 20,
-              borderRadius: 16,
-              borderWidth: 1,
-              borderColor: "#e5e7eb",
-              marginBottom: 12,
-            }}
-          >
-            <Text style={{ fontSize: 14, color: "#6b7280" }}>
-              Total Campaigns
-            </Text>
+          <Text style={styles.trialDate}>
+            Trial ends on {trialEndDate}
+          </Text>
+        </Box>
 
-            <HStack
-              justifyContent="space-between"
-              alignItems="center"
-              style={{ marginTop: 8 }}
-            >
-              <Text style={{ fontSize: 28, fontWeight: "700" }}>1</Text>
-            </HStack>
-
-            <Text style={{ fontSize: 12, color: "#6b7280", marginTop: 8 }}>
+        {/* ================= STATS ================= */}
+        <VStack space="md" style={styles.section}>
+          {/* Campaigns */}
+          <Box style={styles.statCard}>
+            <Text style={styles.statLabel}>Total Campaigns</Text>
+            <ThemedText style={styles.statValue}>
+              {totalCampaigns}
+            </ThemedText>
+            <Text style={styles.statHelper}>
               Active marketing campaigns
             </Text>
           </Box>
 
-          {/* Total Contacts */}
-          <Box
-            style={{
-              backgroundColor: "#fff",
-              padding: 20,
-              borderRadius: 16,
-              borderWidth: 1,
-              borderColor: "#e5e7eb",
-              marginBottom: 12,
-            }}
-          >
-            <Text style={{ fontSize: 14, color: "#6b7280" }}>
-              Total Contacts
-            </Text>
-
-            <HStack
-              justifyContent="space-between"
-              alignItems="center"
-              style={{ marginTop: 8 }}
-            >
-              <Text style={{ fontSize: 28, fontWeight: "700" }}>3</Text>
-            </HStack>
-
-            <Text style={{ fontSize: 12, color: "#6b7280", marginTop: 8 }}>
+          {/* Contacts */}
+          <Box style={styles.statCard}>
+            <Text style={styles.statLabel}>Total Contacts</Text>
+            <ThemedText style={styles.statValue}>
+              {totalContacts}
+            </ThemedText>
+            <Text style={styles.statHelper}>
               Audience reach
             </Text>
           </Box>
 
           {/* Team Size */}
-          <Box
-            style={{
-              backgroundColor: "#fff",
-              padding: 20,
-              borderRadius: 16,
-              borderWidth: 1,
-              borderColor: "#e5e7eb",
-            }}
-          >
-            <Text style={{ fontSize: 14, color: "#6b7280" }}>Team Size</Text>
-
-            <HStack
-              justifyContent="space-between"
-              alignItems="center"
-              style={{ marginTop: 8 }}
-            >
-              <Text style={{ fontSize: 28, fontWeight: "700" }}>1</Text>
-            </HStack>
-
-            <Text style={{ fontSize: 12, color: "#6b7280", marginTop: 8 }}>
+          <Box style={styles.statCard}>
+            <Text style={styles.statLabel}>Team Size</Text>
+            <ThemedText style={styles.statValue}>1</ThemedText>
+            <Text style={styles.statHelper}>
               Active team members
             </Text>
           </Box>
         </VStack>
 
-        {/* Tabs Row */}
-        <HStack space="lg" style={{ marginBottom: 16 }}>
-          <Text style={{ fontSize: 14, fontWeight: "500", color: "#374151" }}>
-            Recent Activity
+        {/* ================= TEAM MEMBER ================= */}
+        <Box style={styles.teamCard}>
+          <Text style={styles.teamLabel}>Team Members</Text>
+
+          <ThemedText style={styles.teamName}>
+            {userData?.firstName} {userData?.lastName}
+          </ThemedText>
+
+          <Text style={styles.teamEmail}>
+            {userData?.email}
           </Text>
-
-          <Text style={{ fontSize: 14, fontWeight: "500", color: "#374151" }}>
-            Team Members
-          </Text>
-
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              color: "#000",
-              backgroundColor: "#f3f4f6",
-              paddingHorizontal: 12,
-              paddingVertical: 4,
-              borderRadius: 12,
-            }}
-          >
-            Usage Details
-          </Text>
-        </HStack>
-
-        {/* Usage Details Card */}
-        <Box
-          style={{
-            backgroundColor: "#fff",
-            padding: 20,
-            borderRadius: 16,
-            borderWidth: 1,
-            borderColor: "#e5e7eb",
-          }}
-        >
-          <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 4 }}>
-            Usage Details
-          </Text>
-
-          <Text style={{ fontSize: 14, color: "#6b7280", marginBottom: 16 }}>
-            Detailed breakdown of your usage and limits
-          </Text>
-
-          {/* Storage Row */}
-          <Text style={{ fontSize: 14, fontWeight: "500", marginBottom: 4 }}>
-            Storage
-          </Text>
-
-          <Progress
-            value={48}
-            style={{ height: 8, backgroundColor: "#fecaca", borderRadius: 10 }}
-          >
-            <ProgressFilledTrack style={{ backgroundColor: "#dc2626" }} />
-          </Progress>
-
-          <HStack justifyContent="flex-end">
-            <Text style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>
-              2.4/5GB
-            </Text>
-          </HStack>
-
-          {/* Footer note */}
-          <Box
-            style={{
-              marginTop: 16,
-              padding: 12,
-              backgroundColor: "#f3f4f6",
-              borderRadius: 12,
-            }}
-          >
-            <Text
-              style={{ textAlign: "center", color: "#6b7280", fontSize: 14 }}
-            >
-              Detailed usage metrics coming soon.
-            </Text>
-          </Box>
         </Box>
       </ScrollView>
-    </View>
+    </ThemedView>
   );
 }
+
+/* ================= STYLES ================= */
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 20,
+  },
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loadingText: {
+    color: "#6b7280",
+    fontSize: 14,
+  },
+  header: {
+    marginBottom: 24,
+  },
+  heading: {
+    fontSize: 22,
+    fontWeight: "700",
+  },
+  orgName: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#dc2626",
+  },
+  subText: {
+    fontSize: 14,
+    color: "#6b7280",
+    marginTop: 4,
+  },
+  planCard: {
+    backgroundColor: "#dc2626",
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+  },
+  planLabel: {
+    color: "rgba(255,255,255,0.8)",
+    fontSize: 13,
+  },
+  planName: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
+    marginTop: 2,
+  },
+  trialBadge: {
+    backgroundColor: "rgba(255,255,255,0.2)",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  trialText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  trialDate: {
+    color: "#fff",
+    fontSize: 13,
+    marginTop: 12,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  statCard: {
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 16,
+    padding: 20,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: "#6b7280",
+  },
+  statValue: {
+    fontSize: 28,
+    fontWeight: "700",
+    marginTop: 8,
+  },
+  statHelper: {
+    fontSize: 12,
+    color: "#6b7280",
+    marginTop: 8,
+  },
+  teamCard: {
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 32,
+  },
+  teamLabel: {
+    fontSize: 14,
+    color: "#6b7280",
+    marginBottom: 8,
+  },
+  teamName: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  teamEmail: {
+    fontSize: 14,
+    color: "#4b5563",
+    marginTop: 4,
+  },
+});

@@ -105,9 +105,9 @@ export default function EditProfile({ closeEPF }: closeEPFType) {
                 }}
               />
             </Pressable>
-            <Text className="text-center text-gray-600 mt-1">
+            <ThemedText className="text-center text-gray-600 mt-1">
               Tap to change picture
-            </Text>
+            </ThemedText>
           </VStack>
 
           {/* =====================

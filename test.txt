@@ -360,3 +360,13 @@ export async function GET(req: NextRequest) {
         );
     }
 }
+
+
+
+
+
+i have logged json response on the bases of that response i have to render userdata in the page check this json response from the backend :
+ LOG  user details:  {"clerkId": "user_36EpW145UfIQAGrkDfdk3ckeTKw", "createdAt": "2025-12-09T05:57:39.681Z", "email": "ak7719869@gmail.com", "facebookConnected": true, "firstName": "amit kumar", "id": 52, "instagramConnected": true, "lastName": "cipla", "linkedInConnected": true, "mobile": null, "organisation": {"address": "VILLAGE KAREHARI, PO BHANGROTU, TEH BALH", "city": "Mandi", "country": "India", "createdAt": "2025-12-09T05:58:47.724Z", "email": "ak7719869@gmail.com", "enquiryText": null, "id": 66, "isApproved": true, "isDeleted": false, "isTrial": true, "name": "Amit's Org", "organisationPlatforms": [[Object], [Object], [Object], [Object], [Object], [Object], [Object], [Object]], "ownerName": "amit kumar cipla", "phone": "+917807271261", "postalCode": "175021", "state": "HIMACHAL PRADESH", "subscriptions": [[Object]], "taxNumber": "999999999", "trialEndDate": "2025-12-23T05:58:47.721Z", "trialStartDate": "2025-12-09T05:58:47.721Z", "updatedAt": "2025-12-12T05:38:50.854Z"}, "organisationId": 66, "pinterestConnected": true, "role": "ORGANISATION_USER", "updatedAt": "2025-12-17T04:39:18.257Z", "youtubeConnected": true}
+
+
+from that data i want : organisation : name , if isTrial = true (then render trial period else nothing at its place), trialEndDate

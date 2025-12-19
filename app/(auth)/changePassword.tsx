@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { ScrollView, Pressable, ActivityIndicator } from "react-native";
+import { ScrollView, Pressable, ActivityIndicator, useColorScheme } from "react-native";
 import { VStack, Input, InputField, Heading } from "@gluestack-ui/themed";
 import { Lock, Eye, EyeOff } from "lucide-react-native";
 import { Controller, useForm } from "react-hook-form";

@@ -19,18 +19,23 @@ import {
   User,
   UserPen,
 } from "lucide-react-native";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
 
 import { ModalBody, ModalCloseButton, ModalHeader } from "@gluestack-ui/themed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChangePassword from "../(auth)/changePassword";
 import EditProfile from "../(auth)/editProfile";
 
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
+import { getUser } from "@/api/dashboardApi";
 
 export default function UserProfile() {
+  const [userData, setUserData] = useState<any>(null);
+
+  const colorScheme = useColorScheme();
+
   const [ShowEditProfile, setEditProfile] = useState(false);
 
   const [showChangePas, setChangePas] = useState(false);
@@ -40,6 +45,18 @@ export default function UserProfile() {
   const { user } = useUser();
 
   if (!user) return null;
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await getUser();
+        setUserData(data);
+      } catch (error) {
+        console.error("Failed to fetch user", error);
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <ThemedView className="flex-1 p-5 pt-20">
@@ -51,7 +68,11 @@ export default function UserProfile() {
               routePage.back();
             }}
           >
-            <Ionicons name="arrow-back-outline" size={22} color="#334155" />
+            <Ionicons
+              name="arrow-back-outline"
+              size={22}
+              color={colorScheme === "dark" ? "#ffffff" : "#020617"}
+            />
           </Pressable>
         </HStack>
         <VStack className="items-center mb-8">
@@ -71,7 +92,7 @@ export default function UserProfile() {
           </ThemedText>
 
           <ThemedText className="text-base text-gray-500">
-            Software Engineer
+            {userData?.organisation?.name ?? "-"}
           </ThemedText>
         </VStack>
 
@@ -128,7 +149,7 @@ export default function UserProfile() {
                   Organisation
                 </ThemedText>
                 <ThemedText className="text-base font-medium">
-                  Software Engineer
+                  {userData?.organisation?.name ?? "-"}
                 </ThemedText>
               </VStack>
             </HStack>
