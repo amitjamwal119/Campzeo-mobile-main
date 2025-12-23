@@ -13,7 +13,6 @@ import {
   Text 
 } from "@gluestack-ui/themed";
 
-// import { CalendarEvent } from "@/types/CalendarEvent";
 import { formatReadableDate, formatReadableTime } from "./utils/dateHelpers";
 import { CalendarEvent } from "@/types/types";
 
@@ -32,12 +31,15 @@ const EventModal: React.FC<EventModalProps> = ({ event, isOpen, onClose }) => {
 
       <ModalContent>
         <ModalHeader>
-          <Heading size="lg">{event.campaign}</Heading>
+          <Heading size="lg">{event.platform}</Heading>
           <ModalCloseButton />
         </ModalHeader>
 
         <ModalBody>
           {/* PLATFORM */}
+          <Text style={{ fontSize: 16, marginBottom: 8 }}>
+            <Text style={{ fontWeight: "bold" }}>Campaign:</Text> {event.campaign}
+          </Text>
           <Text style={{ fontSize: 16, marginBottom: 8 }}>
             <Text style={{ fontWeight: "bold" }}>Platform:</Text> {event.platform.toUpperCase()}
           </Text>

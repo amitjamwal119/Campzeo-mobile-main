@@ -7,7 +7,10 @@ import { useUser } from "@clerk/clerk-expo";
 import * as ImagePicker from "expo-image-picker";
 import { Text } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { editProfileSchema, EditProfileSchemaType } from "@/validations/profileSchema";
+import {
+  editProfileSchema,
+  EditProfileSchemaType,
+} from "@/validations/profileSchema";
 
 type closeEPFType = {
   closeEPF: () => void;
@@ -16,7 +19,11 @@ type closeEPFType = {
 export default function EditProfile({ closeEPF }: closeEPFType) {
   const { user } = useUser();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<EditProfileSchemaType>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EditProfileSchemaType>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
       firstName: user?.firstName || "",
@@ -84,10 +91,15 @@ export default function EditProfile({ closeEPF }: closeEPFType) {
   return (
     <ThemedView className="flex-1 p-5 rounded-lg">
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Heading size="lg" className="text-center">
+        <ThemedText
+          style={{
+            fontSize: 23,
+            fontWeight: "700",
+            textAlign: "center",
+          }}
+        >
           Edit Profile
-        </Heading>
-
+        </ThemedText>
         <VStack space="lg" className="my-5">
           {/* =====================
               PROFILE IMAGE PICKER
@@ -120,22 +132,25 @@ export default function EditProfile({ closeEPF }: closeEPFType) {
               <Controller
                 control={control}
                 name={field.name as any}
-                render={({
-                  field: { value, onChange },
-                }) => (
+                render={({ field: { value, onChange } }) => (
                   <>
                     <Input className="bg-white/10 rounded-xl px-1 py-2">
                       <InputField
                         placeholder={field.placeholder}
                         value={value}
                         onChangeText={onChange}
+                        
                       />
                     </Input>
 
                     {/* Show validation error */}
                     {errors[field.name as keyof EditProfileSchemaType] && (
                       <Text className="text-red-500 text-sm mt-1">
-                        *{errors[field.name as keyof EditProfileSchemaType]?.message}
+                        *
+                        {
+                          errors[field.name as keyof EditProfileSchemaType]
+                            ?.message
+                        }
                       </Text>
                     )}
                   </>

@@ -21,6 +21,7 @@ import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect } from "react";
 import { setTokenGetter } from "@/lib/authToken";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Secure token cache for Clerk
 const tokenCache = {
@@ -97,7 +98,6 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={publishableKey!} tokenCache={tokenCache}>
       <ClerkLoaded>
-
         <AuthBridge />
 
         <AuthGuard>
@@ -106,27 +106,29 @@ export default function RootLayout() {
               <ThemeProvider
                 value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
               >
-                <QueryClientProvider client={queryClient}>
-                  <Stack
-                    screenOptions={{
-                      headerShown: false,
-                    }}
-                  >
-                    <Stack.Screen
-                      name="(tabs)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="(auth)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="modal"
-                      options={{ presentation: "modal", title: "Modal" }}
-                    />
-                  </Stack>
-                  <StatusBar style="auto" />
-                </QueryClientProvider>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                  <QueryClientProvider client={queryClient}>
+                    <Stack
+                      screenOptions={{
+                        headerShown: false,
+                      }}
+                    >
+                      <Stack.Screen
+                        name="(tabs)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="(auth)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="modal"
+                        options={{ presentation: "modal", title: "Modal" }}
+                      />
+                    </Stack>
+                    <StatusBar style="auto" />
+                  </QueryClientProvider>
+                </GestureHandlerRootView>
               </ThemeProvider>
             </SafeAreaProvider>
           </GluestackUIProvider>

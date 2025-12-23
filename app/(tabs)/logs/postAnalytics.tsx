@@ -1,4 +1,4 @@
-import { getAnalytics, getRefreshLog } from "@/api/logsApi";
+import { getAnalytics } from "@/api/logsApi";
 import { Ionicons } from "@expo/vector-icons";
 import { HStack, VStack, Pressable, Text, Box } from "@gluestack-ui/themed";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -13,10 +13,22 @@ import {
 import Carousel from "react-native-reanimated-carousel";
 import { Dimensions } from "react-native";
 
+import { LineChart } from "react-native-gifted-charts";
+import { ScrollView } from "react-native-gesture-handler";
+import { ThemedText } from "@/components/themed-text";
+import { TrendingUp } from "lucide-react-native";
+import { ThemedView } from "@/components/themed-view";
+import { View } from "@gluestack-ui/themed";
+
 const { width } = Dimensions.get("window");
 
+type ChartPoint = {
+  value: number;
+  label?: string;
+};
+
 export default function PostAnalytics() {
-  const router = useRouter();
+  const routePage = useRouter();
 
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -45,9 +57,18 @@ export default function PostAnalytics() {
 
   if (loading) {
     return (
-      <Box flex={1} justifyContent="center" alignItems="center">
-        <ActivityIndicator size="large" />
-      </Box>
+      <ThemedView className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#D55B35" />
+        <ThemedText
+          style={{
+            marginTop: 12,
+            fontSize: 14,
+            color: "#6b7280",
+          }}
+        >
+          Loading Post Insights…
+        </ThemedText>
+      </ThemedView>
     );
   }
 
@@ -57,6 +78,22 @@ export default function PostAnalytics() {
 
   const isMultipleImages = Array.isArray(media) && media.length > 1;
   const isSingleImage = typeof media === "string";
+
+  const history = analytics?.historicalData ?? [];
+
+  // Likes line data
+  const likesLineData: ChartPoint[] = history.map((item: any) => ({
+    value: item.likes ?? 0,
+    label: new Date(item.date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    }),
+  }));
+
+  // Comments line data
+  const commentsLineData: ChartPoint[] = history.map((item: any) => ({
+    value: item.comments ?? 0,
+  }));
 
   const handleRefreshClick = async () => {
     if (!id) {
@@ -82,94 +119,235 @@ export default function PostAnalytics() {
   };
 
   return (
-    <VStack space="md" className="flex-1 px-4 py-3">
-      {/* Back */}
-      <HStack alignItems="center">
-        <Pressable onPress={() => router.back()}>
-          <Ionicons
-            name="arrow-back-outline"
-            size={22}
-            color={colorScheme === "dark" ? "#ffffff" : "#020617"}
-          />
-        </Pressable>
+    <ThemedView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
+        {/* ---------- HEADER ---------- */}
+        <HStack className="mb-3">
+          {/* LEFT: Back button */}
+          <Pressable onPress={() => routePage.back()} style={{ padding: 6 }}>
+            <Ionicons
+              name="arrow-back-outline"
+              size={22}
+              color={colorScheme === "dark" ? "#ffffff" : "#020617"}
+            />
+          </Pressable>
 
-        <Text>Post Insights</Text>
-      </HStack>
-      {/* Platform */}
-      <Text className="text-base font-medium">Platform: {post?.platform}</Text>
+          {/* CENTER: Title */}
+          <ThemedText
+            style={{
+              fontSize: 20,
+              lineHeight: 36,
+              fontWeight: "700",
+              textAlign: "center",
+              flex: 1,
+            }}
+          >
+            Post Insights
+          </ThemedText>
 
-      {/* Message */}
-      <Text className="text-base font-medium">{post?.message}</Text>
+          {/* RIGHT: Spacer */}
+          <View style={{ width: 34 }} />
+        </HStack>
 
-      {/* Published Date */}
-      <Text className="text-xs text-gray-500">
-        Published on {new Date(post?.publishedAt).toDateString()}
-      </Text>
-      {/* Updated Date */}
-      <Text className="text-xs text-gray-500">
-        Updated on {new Date(post?.updatedAt).toDateString()}
-      </Text>
+        {/* ---------- POST INFO CARD ---------- */}
+        <ThemedView
+          style={{
+            padding: 16,
+            borderRadius: 16,
+            backgroundColor: isDark ? "#1f2933" : "#ffffff",
+            marginBottom: 16,
+          }}
+        >
+          <ThemedText style={{ fontSize: 14, fontWeight: "600" }}>
+            Platform: {post?.platform}
+          </ThemedText>
 
-      {/* Media */}
-      {isMultipleImages && (
-        <Carousel
-          width={width - 32}
-          height={220}
-          data={media}
-          renderItem={({ item }) => (
+          <ThemedText
+            style={{
+              marginTop: 6,
+              fontSize: 15,
+              fontWeight: "500",
+              lineHeight: 22,
+            }}
+          >
+            {post?.message}
+          </ThemedText>
+
+          <ThemedText
+            style={{
+              marginTop: 6,
+              fontSize: 12,
+              color: isDark ? "#9ca3af" : "#6b7280",
+            }}
+          >
+            Published on {new Date(post?.publishedAt).toDateString()}
+          </ThemedText>
+
+          <ThemedText
+            style={{
+              fontSize: 12,
+              color: isDark ? "#9ca3af" : "#6b7280",
+            }}
+          >
+            Updated on {new Date(post?.updatedAt).toDateString()}
+          </ThemedText>
+
+          {/* Media */}
+          {isMultipleImages && (
+            <Carousel
+              width={width - 64}
+              height={220}
+              data={media}
+              renderItem={({ item }) => (
+                <Image
+                  source={{ uri: item }}
+                  style={{ width: "100%", height: "100%", borderRadius: 12 }}
+                  resizeMode="cover"
+                />
+              )}
+            />
+          )}
+
+          {isSingleImage && (
             <Image
-              source={{ uri: item }}
-              className="w-full h-full rounded-lg"
+              source={{ uri: media }}
+              style={{
+                width: "100%",
+                height: 220,
+                borderRadius: 12,
+                marginTop: 12,
+              }}
               resizeMode="cover"
             />
           )}
-        />
-      )}
+        </ThemedView>
 
-      {isSingleImage && (
-        <Image
-          source={{ uri: media }}
-          className="w-full h-[220px] rounded-lg"
-          resizeMode="cover"
-        />
-      )}
+        {/* ---------- INSIGHTS CARD ---------- */}
+        <ThemedView
+          style={{
+            padding: 16,
+            borderRadius: 16,
+            backgroundColor: isDark ? "#111827" : "#f9fafb",
+            marginBottom: 20,
+          }}
+        >
+          <HStack justifyContent="space-between">
+            {[
+              { label: "Likes", value: insight?.likes },
+              { label: "Comments", value: insight?.comments },
+              { label: "Impressions", value: insight?.impressions },
+              { label: "Reach", value: insight?.reach },
+            ].map((item) => (
+              <VStack key={item.label} alignItems="center">
+                <ThemedText style={{ fontSize: 16, fontWeight: "600" }}>
+                  {item.value ?? 0}
+                </ThemedText>
+                <ThemedText
+                  style={{
+                    fontSize: 12,
+                    color: isDark ? "#9ca3af" : "#6b7280",
+                  }}
+                >
+                  {item.label}
+                </ThemedText>
+              </VStack>
+            ))}
 
-      {/* Insights */}
-      <HStack
-        justifyContent="space-between"
-        className="mt-4 bg-gray-100 dark:bg-gray-800 rounded-lg p-3"
-      >
-        <VStack>
-          <Text className="text-xs text-gray-500">Likes</Text>
-          <Text className="font-semibold">{insight?.likes ?? 0}</Text>
-        </VStack>
+            <VStack alignItems="center">
+              <TouchableOpacity onPress={handleRefreshClick}>
+                <Ionicons
+                  name="refresh"
+                  size={20}
+                  color={"#2563eb"}
 
-        <VStack>
-          <Text className="text-xs text-gray-500">Comments</Text>
-          <Text className="font-semibold">{insight?.comments ?? 0}</Text>
-        </VStack>
+                  //  isDark ? "#e5e7eb" : "#374151"
+                />
+              </TouchableOpacity>
+              <ThemedText
+                style={{ fontSize: 12, color: "#2563eb", marginTop: 4 }}
+              >
+                Refresh
+              </ThemedText>
+            </VStack>
+          </HStack>
+        </ThemedView>
 
-        <VStack>
-          <Text className="text-xs text-gray-500">Impressions</Text>
-          <Text className="font-semibold">{insight?.impressions ?? 0}</Text>
-        </VStack>
+        {/* ---------- ANALYTICS GRAPH CARD ---------- */}
+        <ThemedView
+          style={{
+            padding: 16,
+            borderRadius: 16,
+            backgroundColor: isDark ? "#1f2937" : "#ffffff",
+            overflow:"hidden"
+          }}
+        >
+          <ThemedText
+            style={{
+              textAlign: "center",
+              fontSize: 16,
+              fontWeight: "600",
+              marginBottom: 12,
+            }}
+          >
+            Performance Over Time
+          </ThemedText>
 
-        <VStack>
-          <Text className="text-xs text-gray-500">Reach</Text>
-          <Text className="font-semibold">{insight?.reach ?? 0}</Text>
-        </VStack>
-        {/* Refresh */}
-        <VStack alignItems="center">
-          <TouchableOpacity onPress={handleRefreshClick}>
-            <Ionicons
-              name="refresh"
-              size={20}
-              color={isDark ? "#e5e7eb" : "#374151"}
+          {history.length === 0 ? (
+            <ThemedText
+              style={{
+                textAlign: "center",
+                fontSize: 13,
+                color: isDark ? "#9ca3af" : "#6b7280",
+              }}
+            >
+              No analytics data available
+            </ThemedText>
+          ) : (
+            <LineChart
+              data={likesLineData}
+              data2={commentsLineData}
+              height={220}
+              spacing={45}
+              thickness={3}
+              curved
+              isAnimated
+              animationDuration={800}
+              color="#2563eb"
+              color2="#16a34a"
+              yAxisTextStyle={{
+                color: isDark ? "#e5e7eb" : "#374151",
+                fontSize: 12,
+              }}
+              xAxisLabelTextStyle={{
+                color: isDark ? "#e5e7eb" : "#374151",
+                fontSize: 12,
+              }}
+              maxValue={Math.max(
+                ...likesLineData.map((d) => d.value),
+                ...commentsLineData.map((d) => d.value),
+                1
+              )}
             />
-          </TouchableOpacity>
-          <Text style={{ color: "#2563eb", fontSize: 13 }}>Refresh</Text>
-        </VStack>
-      </HStack>
-    </VStack>
+          )}
+
+          {/* Legend */}
+          <HStack justifyContent="center" space="xl" mt="$4">
+            <HStack alignItems="center" space="sm">
+              <TrendingUp size={22} strokeWidth={2} color="#2563eb" />
+              <ThemedText style={{ color: "#2563eb", fontWeight: "600" }}>
+                Likes
+              </ThemedText>
+            </HStack>
+
+            <HStack alignItems="center" space="sm">
+              <TrendingUp size={22} strokeWidth={2} color="#16a34a" />
+              <ThemedText style={{ color: "#16a34a", fontWeight: "600" }}>
+                Comments
+              </ThemedText>
+            </HStack>
+          </HStack>
+        </ThemedView>
+      </ScrollView>
+    </ThemedView>
   );
 }

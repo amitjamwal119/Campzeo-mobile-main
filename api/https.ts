@@ -2,10 +2,7 @@ import { getAuthToken } from "@/lib/authToken";
 import axios from "axios";
 
 const https = axios.create({
-    baseURL : "https://campzeo-v1-oym2.vercel.app/api"
-    
-    // "http://10.0.2.2:5000"
-    // process.env.API_BASE_URL 
+    baseURL : process.env.EXPO_PUBLIC_API_BASE_URL
 });
 
 https.interceptors.request.use(

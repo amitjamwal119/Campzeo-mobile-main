@@ -18,6 +18,7 @@ import {
   disconnectPlatform,
   getSocialStatus,
 } from "@/api/accountsApi";
+import { View } from "lucide-react-native";
 
 /* ----------------------------- TYPES ----------------------------- */
 
@@ -47,6 +48,8 @@ export default function Accounts() {
   const colorScheme = useColorScheme();
 
   /* ----------------------------- STATE ----------------------------- */
+
+  const [pageLoading, setPageLoading] = useState(true);
 
   const [platforms, setPlatforms] = useState<SocialItem[]>([
     {
@@ -91,9 +94,13 @@ export default function Accounts() {
     "connect" | "disconnect" | null
   >(null);
 
+  /* ----------------------------- EFFECT ----------------------------- */
+
   useEffect(() => {
     const fetchConnections = async () => {
       try {
+        setPageLoading(true);
+
         const data = await getSocialStatus();
 
         setPlatforms((prev) =>
@@ -102,9 +109,7 @@ export default function Accounts() {
               (key) => backendKeyMap[key] === item.platformKey
             );
 
-            if (!backendKey || !data[backendKey]) {
-              return item;
-            }
+            if (!backendKey || !data[backendKey]) return item;
 
             return {
               ...item,
@@ -115,6 +120,8 @@ export default function Accounts() {
         );
       } catch (error) {
         console.error("Failed to fetch connected platforms", error);
+      } finally {
+        setPageLoading(false);
       }
     };
 
@@ -123,7 +130,7 @@ export default function Accounts() {
 
   /* ----------------------------- HANDLERS ----------------------------- */
 
-  const handleConnect = async (platformKey: string, title: string) => {
+  const handleConnect = async (platformKey: string) => {
     try {
       setLoadingPlatform(platformKey);
       setLoadingAction("connect");
@@ -158,11 +165,7 @@ export default function Accounts() {
       setPlatforms((prev) =>
         prev.map((item) =>
           item.platformKey === platformKey
-            ? {
-                ...item,
-                connected: false,
-                connectedAs: undefined,
-              }
+            ? { ...item, connected: false, connectedAs: undefined }
             : item
         )
       );
@@ -174,49 +177,72 @@ export default function Accounts() {
     }
   };
 
-  /* ----------------------------- UI ----------------------------- */
+  /* ----------------------------- LOADER UI ----------------------------- */
+
+  if (pageLoading) {
+    return (
+      <ThemedView className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#D55B35" />
+        <ThemedText
+          style={{
+            marginTop: 12,
+            fontSize: 14,
+            color: "#6b7280",
+          }}
+        >
+          Loading accounts…
+        </ThemedText>
+      </ThemedView>
+    );
+  }
+
+  /* ----------------------------- MAIN UI ----------------------------- */
 
   return (
     <ThemedView className="flex-1 bg-gray-50 px-4 pt-20">
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Back */}
-        <HStack>
-          <Pressable
-            onPress={() => {
-              router.back();
-            }}
-          >
+        {/* HEADER */}
+        <HStack
+          alignItems="center"
+          justifyContent="space-between"
+          style={{ marginBottom: 24 }}
+        >
+          {/* LEFT: Back button */}
+          <Pressable onPress={() => router.back()} style={{ padding: 8 }}>
             <Ionicons
               name="arrow-back-outline"
               size={22}
               color={colorScheme === "dark" ? "#ffffff" : "#020617"}
             />
           </Pressable>
+
+          {/* CENTER: Title */}
+          <VStack style={{ flex: 1, alignItems: "center" }}>
+            <ThemedText
+              style={{
+                fontSize: 25,
+                fontWeight: "700",
+                textAlign: "center",
+              }}
+            >
+              Accounts
+            </ThemedText>
+
+            <ThemedText
+              style={{
+                fontSize: 14,
+                color: "#6b7280",
+                textAlign: "center",
+                marginTop: 6,
+              }}
+            >
+              Connect your social media accounts.
+            </ThemedText>
+          </VStack>
+
+          {/* RIGHT: Spacer (balances back button width) */}
+          <View style={{ width: 38 }} />
         </HStack>
-
-        {/* Title */}
-        <VStack className="mb-8 mt-4">
-          <ThemedText
-            style={{
-              fontSize: 30,
-              fontWeight: "700",
-              textAlign: "center",
-            }}
-          >
-            Accounts
-          </ThemedText>
-
-          <ThemedText
-            style={{
-              fontSize: 14,
-              color: "#6b7280",
-              textAlign: "center",
-              marginTop: 8,
-            }}
-          >
-            Connect your social media accounts.
-          </ThemedText>
-        </VStack>
 
         {/* Cards */}
         <ThemedView className="flex-row flex-wrap justify-between gap-y-6">
@@ -287,9 +313,7 @@ export default function Accounts() {
                         size="sm"
                         variant="outline"
                         action="secondary"
-                        onPress={() =>
-                          handleConnect(item.platformKey, item.title)
-                        }
+                        onPress={() => handleConnect(item.platformKey)}
                       >
                         <Text style={{ fontSize: 14 }}>Connect</Text>
                       </Button>

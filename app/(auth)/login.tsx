@@ -128,7 +128,7 @@ export default function LoginScreen() {
         >
           {/* Logo */}
           <Image
-            source={require("../../assets/app-images/logo-1.png")}
+            source={require("../../assets/app-images/camp-logo.png")}
             style={{
               width: 150,
               height: 50,
@@ -165,7 +165,7 @@ export default function LoginScreen() {
                 className="bg-orange-500 rounded-2xl py-3"
               >
                 {loading ? (
-                  <ActivityIndicator color="#fff" />
+                  <ActivityIndicator color="#D55B35" />
                 ) : (
                   <Text className="text-white font-semibold text-center text-lg">
                     Get Verification Code
@@ -205,7 +205,7 @@ export default function LoginScreen() {
                 className="bg-orange-500 rounded-2xl py-3"
               >
                 {loading ? (
-                  <ActivityIndicator color="#fff" />
+                  <ActivityIndicator color="#D55B35" />
                 ) : (
                   <Text className="text-white font-semibold text-center text-lg">
                     Verify Code / Sign In

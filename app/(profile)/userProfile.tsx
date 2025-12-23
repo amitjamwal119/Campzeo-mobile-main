@@ -80,20 +80,23 @@ export default function UserProfile() {
             <AvatarImage
               source={{
                 uri: user.imageUrl,
-                // "https://i.pravatar.cc/300?img=12"
               }}
               alt="Profile Picture"
             />
             {/* <AvatarFallbackText>A</AvatarFallbackText> */}
           </Avatar>
 
-          <ThemedText className="text-2xl font-semibold">
+          <ThemedText style={{
+                fontSize: 23,
+                fontWeight: "700",
+                textAlign: "center",
+              }}>
             {user.firstName} {user.lastName}
           </ThemedText>
 
-          <ThemedText className="text-base text-gray-500">
+          {/* <ThemedText className="text-base text-gray-500">
             {userData?.organisation?.name ?? "-"}
-          </ThemedText>
+          </ThemedText> */}
         </VStack>
 
         {/* ---------- Details Card ---------- */}

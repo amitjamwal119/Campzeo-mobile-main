@@ -1,4 +1,3 @@
-// backgroundolor={colorScheme === "dark" ? "#ffffff" : "#020617"}
 import {
   Drawer,
   DrawerBackdrop,
@@ -18,13 +17,13 @@ import {
   Icon,
   Pressable,
   VStack,
+  View,
+  Text,
 } from "@gluestack-ui/themed";
 import { LogOut, User, Calendar, Notebook } from "lucide-react-native";
-import { StyleSheet, useColorScheme } from "react-native";
+import { StyleSheet } from "react-native";
 import { useSidebarStore } from "../../store/sidebarStore";
 import { useRouter } from "expo-router";
-import { ThemedView } from "@/components/themed-view";
-import { ThemedText } from "@/components/themed-text";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 
 export default function Sidebar() {
@@ -34,9 +33,6 @@ export default function Sidebar() {
   const router = useRouter();
   const { signOut } = useAuth();
   const { user } = useUser();
-
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
 
   if (!user) return null;
 
@@ -49,107 +45,99 @@ export default function Sidebar() {
     }
   };
 
+  //  HARD OVERRIDE — ALWAYS BLACK
+  const TEXT_COLOR = "#000000";
+
   return (
-    <>
-      <Drawer isOpen={sidebarOpen} onClose={closeSidebar} anchor="right">
-        <DrawerBackdrop />
+    <Drawer isOpen={sidebarOpen} onClose={closeSidebar} anchor="right">
+      <DrawerBackdrop />
 
-        {/* DrawerContent DOES NOT accept `style`, only className */}
-        <DrawerContent
-          className={`w-[270px] md:w-[300px] ${
-            isDark ? "bg-[#020617]" : "bg-white"
-          }`}
-        >
-          {/* HEADER */}
-          <DrawerHeader className="justify-center flex-col gap-2">
-            <ThemedView style={styles.headerContent}>
-              <Avatar size="xl">
-                <AvatarFallbackText>
-                  {user.username ?? "User"}
-                </AvatarFallbackText>
-                <AvatarImage source={{ uri: user.imageUrl }} />
-              </Avatar>
+      <DrawerContent className="w-[270px] md:w-[300px] bg-white">
+        {/* HEADER */}
+        <DrawerHeader className="justify-center flex-col gap-2">
+          <View style={styles.headerContent}>
+            <Avatar size="xl">
+              <AvatarFallbackText
+                sx={{ color: TEXT_COLOR }}
+              >
+                {user.username ?? "User"}
+              </AvatarFallbackText>
+              <AvatarImage source={{ uri: user.imageUrl }} />
+            </Avatar>
 
-              <VStack style={styles.userInfo}>
-                {/* ThemedText DOES NOT support `size` */}
-                <ThemedText type="subtitle">{user.username}</ThemedText>
-              </VStack>
-            </ThemedView>
-          </DrawerHeader>
-
-          <Divider style={styles.divider} />
-
-          {/* BODY */}
-          <DrawerBody>
-            <ThemedView className="gap-3">
-              {/* PROFILE */}
-              <Pressable
-                style={styles.menuItem}
-                onPress={() => {
-                  closeSidebar();
-                  router.push("/(profile)/userProfile");
+            <VStack style={styles.userInfo}>
+              <Text
+                sx={{
+                  color: TEXT_COLOR,
+                  fontSize: 23,
+                  fontWeight: "600",
                 }}
               >
-                <Icon
-                  as={User}
-                  size="lg"
-                  color={isDark ? "#e5e7eb" : "#374151"}
-                />
-                <ThemedText>My Profile</ThemedText>
-              </Pressable>
+                {user.username}
+              </Text>
+            </VStack>
+          </View>
+        </DrawerHeader>
 
-              {/* ACCOUNTS */}
-              <Pressable
-                style={styles.menuItem}
-                onPress={() => {
-                  closeSidebar();
-                  router.push("/(accounts)/accounts");
-                }}
-              >
-                <Icon
-                  as={Notebook}
-                  size="lg"
-                  color={isDark ? "#e5e7eb" : "#374151"}
-                />
-                <ThemedText>Accounts</ThemedText>
-              </Pressable>
+        <Divider style={styles.divider} />
 
-              {/* CALENDAR */}
-              <Pressable
-                style={styles.menuItem}
-                onPress={() => {
-                  closeSidebar();
-                  router.push("/(calander)/calanderPage");
-                }}
-              >
-                <Icon
-                  as={Calendar}
-                  size="lg"
-                  color={isDark ? "#e5e7eb" : "#374151"}
-                />
-                <ThemedText>Calendar</ThemedText>
-              </Pressable>
-            </ThemedView>
-          </DrawerBody>
-
-          {/* FOOTER */}
-          <DrawerFooter>
-            <Button
-              style={styles.logoutButton}
-              variant="outline"
-              action="secondary"
+        {/* BODY */}
+        <DrawerBody>
+          <View style={styles.menuContainer}>
+            <Pressable
+              style={styles.menuItem}
               onPress={() => {
                 closeSidebar();
-                handleLogout();
+                router.push("/(profile)/userProfile");
               }}
             >
-              <ButtonText>Logout</ButtonText>
-              <ButtonIcon as={LogOut} />
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </>
+              <Icon as={User} size="lg" color={TEXT_COLOR} />
+              <Text sx={styles.menuText}>My Profile</Text>
+            </Pressable>
+
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                closeSidebar();
+                router.push("/(accounts)/accounts");
+              }}
+            >
+              <Icon as={Notebook} size="lg" color={TEXT_COLOR} />
+              <Text sx={styles.menuText}>Accounts</Text>
+            </Pressable>
+
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                closeSidebar();
+                router.push("/(calendar)/calendarPage");
+              }}
+            >
+              <Icon as={Calendar} size="lg" color={TEXT_COLOR} />
+              <Text sx={styles.menuText}>Calendar</Text>
+            </Pressable>
+          </View>
+        </DrawerBody>
+
+        {/* FOOTER */}
+        <DrawerFooter>
+          <Button
+            style={styles.logoutButton}
+            variant="outline"
+            action="secondary"
+            onPress={() => {
+              closeSidebar();
+              handleLogout();
+            }}
+          >
+            <ButtonText sx={{ color: TEXT_COLOR }}>
+              Logout
+            </ButtonText>
+            <ButtonIcon as={LogOut} color={TEXT_COLOR} />
+          </Button>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
@@ -166,12 +154,20 @@ const styles = StyleSheet.create({
   divider: {
     marginVertical: 16,
   },
+  menuContainer: {
+    gap: 12,
+  },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     padding: 10,
     borderRadius: 8,
+  },
+  menuText: {
+    color: "#000000",
+    fontSize: 14,
+    fontWeight: "500",
   },
   logoutButton: {
     width: "100%",

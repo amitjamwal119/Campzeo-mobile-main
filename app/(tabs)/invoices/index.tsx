@@ -31,14 +31,22 @@ export default function Invoices() {
   if (loading) {
     return (
       <ThemedView className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color="#D55B35" />
+        <ThemedText
+          style={{
+            marginTop: 12,
+            fontSize: 14,
+            color: "#6b7280",
+          }}
+        >
+          Loading Invoices…
+        </ThemedText>
       </ThemedView>
     );
   }
 
   return (
     <ScrollView className="flex-1 px-4 py-4">
-
       {invoices.length === 0 ? (
         <ThemedView className="items-center mt-10">
           <ThemedText>No invoices found</ThemedText>
@@ -55,9 +63,7 @@ export default function Invoices() {
               </ThemedText>
               <Text
                 className={`font-semibold ${
-                  item.status === "PAID"
-                    ? "text-green-600"
-                    : "text-yellow-600"
+                  item.status === "PAID" ? "text-green-600" : "text-yellow-600"
                 }`}
               >
                 {item.status}

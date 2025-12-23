@@ -6,6 +6,7 @@ import {
   FlatList,
   View as RNView,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import LogsCard from "./logs-Components/logsCards";
 import { getLogs } from "@/api/logsApi";
@@ -164,7 +165,7 @@ export default function Logs() {
       </ThemedView>
 
       {/* SEARCH (future use) */}
-      <ThemedView className="flex-row items-center mx-3 mb-4">
+      {/* <ThemedView className="flex-row items-center mx-3 mb-4">
         <TextInput
           value={search}
           onChangeText={setSearch}
@@ -174,16 +175,25 @@ export default function Logs() {
         <TouchableOpacity className="px-3 py-2 rounded-xl bg-green-100">
           <Ionicons name="share-social" size={20} color="#16a34a" />
         </TouchableOpacity>
-      </ThemedView>
+      </ThemedView> */}
     </ThemedView>
   );
 
   // Loading state
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <Text>Loading logs...</Text>
-      </View>
+      <ThemedView className="flex-1 items-center justify-center">
+              <ActivityIndicator size="large" color="#D55B35" />
+              <ThemedText
+                style={{
+                  marginTop: 12,
+                  fontSize: 14,
+                  color: "#6b7280",
+                }}
+              >
+                Loading Logs…
+              </ThemedText>
+            </ThemedView>
     );
   }
 

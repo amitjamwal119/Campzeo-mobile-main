@@ -1,14 +1,14 @@
 import React, { useState, useMemo } from "react";
-import { View } from "react-native";
 import { Calendar } from "react-native-big-calendar";
 
 import { mapEvents } from "./utils/mapEvents";
 import { groupEventsByDate } from "./utils/groupEventsByDate";
 import { CalendarEvent, Post } from "@/types/types";
-import CalendarHeader from "./calanderHeader";
+import CalendarHeader from "./calendarHeader";
 import UpcomingPostsList from "./upcomingPostsList";
 import EventModal from "./eventModal";
-// import { Button, ButtonText, Heading, Modal, ModalBackdrop, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, Text } from "@gluestack-ui/themed";
+import { ThemedView } from "@/components/themed-view";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface CalendarViewProps {
   posts: Post[]; // Raw posts loaded by CalendarWrapper
@@ -40,7 +40,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ posts }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <ThemedView style={{ marginBottom: 50 }}>
       {/* HEADER (View Mode Switcher + Month Label + Navigation) */}
       <CalendarHeader
         currentDate={currentDate}
@@ -49,18 +49,24 @@ const CalendarView: React.FC<CalendarViewProps> = ({ posts }) => {
         onChangeDate={setCurrentDate}
       />
 
-      {/* MAIN CALENDAR */}
-      <Calendar
-        events={events}
-        mode={viewMode}
-        date={currentDate}
-        height={520}
-        onPressEvent={handleEventPress}
-        swipeEnabled={true}
-      />
+      {/* SCROLLABLE CONTENT */}
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 24 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* MAIN CALENDAR */}
+        <Calendar
+          events={events}
+          mode={viewMode}
+          date={currentDate}
+          height={520}
+          onPressEvent={handleEventPress}
+          swipeEnabled={true}
+        />
 
-      {/* UPCOMING POSTS LIST BELOW CALENDAR */}
-      <UpcomingPostsList groupedEvents={groupedEvents} />
+        {/* UPCOMING POSTS LIST BELOW CALENDAR */}
+        <UpcomingPostsList groupedEvents={groupedEvents} />
+      </ScrollView>
 
       {/* EVENT MODAL */}
       <EventModal
@@ -68,7 +74,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ posts }) => {
         isOpen={isModalVisible}
         onClose={() => setModalVisible(false)}
       />
-    </View>
+    </ThemedView>
   );
 };
 

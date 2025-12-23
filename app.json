@@ -4,7 +4,7 @@
     "slug": "userInterface",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/app-images/camp-logo.jpg",
+    "icon": "./assets/app-images/camp-logo.png",
     "scheme": "userinterface",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

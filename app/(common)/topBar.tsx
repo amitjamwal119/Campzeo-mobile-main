@@ -49,7 +49,7 @@ export default function TopBar() {
           activeOpacity={0.7}
         >
           <Image
-            source={require("../../assets/app-images/camp-logo.jpg")}
+            source={require("../../assets/app-images/camp-logo.png")}
             style={{ width: 130, height: 50, borderRadius: 6 }}
             resizeMode="contain"
             alt="CampZeo logo"
@@ -84,7 +84,6 @@ export default function TopBar() {
                   Notifications
                 </Text>
 
-                {/* Notification Item 1 */}
                 <Box className="mb-3 p-2 rounded-lg bg-background-50 border border-background-200">
                   <Text className="text-sm font-medium text-typography-900">
                     New campaign created 🎉

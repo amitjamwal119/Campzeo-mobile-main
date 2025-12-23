@@ -47,7 +47,7 @@ export default function GoogleAuth() {
       }}
     >
       {loading ? (
-        <ActivityIndicator />
+        <ActivityIndicator color={"#D55B35"}/>
       ) : (
         <Text style={{ fontSize: 16, fontWeight: "600" }}>
           Continue with Google

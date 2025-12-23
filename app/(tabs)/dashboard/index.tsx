@@ -32,7 +32,7 @@ export default function Dashboard() {
 
   const routes = [
     { key: "first", title: "Dashboard" },
-    { key: "second", title: "Calander" },
+    { key: "second", title: "Calendar" },
   ];
   
   return (

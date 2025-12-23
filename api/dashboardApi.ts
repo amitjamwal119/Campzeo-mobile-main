@@ -1,7 +1,3 @@
-// https://campzeo-v1-oym2.vercel.app/api/user/me
-// https://campzeo-v1-oym2.vercel.app/contacts?_rsc=19qnq
-// https://campzeo-v1-oym2.vercel.app/organisation/campaigns?_rsc=kbr0
-
 import https from "./https";
 
 
@@ -30,7 +26,6 @@ export const getCampaigns = async () => {
   }
 };
 
-// https://campzeo-v1-oym2.vercel.app/api/contacts?page=1&limit=10
 
 export const getContacts = async () => {
   try {

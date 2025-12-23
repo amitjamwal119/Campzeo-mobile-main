@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { format, addDays, addWeeks, addMonths } from "date-fns";
 import { CircleChevronLeft, CircleChevronRight } from "lucide-react-native";
+import { ThemedView } from "@/components/themed-view";
+import { ThemedText } from "@/components/themed-text";
 // import { CalendarHeaderProps } from "react-native-calendars/src/calendar/header";
 // <ion-icon name="chevron-back-circle-outline"></ion-icon>
 interface CalendarHeaderProps {
@@ -34,9 +36,9 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   };
 
   return (
-    <View style={{ padding: 12, flexDirection: "column", gap: 10 }}>
+    <ThemedView style={{ padding: 12, flexDirection: "column", gap: 10 }}>
       {/* TOP ROW: month name + arrows */}
-      <View
+      <ThemedView
         style={{
           flexDirection: "row",
           alignItems: "center",
@@ -53,53 +55,53 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
         </TouchableOpacity>
 
         {/* Current Month Label */}
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{monthLabel}</Text>
+        <ThemedText style={{ fontSize: 20, fontWeight: "bold" }}>{monthLabel}</ThemedText>
 
         {/* Next Button */}
         <TouchableOpacity onPress={handleNext}>
-          <Text style={{ fontSize: 18 }}>
+          <ThemedText style={{ fontSize: 18 }}>
             
             <CircleChevronRight size={35} color="#D55B35" />
-          </Text>
+          </ThemedText>
         </TouchableOpacity>
-      </View>
+      </ThemedView>
 
       {/* VIEW MODE BUTTONS */}
-      <View style={{ flexDirection: "row", justifyContent: "center", gap: 15 }}>
+      <ThemedView style={{ flexDirection: "row", justifyContent: "center", gap: 15 }}>
         <TouchableOpacity onPress={() => onChangeView("month")}>
-          <Text
+          <ThemedText
             style={{
               fontWeight: viewMode === "month" ? "bold" : "normal",
               fontSize: 16,
             }}
           >
             Month
-          </Text>
+          </ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => onChangeView("week")}>
-          <Text
+          <ThemedText
             style={{
               fontWeight: viewMode === "week" ? "bold" : "normal",
               fontSize: 16,
             }}
           >
             Week
-          </Text>
+          </ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => onChangeView("day")}>
-          <Text
+          <ThemedText
             style={{
               fontWeight: viewMode === "day" ? "bold" : "normal",
               fontSize: 16,
             }}
           >
             Day
-          </Text>
+          </ThemedText>
         </TouchableOpacity>
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 };
 

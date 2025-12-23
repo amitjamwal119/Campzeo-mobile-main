@@ -144,7 +144,7 @@ export default function Campaigns() {
     <View className="flex-1 p-4 bg-gray-100">
       {loading && (
         <View className="absolute inset-0 justify-center items-center bg-black/10 z-10">
-          <ActivityIndicator size="large" />
+          <ActivityIndicator color={"#D55B35"} size="large" />
         </View>
       )}
 

@@ -1,14 +1,8 @@
-import {
-  Box,
-  Text,
-  VStack,
-  HStack,
-  ScrollView,
-} from "@gluestack-ui/themed";
+import { Box, Text, VStack, HStack, ScrollView } from "@gluestack-ui/themed";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { getCampaigns, getContacts, getUser } from "@/api/dashboardApi";
 
 export default function Insights() {
@@ -39,8 +33,17 @@ export default function Insights() {
 
   if (loading) {
     return (
-      <ThemedView style={styles.center}>
-        <Text style={styles.loadingText}>Loading dashboard...</Text>
+      <ThemedView className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#D55B35" />
+        <ThemedText
+          style={{
+            marginTop: 12,
+            fontSize: 14,
+            color: "#6b7280",
+          }}
+        >
+          Loading dashboard…
+        </ThemedText>
       </ThemedView>
     );
   }
@@ -49,17 +52,12 @@ export default function Insights() {
   const organisationName = organisation?.name ?? "Organisation";
 
   const totalCampaigns =
-    campaignData?.pagination?.total ??
-    campaignData?.campaigns?.length ??
-    0;
+    campaignData?.pagination?.total ?? campaignData?.campaigns?.length ?? 0;
 
   const totalContacts =
-    contactsData?.pagination?.total ??
-    contactsData?.contacts?.length ??
-    0;
+    contactsData?.pagination?.total ?? contactsData?.contacts?.length ?? 0;
 
-  const planName =
-    organisation?.subscriptions?.[0]?.plan?.name ?? "FREE TRIAL";
+  const planName = organisation?.subscriptions?.[0]?.plan?.name ?? "FREE TRIAL";
 
   const trialEndDate = organisation?.trialEndDate
     ? new Date(organisation.trialEndDate).toLocaleDateString()
@@ -69,15 +67,11 @@ export default function Insights() {
     <ThemedView style={styles.container}>
       {/* ================= HEADER ================= */}
       <HStack space="xs" style={styles.header}>
-        <ThemedText style={styles.heading}>
-          Welcome back
-        </ThemedText>
+        <ThemedText style={styles.heading}>Welcome back,</ThemedText>
 
-        <ThemedText style={styles.orgName}>
-          {organisationName}
-        </ThemedText>
+        <ThemedText style={styles.orgName}>{organisationName}</ThemedText>
       </HStack>
-    {/* <Text style={styles.subText}>
+      {/* <Text style={styles.subText}>
           Here’s what’s happening with your account today
         </Text> */}
 
@@ -87,9 +81,7 @@ export default function Insights() {
           <HStack justifyContent="space-between" alignItems="center">
             <VStack>
               <Text style={styles.planLabel}>Current Plan</Text>
-              <ThemedText style={styles.planName}>
-                {planName}
-              </ThemedText>
+              <ThemedText style={styles.planName}>{planName}</ThemedText>
             </VStack>
 
             <Box style={styles.trialBadge}>
@@ -97,9 +89,7 @@ export default function Insights() {
             </Box>
           </HStack>
 
-          <Text style={styles.trialDate}>
-            Trial ends on {trialEndDate}
-          </Text>
+          <Text style={styles.trialDate}>Trial ends on {trialEndDate}</Text>
         </Box>
 
         {/* ================= STATS ================= */}
@@ -107,32 +97,22 @@ export default function Insights() {
           {/* Campaigns */}
           <Box style={styles.statCard}>
             <Text style={styles.statLabel}>Total Campaigns</Text>
-            <ThemedText style={styles.statValue}>
-              {totalCampaigns}
-            </ThemedText>
-            <Text style={styles.statHelper}>
-              Active marketing campaigns
-            </Text>
+            <ThemedText style={styles.statValue}>{totalCampaigns}</ThemedText>
+            <Text style={styles.statHelper}>Active marketing campaigns</Text>
           </Box>
 
           {/* Contacts */}
           <Box style={styles.statCard}>
             <Text style={styles.statLabel}>Total Contacts</Text>
-            <ThemedText style={styles.statValue}>
-              {totalContacts}
-            </ThemedText>
-            <Text style={styles.statHelper}>
-              Audience reach
-            </Text>
+            <ThemedText style={styles.statValue}>{totalContacts}</ThemedText>
+            <Text style={styles.statHelper}>Audience reach</Text>
           </Box>
 
           {/* Team Size */}
           <Box style={styles.statCard}>
             <Text style={styles.statLabel}>Team Size</Text>
             <ThemedText style={styles.statValue}>1</ThemedText>
-            <Text style={styles.statHelper}>
-              Active team members
-            </Text>
+            <Text style={styles.statHelper}>Active team members</Text>
           </Box>
         </VStack>
 
@@ -144,9 +124,7 @@ export default function Insights() {
             {userData?.firstName} {userData?.lastName}
           </ThemedText>
 
-          <Text style={styles.teamEmail}>
-            {userData?.email}
-          </Text>
+          <ThemedText style={styles.teamEmail}>{userData?.email}</ThemedText>
         </Box>
       </ScrollView>
     </ThemedView>
@@ -180,7 +158,7 @@ const styles = StyleSheet.create({
   orgName: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#dc2626",
+    color: "#D55B35",
   },
   subText: {
     fontSize: 14,
@@ -188,7 +166,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   planCard: {
-    backgroundColor: "#dc2626",
+    backgroundColor: "#D55B35",
     borderRadius: 16,
     padding: 20,
     marginBottom: 24,

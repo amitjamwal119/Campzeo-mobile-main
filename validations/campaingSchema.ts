@@ -40,12 +40,7 @@ export const createCampaignSchema = z
   }
 );
 
-
 export type CreateCampaignSchemaType = z.infer<typeof createCampaignSchema>;
-
-
-
-
 
 
 // Create Post Schema

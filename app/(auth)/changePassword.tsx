@@ -1,6 +1,11 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { ScrollView, Pressable, ActivityIndicator, useColorScheme } from "react-native";
+import {
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+  useColorScheme,
+} from "react-native";
 import { VStack, Input, InputField, Heading } from "@gluestack-ui/themed";
 import { Lock, Eye, EyeOff } from "lucide-react-native";
 import { Controller, useForm } from "react-hook-form";
@@ -27,15 +32,18 @@ type ChangePasswordField = {
 export default function ChangePassword({ closeCP }: closeCPType) {
   const { user } = useUser();
 
-  const { control, handleSubmit, formState: { errors } } =
-    useForm<ChangePasswordSchemaType>({
-      resolver: zodResolver(changePasswordSchema),
-      defaultValues: {
-        currentPassword: "",
-        newPassword: "",
-        reEnterNewPassword: "",
-      },
-    });
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ChangePasswordSchemaType>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      reEnterNewPassword: "",
+    },
+  });
 
   // ========= UI States =========
   const [loading, setLoading] = useState(false);
@@ -102,10 +110,15 @@ export default function ChangePassword({ closeCP }: closeCPType) {
   return (
     <ThemedView className="flex-1 p-5 rounded-lg">
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Heading size="lg" className="text-center">
+        <ThemedText
+          style={{
+            fontSize: 23,
+            fontWeight: "700",
+            textAlign: "center",
+          }}
+        >
           Change Password
-        </Heading>
-
+        </ThemedText>
         <VStack space="lg" className="mt-4">
           {fields.map((field, idx) => (
             <VStack space="xs" key={idx}>
@@ -167,7 +180,7 @@ export default function ChangePassword({ closeCP }: closeCPType) {
               onPress={handleSubmit(onSubmit)}
             >
               {loading ? (
-                <ActivityIndicator color="white" />
+                <ActivityIndicator color="#D55B35" />
               ) : (
                 <ThemedText style={{ color: "white", fontWeight: "600" }}>
                   Save Changes

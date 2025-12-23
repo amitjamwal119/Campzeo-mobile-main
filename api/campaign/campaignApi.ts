@@ -51,7 +51,7 @@ export const getCampaignsApi = async (
       headers: { Authorization: `Bearer ${token}` },
       params,
     });
-    console.log("campaigns details:",  response.data);
+    // console.log("campaigns details:",  response.data);
     
     return response.data; 
   } catch (error: any) {
