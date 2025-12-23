@@ -38,8 +38,8 @@ export default function TopBar() {
   return (
     <>
       <ThemedView
-        className="flex-row items-center justify-between bg-white border-b border-gray-200 px-4 pb-3"
-        style={{ paddingTop: 12, minHeight: 60 }}
+        className="flex-row items-center justify-between bg-white border-b border-gray-200 p-3"
+        style={{ minHeight: 60 }}
       >
         {/* Left icon */}
         <TouchableOpacity
@@ -139,8 +139,6 @@ export default function TopBar() {
             <Image
               source={{
                 uri: user.imageUrl,
-
-                // "https://i.pravatar.cc/300?img=12"
               }}
               className="w-10 h-10 rounded-full border border-gray-300"
               alt="User"

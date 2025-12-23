@@ -1,72 +1,65 @@
 import { Tabs } from "expo-router";
-
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-// import { useColorScheme } from "@/hooks/use-color-scheme";
+
+/* ----------------------------- TAB CONFIG ----------------------------- */
+
+const TAB_CONFIG = [
+  {
+    name: "dashboard",
+    title: "Dashboard",
+    icon: "chart.bar",
+  },
+  {
+    name: "logs",
+    title: "Logs",
+    icon: "doc.text",
+  },
+  {
+    name: "campaigns",
+    title: "Campaigns",
+    icon: "map",
+  },
+  {
+    name: "contacts",
+    title: "Contacts",
+    icon: "envelope",
+  },
+  {
+    name: "invoices",
+    title: "Invoices",
+    icon: "receipt",
+  },
+] as const;
+
+/* ----------------------------- COMPONENT ----------------------------- */
 
 export default function BottomBar() {
-  // const colorScheme = useColorScheme();
-
   return (
-    <>
-      <Tabs
-        screenOptions={{
-            tabBarActiveTintColor: '#D55B35',
-            tabBarInactiveTintColor: '#777777ff',
-          headerShown: false,
-          tabBarButton: HapticTab,
-        }}
-      >
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#D55B35",
+        tabBarInactiveTintColor: "#777777ff",
+        headerShown: false,
+        tabBarButton: HapticTab,
+        tabBarStyle: {
+          paddingTop: 5, // 👈 vertical padding
+          height: 75, // 👈 IMPORTANT: increase height
+        },
+      }}
+    >
+      {TAB_CONFIG.map((tab) => (
         <Tabs.Screen
-          name="dashboard"
+          key={tab.name}
+          name={tab.name}
           options={{
-            title: "Dashboard",
+            title: tab.title,
             tabBarIcon: ({ color }) => (
-              <IconSymbol size={29} name="chart.bar" color={color} />
+              <IconSymbol size={29} name={tab.icon} color={color} />
             ),
           }}
         />
-
-        <Tabs.Screen
-          name="logs"
-          options={{
-            title: "Logs",
-            tabBarIcon: ({ color }) => (
-              <IconSymbol size={29} name="doc.text" color={color} />
-            ),
-          }}
-        />
-
-        <Tabs.Screen
-          name="campaigns"
-          options={{
-            title: "Campaigns",
-            tabBarIcon: ({ color }) => (
-              <IconSymbol size={29} name="map" color={color} />
-            ),
-          }}
-        />
-
-        <Tabs.Screen
-          name="contacts"
-          options={{
-            title: "Contacts",
-            tabBarIcon: ({ color }) => (
-              <IconSymbol size={29} name="envelope" color={color} />
-            ),
-          }}
-        />
-
-        <Tabs.Screen
-          name="invoices"
-          options={{
-            title: "Invoices",
-            tabBarIcon: ({ color }) => (
-              <IconSymbol size={29} name="receipt" color={color} />
-            ),
-          }}
-        />
-      </Tabs>
-    </>
+      ))}
+    </Tabs>
   );
 }

@@ -1,11 +1,12 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { TextStyle, TouchableOpacity, useColorScheme } from "react-native";
 import { format, addDays, addWeeks, addMonths } from "date-fns";
 import { CircleChevronLeft, CircleChevronRight } from "lucide-react-native";
 import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
-// import { CalendarHeaderProps } from "react-native-calendars/src/calendar/header";
-// <ion-icon name="chevron-back-circle-outline"></ion-icon>
+
+/* ----------------------------- TYPES ----------------------------- */
+
 interface CalendarHeaderProps {
   currentDate: Date;
   viewMode: "month" | "week" | "day";
@@ -13,31 +14,63 @@ interface CalendarHeaderProps {
   onChangeDate: (date: Date) => void;
 }
 
+/* --------------------------- COMPONENT --------------------------- */
+
 const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   currentDate,
   viewMode,
   onChangeView,
   onChangeDate,
 }) => {
-  // Compute Month Name: "December 2025"
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+
+  /* ---------------------------- COLORS ---------------------------- */
+
+  const ACTIVE_COLOR = "#D55B35";
+
+  const INACTIVE_COLOR = isDark
+    ? "#E5E7EB" // visible on dark background
+    : "#374151"; // visible on light background
+
+  /* ------------------------- FORMAT LABEL ------------------------- */
+
   const monthLabel = format(currentDate, "MMMM yyyy");
 
-  // Navigation handling
+  /* ----------------------- DATE NAVIGATION ------------------------ */
+
   const handlePrev = () => {
     if (viewMode === "month") onChangeDate(addMonths(currentDate, -1));
     else if (viewMode === "week") onChangeDate(addWeeks(currentDate, -1));
-    else if (viewMode === "day") onChangeDate(addDays(currentDate, -1));
+    else onChangeDate(addDays(currentDate, -1));
   };
 
   const handleNext = () => {
     if (viewMode === "month") onChangeDate(addMonths(currentDate, 1));
     else if (viewMode === "week") onChangeDate(addWeeks(currentDate, 1));
-    else if (viewMode === "day") onChangeDate(addDays(currentDate, 1));
+    else onChangeDate(addDays(currentDate, 1));
   };
 
+  /* ---------------------- VIEW MODE STYLES ------------------------ */
+
+  const getViewModeStyle = (mode: "month" | "week" | "day"): TextStyle => ({
+    fontSize: 16,
+    fontWeight: viewMode === mode ? "700" : "400",
+    color: viewMode === mode ? ACTIVE_COLOR : INACTIVE_COLOR,
+    opacity: viewMode === mode ? 1 : 0.75,
+  });
+
+  /* ------------------------------ UI ------------------------------ */
+
   return (
-    <ThemedView style={{ padding: 12, flexDirection: "column", gap: 10 }}>
-      {/* TOP ROW: month name + arrows */}
+    <ThemedView
+      style={{
+        padding: 12,
+        gap: 12,
+      }}
+    >
+      {/* ================= TOP ROW ================= */}
+
       <ThemedView
         style={{
           flexDirection: "row",
@@ -45,60 +78,47 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
           justifyContent: "space-between",
         }}
       >
-        {/* Prev Button */}
+        {/* PREV */}
         <TouchableOpacity onPress={handlePrev}>
-          <Text style={{ fontSize: 18 }}>
-            {/* {"<"} */}
-            {/* <IconSymbol name="arrow-left" size={40} color="#D55B35" /> */}
-            <CircleChevronLeft size={35} color="#D55B35" />
-          </Text>
+          <CircleChevronLeft size={34} color={ACTIVE_COLOR} />
         </TouchableOpacity>
 
-        {/* Current Month Label */}
-        <ThemedText style={{ fontSize: 20, fontWeight: "bold" }}>{monthLabel}</ThemedText>
+        {/* MONTH LABEL */}
+        <ThemedText
+          style={{
+            fontSize: 20,
+            fontWeight: "700",
+            color: ACTIVE_COLOR,
+          }}
+        >
+          {monthLabel}
+        </ThemedText>
 
-        {/* Next Button */}
+        {/* NEXT */}
         <TouchableOpacity onPress={handleNext}>
-          <ThemedText style={{ fontSize: 18 }}>
-            
-            <CircleChevronRight size={35} color="#D55B35" />
-          </ThemedText>
+          <CircleChevronRight size={34} color={ACTIVE_COLOR} />
         </TouchableOpacity>
       </ThemedView>
 
-      {/* VIEW MODE BUTTONS */}
-      <ThemedView style={{ flexDirection: "row", justifyContent: "center", gap: 15 }}>
+      {/* ================= VIEW MODES ================= */}
+
+      <ThemedView
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          gap: 20,
+        }}
+      >
         <TouchableOpacity onPress={() => onChangeView("month")}>
-          <ThemedText
-            style={{
-              fontWeight: viewMode === "month" ? "bold" : "normal",
-              fontSize: 16,
-            }}
-          >
-            Month
-          </ThemedText>
+          <ThemedText style={getViewModeStyle("month")}>Month</ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => onChangeView("week")}>
-          <ThemedText
-            style={{
-              fontWeight: viewMode === "week" ? "bold" : "normal",
-              fontSize: 16,
-            }}
-          >
-            Week
-          </ThemedText>
+          <ThemedText style={getViewModeStyle("week")}>Week</ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => onChangeView("day")}>
-          <ThemedText
-            style={{
-              fontWeight: viewMode === "day" ? "bold" : "normal",
-              fontSize: 16,
-            }}
-          >
-            Day
-          </ThemedText>
+          <ThemedText style={getViewModeStyle("day")}>Day</ThemedText>
         </TouchableOpacity>
       </ThemedView>
     </ThemedView>
