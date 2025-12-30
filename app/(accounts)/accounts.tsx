@@ -18,7 +18,6 @@ import {
   disconnectPlatform,
   getSocialStatus,
 } from "@/api/accountsApi";
-import { View } from "lucide-react-native";
 
 /* ----------------------------- TYPES ----------------------------- */
 
@@ -241,7 +240,7 @@ export default function Accounts() {
           </VStack>
 
           {/* RIGHT: Spacer (balances back button width) */}
-          <View style={{ width: 38 }} />
+          {/* <View style={{ width: 38 }} /> */}
         </HStack>
 
         {/* Cards */}

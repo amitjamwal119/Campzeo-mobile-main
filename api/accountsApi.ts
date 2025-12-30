@@ -15,8 +15,7 @@ export const getPlatform = async (platform: string) => {
 // To check status that wheather user is connected to the platform or not
 export const getSocialStatus = async () => {
   try {
-    const response = await https.get("/user/social-status"
-    );    
+    const response = await https.get("user/social-status");    
     return response.data;
   } catch (error) {
     console.error("Fetching platform Error:", error);
@@ -27,7 +26,7 @@ export const getSocialStatus = async () => {
 // To disconnect the platform post the platform name
 export const disconnectPlatform = async (platform: string) => {
   try {
-    const response = await https.post("/socialmedia/disconnect",{ platform });
+    const response = await https.post("socialmedia/disconnect",{ platform });
     return response.data; 
 
   } catch (error) {

@@ -3,7 +3,7 @@ import https from "./https";
 
 export const getUser = async () => {
   try {
-    const response = await https.get(`/user/me`);    
+    const response = await https.get(`user/me`);    
     // console.log("user details: ",response.data);   
     return response.data;
   } 

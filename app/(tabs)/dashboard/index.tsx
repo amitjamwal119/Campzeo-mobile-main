@@ -55,6 +55,7 @@ export default function Dashboard() {
         fontSize: 14,
         fontWeight: "600",
         textTransform: "none",
+        lineHeight: 7
       }}
     />
   );

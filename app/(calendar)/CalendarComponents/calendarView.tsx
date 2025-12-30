@@ -1,14 +1,14 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Calendar } from "react-native-big-calendar";
 
-import { mapEvents } from "./utils/mapEvents";
-import { groupEventsByDate } from "./utils/groupEventsByDate";
-import { CalendarEvent, Post } from "@/types/types";
-import CalendarHeader from "./calendarHeader";
-import UpcomingPostsList from "./upcomingPostsList";
-import EventModal from "./eventModal";
 import { ThemedView } from "@/components/themed-view";
+import { CalendarEvent, Post } from "@/types/types";
 import { ScrollView } from "react-native-gesture-handler";
+import { groupEventsByDate } from "../../../utils/groupEventsByDate";
+import { mapEvents } from "../../../utils/mapEvents";
+import CalendarHeader from "./calendarHeader";
+import EventModal from "./eventModal";
+import UpcomingPostsList from "./upcomingPostsList";
 
 interface CalendarViewProps {
   posts: Post[]; // Raw posts loaded by CalendarWrapper

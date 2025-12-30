@@ -12,7 +12,7 @@ export default function Insights() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAll = async () => {
+    const fetchInsights = async () => {
       try {
         const user = await getUser();
         const campaigns = await getCampaigns();
@@ -28,7 +28,7 @@ export default function Insights() {
       }
     };
 
-    fetchAll();
+    fetchInsights();
   }, []);
 
   if (loading) {
@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "700",
     marginTop: 8,
+    lineHeight:30
   },
   statHelper: {
     fontSize: 12,

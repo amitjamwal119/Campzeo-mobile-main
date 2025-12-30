@@ -20,7 +20,7 @@ import {
   View,
   Text,
 } from "@gluestack-ui/themed";
-import { LogOut, User, Calendar, Notebook } from "lucide-react-native";
+import { LogOut, User, Calendar, Notebook, Wallet } from "lucide-react-native";
 import { StyleSheet } from "react-native";
 import { useSidebarStore } from "../../store/sidebarStore";
 import { useRouter } from "expo-router";
@@ -57,9 +57,7 @@ export default function Sidebar() {
         <DrawerHeader className="justify-center flex-col gap-2">
           <View style={styles.headerContent}>
             <Avatar size="xl">
-              <AvatarFallbackText
-                sx={{ color: TEXT_COLOR }}
-              >
+              <AvatarFallbackText sx={{ color: TEXT_COLOR }}>
                 {user.username ?? "User"}
               </AvatarFallbackText>
               <AvatarImage source={{ uri: user.imageUrl }} />
@@ -116,6 +114,17 @@ export default function Sidebar() {
               <Icon as={Calendar} size="lg" color={TEXT_COLOR} />
               <Text sx={styles.menuText}>Calendar</Text>
             </Pressable>
+
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                closeSidebar();
+                router.push("/(billing)/billingPage");
+              }}
+            >
+              <Icon as={Wallet} size="lg" color={TEXT_COLOR} />
+              <Text sx={styles.menuText}>Billing</Text>
+            </Pressable>
           </View>
         </DrawerBody>
 
@@ -130,9 +139,7 @@ export default function Sidebar() {
               handleLogout();
             }}
           >
-            <ButtonText sx={{ color: TEXT_COLOR }}>
-              Logout
-            </ButtonText>
+            <ButtonText sx={{ color: TEXT_COLOR }}>Logout</ButtonText>
             <ButtonIcon as={LogOut} color={TEXT_COLOR} />
           </Button>
         </DrawerFooter>

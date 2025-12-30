@@ -1,10 +1,10 @@
-import React from "react";
-import { View, StyleSheet, useColorScheme } from "react-native";
-import { getDateLabel, formatReadableTime } from "./utils/dateHelpers";
-import { CalendarEvent } from "@/types/types";
-import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { CalendarEvent } from "@/types/types";
+import React from "react";
+import { StyleSheet, useColorScheme, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { formatReadableTime, getDateLabel } from "../../../utils/dateHelpers";
 
 interface UpcomingPostsListProps {
   groupedEvents: Record<string, CalendarEvent[]>;

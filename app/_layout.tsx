@@ -60,16 +60,20 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     const inAuthGroup = segments[0] === "(auth)";
 
     if (!isSignedIn && !inAuthGroup) {
-      // Redirect to login
       router.replace("/(auth)/login");
     } else if (isSignedIn && inAuthGroup) {
-      // Redirect to main app
       router.replace("/(tabs)/dashboard");
     }
-  }, [isSignedIn, isLoaded, segments]);
+  }, [isLoaded, isSignedIn, segments]);
+
+  // 🔑 IMPORTANT: block render while auth loads
+  if (!isLoaded) {
+    return null; // or loading spinner
+  }
 
   return <>{children}</>;
 }
+
 
 export const unstable_settings = {
   anchor: "(tabs)",
