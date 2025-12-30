@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋
+# Welcome to Campzeo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
@@ -16,35 +16,163 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+# 🧰 Campzeo App – Tools & Libraries Used
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+This document provides an overview of the major tools and libraries used in the **Campzeo Mobile Application**, along with their purpose and role in the project architecture.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## 🔐 Clerk – Authentication & User Management
 
-When you're ready, run:
+🧩 **Purpose:** Authentication, authorization, and user identity management.
 
-```bash
-npm run reset-project
-```
+**Clerk** is used to handle:
+- Secure user authentication (Sign In / Sign Up)
+- Social login (Google, etc.)
+- Session handling
+- Token-based access for API calls
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+**Why Clerk?**
+- Seamless integration with Expo & React Native
+- Built-in UI components
+- Secure and scalable auth solution
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## 🎨 NativeWind – Styling Library (Tailwind for React Native)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+🧩 **Purpose:** Utility-first styling for React Native.
 
-## Join the community
+**NativeWind** allows writing Tailwind-style classes directly in React Native components.
 
-Join our community of developers creating universal apps.
+**Key Benefits:**
+- Faster UI development
+- Consistent design system
+- Clean and readable styling code
+- Responsive and theme-friendly layouts
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+## 🧱 Gluestack UI – Component Library
+
+🧩 **Purpose:** Prebuilt UI components with theme support.
+
+**Gluestack UI** provides:
+- Reusable UI primitives (Box, VStack, HStack, Text, Button, etc.)
+- Dark & Light mode compatibility
+- Accessibility-first components
+
+**Why Used?**
+- Reduces boilerplate UI code
+- Works well with Expo & NativeWind
+- Consistent component behavior across the app
+
+---
+
+## 📅 React Native Big Calendar – Calendar & Scheduling
+
+🧩 **Purpose:** Display calendar-based events and schedules.
+
+**React Native Big Calendar** is used for:
+- Monthly / weekly / daily calendar views
+- Displaying campaigns, schedules, or logs
+- Interactive event rendering
+
+**Use Case in Campzeo:**
+- Visualizing scheduled campaigns and activities
+- Managing time-based data efficiently
+
+---
+
+## 🧠 Zustand – Global State Management
+
+🧩 **Purpose:** Lightweight state management.
+
+**Zustand** is used to manage:
+- Global app state
+- Shared data between screens
+- UI and logic state without prop drilling
+
+**Advantages:**
+- Simple API
+- No boilerplate (unlike Redux)
+- High performance
+- Easy to scale
+
+---
+
+## 📝 React Hook Form (RHF) – Form Management
+
+🧩 **Purpose:** Handling form state and submission.
+
+**React Hook Form** provides:
+- Efficient form handling
+- Minimal re-renders
+- Easy integration with validation libraries
+
+**Used For:**
+- Login / signup forms
+- Campaign creation forms
+- User input handling
+
+---
+
+## 🛡️ Zod – Schema-Based Validation
+
+🧩 **Purpose:** Form validation and data safety.
+
+**Zod** is used along with RHF to:
+- Define strict validation schemas
+- Validate form inputs
+- Ensure type-safe data handling
+
+**Why Zod?**
+- TypeScript-friendly
+- Clear error messages
+- Strong runtime validation
+
+---
+
+## 🔗 Axios – API Communication
+
+🧩 **Purpose:** HTTP client for backend communication.
+
+**Axios** is used for:
+- Making API requests (GET, POST, PUT, DELETE)
+- Handling request/response interceptors
+- Centralized error handling
+
+**Benefits:**
+- Cleaner syntax than fetch
+- Automatic JSON parsing
+- Interceptor support for auth tokens
+
+---
+
+## 📌 Summary Table
+
+| Tool / Library | Purpose |
+|---------------|--------|
+| Clerk | Authentication & user management |
+| NativeWind | Utility-first styling |
+| Gluestack UI | UI component library |
+| React Native Big Calendar | Calendar & scheduling |
+| Zustand | Global state management |
+| React Hook Form | Form handling |
+| Zod | Form validation |
+| Axios | API communication |
+
+---
+
+## ✅ Conclusion
+
+The **Campzeo app** uses a modern, scalable, and developer-friendly tech stack.  
+Each library is chosen to:
+- Improve performance
+- Maintain clean architecture
+- Enhance developer productivity
+- Ensure a smooth user experience
+
+---
+
+📘 *This document serves as a technical reference for understanding the tools used in the Campzeo application.*
