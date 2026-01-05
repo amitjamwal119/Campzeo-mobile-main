@@ -10,7 +10,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Text,
-  View,
 } from "react-native";
 import GoogleAuth from "./googleAuth";
 
@@ -19,16 +18,15 @@ export default function LoginScreen() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [pendingVerification, setPendingVerification] = useState(false);
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Step 1: Start the sign-in process
   const onSignInPress = async () => {
     if (!isLoaded) return;
-    if (!email) {
-      setError("Please enter your email address");
+
+    if (!email || !password) {
+      setError("Email and password are required");
       return;
     }
 
@@ -36,75 +34,18 @@ export default function LoginScreen() {
     setError("");
 
     try {
-      const { supportedFirstFactors } = await signIn.create({
+      const result = await signIn.create({
         identifier: email,
-      });
-
-      // Find the email code strategy
-      const isEmailCodeFactor = supportedFirstFactors?.find(
-        (factor) => factor.strategy === "email_code"
-      );
-
-      if (isEmailCodeFactor) {
-        // Send the email code
-        const { emailAddressId } = isEmailCodeFactor as any; // Type assertion if needed for older Clerk types
-        await signIn.prepareFirstFactor({
-          strategy: "email_code",
-          emailAddressId: emailAddressId,
-        });
-
-        setPendingVerification(true);
-        setError(""); // Clear any previous errors
-      } else {
-        setError("Email code verification not supported for this account.");
-      }
-    } catch (err: any) {
-      console.log(JSON.stringify(err, null, 2));
-      const code = err?.errors?.[0]?.code;
-      if (code === "form_identifier_not_found") {
-        setError("Account not found. Please register first.");
-      } else {
-        const msg =
-          err?.errors?.[0]?.message || "Failed to send verification code";
-        setError(msg);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Step 2: Verify the code
-  const onPressVerify = async () => {
-    if (!isLoaded) return;
-    if (!code) {
-      setError("Please enter the verification code");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const result = await signIn.attemptFirstFactor({
-        strategy: "email_code",
-        code,
+        password,
       });
 
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
-        // Reset state just in case, though we are navigating away
-        setPendingVerification(false);
-        setEmail("");
-        setCode("");
         router.replace("/(tabs)/dashboard");
-      } else {
-        console.log(result);
-        setError("Verification incomplete. Please check your code.");
       }
     } catch (err: any) {
-      console.error(JSON.stringify(err, null, 2));
-      const msg = err?.errors?.[0]?.message || "Verification failed";
-      setError(msg);
+      console.log(JSON.stringify(err, null, 2));
+      setError(err?.errors?.[0]?.message || "Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -138,109 +79,53 @@ export default function LoginScreen() {
             resizeMode="contain"
           />
 
-          {!pendingVerification ? (
-            <>
-              {/* Step 1: Email Input */}
-              <Input>
-                <InputField
-                  placeholder="Email"
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                />
-              </Input>
+          {/* Email */}
+          <Input>
+            <InputField
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+          </Input>
 
-              {/* Error Display */}
-              {error !== "" && (
-                <Text className="text-red-600 font-medium text-center">
-                  {error}
-                </Text>
-              )}
+          {/* Password */}
+          <Input>
+            <InputField
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+          </Input>
 
-              {/* Get Code Button */}
-              <Button
-                onPress={onSignInPress}
-                isDisabled={loading}
-                className="bg-orange-500 rounded-2xl py-3"
-              >
-                {loading ? (
-                  <ActivityIndicator color="#D55B35" />
-                ) : (
-                  <Text className="text-white font-semibold text-center text-lg">
-                    Get Verification Code
-                  </Text>
-                )}
-              </Button>
-            </>
-          ) : (
-            <>
-              {/* Step 2: Code Input */}
-              <View>
-                <Text className="text-gray-600 text-center mb-2">
-                  Enter the code sent to {email}
-                </Text>
-                <Input>
-                  <InputField
-                    placeholder="Verification Code"
-                    value={code}
-                    onChangeText={setCode}
-                    keyboardType="number-pad"
-                    autoCapitalize="none"
-                  />
-                </Input>
-              </View>
-
-              {/* Error Display */}
-              {error !== "" && (
-                <Text className="text-red-600 font-medium text-center">
-                  {error}
-                </Text>
-              )}
-
-              {/* Verify Code Button */}
-              <Button
-                onPress={onPressVerify}
-                isDisabled={loading}
-                className="bg-orange-500 rounded-2xl py-3"
-              >
-                {loading ? (
-                  <ActivityIndicator color="#D55B35" />
-                ) : (
-                  <Text className="text-white font-semibold text-center text-lg">
-                    Verify Code / Sign In
-                  </Text>
-                )}
-              </Button>
-
-              {/* Back Button (optional, to correct email) */}
-              <Button
-                variant="link"
-                onPress={() => {
-                  setPendingVerification(false);
-                  setError("");
-                  setCode("");
-                }}
-                className="mt-2"
-              >
-                <Text className="text-gray-500 text-sm">Change Email</Text>
-              </Button>
-            </>
+          {/* Error */}
+          {error !== "" && (
+            <Text className="text-red-600 font-medium text-center">
+              {error}
+            </Text>
           )}
 
-          {/* Google Auth Button */}
+          {/* Sign In */}
+          <Button
+            onPress={onSignInPress}
+            isDisabled={loading}
+            className="bg-orange-500 rounded-2xl py-3"
+          >
+            {loading ? (
+              <ActivityIndicator color="#ffffff" />
+            ) : (
+              <Text className="text-white font-semibold text-center text-lg">
+                Sign In
+              </Text>
+            )}
+          </Button>
+
+          {/* Google Auth */}
           <GoogleAuth />
         </BlurView>
       </LinearGradient>
     </KeyboardAvoidingView>
   );
 }
-
-// <Button
-//             onPress={() => router.replace("/(tabs)/dashboard")}
-//             className="bg-blue-600 rounded-2xl py-3 mt-2"
-//           >
-//             <Text className="text-white font-semibold text-center text-lg">
-//               Skip Login (Dev Mode)
-//             </Text>
-//           </Button>

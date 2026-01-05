@@ -1,6 +1,5 @@
 import https from "./https";
 
-
 export const getUser = async () => {
   try {
     const response = await https.get(`user/me`);    

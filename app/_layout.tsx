@@ -95,10 +95,6 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const queryClient = new QueryClient();
 
-  if (!publishableKey) {
-    console.error("Missing EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY");
-  }
-
   return (
     <ClerkProvider publishableKey={publishableKey!} tokenCache={tokenCache}>
       <ClerkLoaded>
@@ -112,23 +108,9 @@ export default function RootLayout() {
               >
                 <GestureHandlerRootView style={{ flex: 1 }}>
                   <QueryClientProvider client={queryClient}>
-                    <Stack
-                      screenOptions={{
-                        headerShown: false,
-                      }}
-                    >
-                      <Stack.Screen
-                        name="(tabs)"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(auth)"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="modal"
-                        options={{ presentation: "modal", title: "Modal" }}
-                      />
+                    <Stack screenOptions={{ headerShown: false }}>
+                      <Stack.Screen name="(auth)" />
+                      <Stack.Screen name="(tabs)" />
                     </Stack>
                     <StatusBar style="auto" />
                   </QueryClientProvider>
@@ -141,3 +123,4 @@ export default function RootLayout() {
     </ClerkProvider>
   );
 }
+

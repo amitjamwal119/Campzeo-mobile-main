@@ -1,31 +1,47 @@
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect } from "react";
+import { ActivityIndicator, Linking } from "react-native";
+
 import BottomBar from "../(common)/bottomBar";
 import Sidebar from "../(common)/sideBar";
 import TopBar from "../(common)/topBar";
-// import { useAuth } from "@clerk/clerk-expo";
-// import { Redirect } from "expo-router";
 
-
+import { useApprovalStore } from "@/store/useApprovalStore";
+import { ThemedView } from "@/components/themed-view";
 
 export default function TabLayout() {
-//  const { isSignedIn, isLoaded } = useAuth();
+  const { isApproved, isChecking, checkApproval } = useApprovalStore();
 
-  // Wait until Clerk loads (prevents flicker)
-  // if (!isLoaded) return null;
+  // 🔁 Check approval once
+  useEffect(() => {
+    if (isApproved === null) {
+      checkApproval();
+    }
+  }, [isApproved]);
 
-  // If user is NOT signed in → go to sign-in page
-  // if (!isSignedIn) {
-  //   return <Redirect href="/(auth)/SignInScreen" />;
-  // }
+  // ⏳ While checking approval
+  if (isChecking || isApproved === null) {
+    return (
+      <ThemedView
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <ActivityIndicator size="large" color="#D55B35" />
+      </ThemedView>
+    );
+  }
 
+  // Not approved → redirect to website
+  if (isApproved === false) {
+    Linking.openURL("https://www.campzeo.com");
+    return null;
+  }
+
+  // Approved → render app UI
   return (
-    <>
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
-        <TopBar />
-        <BottomBar />
-        <Sidebar />
-      </SafeAreaView>
-    </>
+    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+      <TopBar />
+      <BottomBar />
+      <Sidebar />
+    </SafeAreaView>
   );
 }
-

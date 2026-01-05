@@ -7,8 +7,6 @@ import { useState } from "react";
 WebBrowser.maybeCompleteAuthSession();
 
 export default function GoogleAuth() {
-
-    //   const router = useRouter();
     
   const { startSSOFlow } = useSSO();
   const [loading, setLoading] = useState(false);

@@ -74,7 +74,6 @@ export default function Insights() {
       {/* <Text style={styles.subText}>
           Here’s what’s happening with your account today
         </Text> */}
-
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* ================= PLAN CARD ================= */}
         <Box style={styles.planCard}>
