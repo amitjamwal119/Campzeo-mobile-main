@@ -48,7 +48,7 @@ export default function Insights() {
   const [campaignData, setCampaignData] = useState<any>(null);
   const [contactsData, setContactsData] = useState<any>(null);
   const [usageData, setUsageData] = useState<any>(null);
-  const [notificationData, setNotificationData] = useState<any>(null);
+  // const [notificationData, setNotificationData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   /* ================= API ================= */
@@ -65,7 +65,7 @@ export default function Insights() {
         setCampaignData(campaigns);
         setContactsData(contacts);
         setUsageData(usage);
-        setNotificationData(notification);
+        // setNotificationData(notification);
       } catch (error) {
         console.error("Dashboard fetch error:", error);
       } finally {
@@ -116,13 +116,13 @@ export default function Insights() {
     ? new Date(userData.organisation.trialEndDate).toLocaleDateString()
     : "N/A";
 
-  const notifications: NotificationItem[] =
-    notificationData?.data?.notifications ?? [];
+  // const notifications: NotificationItem[] =
+  //   notificationData?.data?.notifications ?? [];
 
   /* ================= HELPERS ================= */
 
-  const formatDate = (date: string) =>
-    new Date(date).toLocaleString();
+  // const formatDate = (date: string) =>
+  //   new Date(date).toLocaleString();
 
   const renderUsageItem = (label: string, data?: UsageItem) => {
     const current = data?.current ?? "-";
@@ -160,7 +160,7 @@ export default function Insights() {
     <ThemedView style={styles.container}>
       {/* HEADER */}
       <HStack style={styles.header}>
-        <ThemedText style={styles.heading}>Welcome back,</ThemedText>
+        <ThemedText style={styles.heading}>Welcome back, </ThemedText>
         <ThemedText style={styles.orgName}>
           {organisationName}
         </ThemedText>
@@ -273,7 +273,7 @@ export default function Insights() {
         </Box>
 
         {/* ================= NOTIFICATIONS ================= */}
-        <Box style={styles.usageCard}>
+        {/* <Box style={styles.usageCard}>
           <ThemedText style={styles.usageName}>
             Recent Activity
           </ThemedText>
@@ -303,7 +303,7 @@ export default function Insights() {
               </Box>
             ))
           )}
-        </Box>
+        </Box> */}
       </ScrollView>
     </ThemedView>
   );
