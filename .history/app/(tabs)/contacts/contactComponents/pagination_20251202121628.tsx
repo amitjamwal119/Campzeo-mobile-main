@@ -59,7 +59,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
               borderWidth: 1,
               borderColor: "#d1d5db",
               marginHorizontal: 5,
-              backgroundColor: currentPage === page ? "#d55b35" : "#ffffff",
+              backgroundColor: currentPage === page ? "#dc2626" : "#ffffff",
               justifyContent: "center",
               alignItems: "center",
             }}

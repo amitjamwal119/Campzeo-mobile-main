@@ -309,7 +309,7 @@ export default function CampaignPostForm({
           <Button
             onPress={handleCreate}
             className="rounded-lg mb-8"
-            style={{ backgroundColor: "#d55b35", borderRadius: }}
+            style={{ backgroundColor: "#dc2626", borderRadius: }}
           >
             <Text style={{ color: "#fff", fontWeight: "bold", textAlign: "center" }}>
               Create Campaign Post

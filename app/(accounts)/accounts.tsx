@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
-import {
-  Alert,
-  ScrollView,
-  ActivityIndicator,
-  useColorScheme,
-} from "react-native";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    useColorScheme,
+} from "react-native";
 
-import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
-import { HStack, VStack, Button, Text, Pressable } from "@gluestack-ui/themed";
+import { ThemedView } from "@/components/themed-view";
+import { Button, HStack, Pressable, Text, VStack } from "@gluestack-ui/themed";
 import * as WebBrowser from "expo-web-browser";
 
 import {
-  getPlatform,
-  disconnectPlatform,
-  getSocialStatus,
+    disconnectPlatform,
+    getPlatform,
+    getSocialStatus,
 } from "@/api/accountsApi";
 
 /* ----------------------------- TYPES ----------------------------- */
@@ -181,7 +181,7 @@ export default function Accounts() {
   if (pageLoading) {
     return (
       <ThemedView className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#D55B35" />
+        <ActivityIndicator size="large" color="#dc2626" />
         <ThemedText
           style={{
             marginTop: 12,

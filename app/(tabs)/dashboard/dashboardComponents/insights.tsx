@@ -1,26 +1,26 @@
-import {
-  Box,
-  Text,
-  VStack,
-  HStack,
-  ScrollView,
-  Center,
-  Progress,
-  ProgressFilledTrack,
-  Pressable,
-} from "@gluestack-ui/themed";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet } from "react-native";
+import { getUsage } from "@/api/billingApi";
 import {
   getCampaigns,
   getContacts,
   getNotifications,
   getUser,
 } from "@/api/dashboardApi";
-import { getUsage } from "@/api/billingApi";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import {
+  Box,
+  Center,
+  HStack,
+  Pressable,
+  Progress,
+  ProgressFilledTrack,
+  ScrollView,
+  Text,
+  VStack,
+} from "@gluestack-ui/themed";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet } from "react-native";
 
 /* ================= TYPES ================= */
 
@@ -80,7 +80,7 @@ export default function Insights() {
   if (loading) {
     return (
       <ThemedView style={styles.loader}>
-        <ActivityIndicator size="large" color="#D55B35" />
+        <ActivityIndicator size="large" color="#dc2626" />
         <ThemedText style={styles.loadingText}>
           Loading dashboard…
         </ThemedText>
@@ -337,12 +337,12 @@ const styles = StyleSheet.create({
   orgName: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#D55B35",
+    color: "#dc2626",
   },
 
   /* PLAN */
   planCard: {
-    backgroundColor: "#D55B35",
+    backgroundColor: "#dc2626",
     borderRadius: 16,
     padding: 20,
     marginBottom: 24,

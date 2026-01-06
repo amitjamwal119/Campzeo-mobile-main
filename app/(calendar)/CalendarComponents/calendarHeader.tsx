@@ -1,9 +1,9 @@
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { addDays, addMonths, addWeeks, format } from "date-fns";
+import { CircleChevronLeft, CircleChevronRight } from "lucide-react-native";
 import React from "react";
 import { TextStyle, TouchableOpacity, useColorScheme } from "react-native";
-import { format, addDays, addWeeks, addMonths } from "date-fns";
-import { CircleChevronLeft, CircleChevronRight } from "lucide-react-native";
-import { ThemedView } from "@/components/themed-view";
-import { ThemedText } from "@/components/themed-text";
 
 /* ----------------------------- TYPES ----------------------------- */
 
@@ -27,7 +27,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
 
   /* ---------------------------- COLORS ---------------------------- */
 
-  const ACTIVE_COLOR = "#D55B35";
+  const ACTIVE_COLOR = "#dc2626";
 
   const INACTIVE_COLOR = isDark
     ? "#E5E7EB" // visible on dark background

@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Input, InputField, FormControl } from "@gluestack-ui/themed";
+import { FormControl, Input, InputField } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useState } from "react";
+import {
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 type Contact = {
   name: string;
@@ -126,7 +126,7 @@ export default function CreateContact({
 
         {/* Header */}
         <View className="flex-row items-center mb-8">
-          <View className="w-14 h-14 rounded-xl bg-[#d55b35] items-center justify-center">
+          <View className="w-14 h-14 rounded-xl bg-[#dc2626] items-center justify-center">
             <Ionicons name="person-add" size={28} color="#fff" />
           </View>
           <View className="ml-4">
@@ -170,7 +170,7 @@ export default function CreateContact({
           onPress={handleCreate}
           className="w-full mt-10 rounded-xl items-center justify-center py-4"
           style={{
-            backgroundColor: "#d55b35",
+            backgroundColor: "#dc2626",
             shadowColor: "#000",
             shadowOpacity: 0.18,
             shadowOffset: { width: 0, height: 6 },

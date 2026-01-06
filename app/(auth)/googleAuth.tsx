@@ -1,7 +1,7 @@
-import { Pressable, Text, ActivityIndicator } from "react-native";
 import { useSSO } from "@clerk/clerk-expo";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
+import { ActivityIndicator, Pressable, Text } from "react-native";
 // import { useRouter } from "expo-router";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -45,7 +45,7 @@ export default function GoogleAuth() {
       }}
     >
       {loading ? (
-        <ActivityIndicator color={"#D55B35"}/>
+        <ActivityIndicator color={"#dc2626"}/>
       ) : (
         <Text style={{ fontSize: 16, fontWeight: "600" }}>
           Continue with Google

@@ -1,22 +1,21 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import {
-  ScrollView,
-  Pressable,
-  ActivityIndicator,
-  useColorScheme,
-} from "react-native";
-import { VStack, Input, InputField, Heading } from "@gluestack-ui/themed";
-import { Lock, Eye, EyeOff } from "lucide-react-native";
+    changePasswordSchema,
+    ChangePasswordSchemaType,
+} from "@/validations/profileSchema";
+import { useUser } from "@clerk/clerk-expo";
+import { Input, InputField, VStack } from "@gluestack-ui/themed";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff, Lock } from "lucide-react-native";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  changePasswordSchema,
-  ChangePasswordSchemaType,
-} from "@/validations/profileSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Text, ToastAndroid } from "react-native";
-import { useUser } from "@clerk/clerk-expo";
-import { useState } from "react";
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    Text, ToastAndroid
+} from "react-native";
 
 type closeCPType = {
   closeCP: () => void;
@@ -65,19 +64,19 @@ export default function ChangePassword({ closeCP }: closeCPType) {
       name: "currentPassword",
       label: "Current Password",
       placeholder: "Enter current password",
-      icon: <Lock size={18} color="#D55B35" />,
+      icon: <Lock size={18} color="#dc2626" />,
     },
     {
       name: "newPassword",
       label: "New Password",
       placeholder: "Enter new password",
-      icon: <Lock size={18} color="#D55B35" />,
+      icon: <Lock size={18} color="#dc2626" />,
     },
     {
       name: "reEnterNewPassword",
       label: "Re-enter New Password",
       placeholder: "Re-enter new password",
-      icon: <Lock size={18} color="#D55B35" />,
+      icon: <Lock size={18} color="#dc2626" />,
     },
   ];
 
@@ -180,7 +179,7 @@ export default function ChangePassword({ closeCP }: closeCPType) {
               onPress={handleSubmit(onSubmit)}
             >
               {loading ? (
-                <ActivityIndicator color="#D55B35" />
+                <ActivityIndicator color="#dc2626" />
               ) : (
                 <ThemedText style={{ color: "white", fontWeight: "600" }}>
                   Save Changes

@@ -58,7 +58,7 @@
 //     <HStack className="px-4 py-3 items-start gap-3">
 //       {/* ICON */}
 //       <Box className="bg-primary-100 p-2 rounded-full">
-//         <Bell size={18} color="#D55B35" />
+//         <Bell size={18} color="#dc2626" />
 //       </Box>
 
 //       {/* TEXT */}
@@ -130,18 +130,18 @@
 
 // Vik code 
 // Old method -------------------------------------------------------------------------------------------------------------------
-import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  SectionList,
-  SafeAreaView,
-} from "react-native";
-import { Text } from "@gluestack-ui/themed";
-import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/themed-view";
+import { Ionicons } from "@expo/vector-icons";
+import { Text } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
+import {
+    SafeAreaView,
+    SectionList,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 // ---------------- SAMPLE NOTIFICATIONS ----------------
 const sampleNotifications = [
@@ -208,7 +208,7 @@ export default function Notifications() {
           <View className="flex-row space-x-2">
             <TouchableOpacity
               onPress={() => setTab("All")}
-              className={`px-4 py-1 rounded-full ${tab === "All" ? "bg-[#d55b35]" : "bg-white"}`}
+              className={`px-4 py-1 rounded-full ${tab === "All" ? "bg-[#dc2626]" : "bg-white"}`}
             >
               <Text style={{ color: tab === "All" ? "#FFFFFF" : "#374151" }} className="font-semibold">
                 All ({notifications.length})
@@ -217,7 +217,7 @@ export default function Notifications() {
 
             <TouchableOpacity
               onPress={() => setTab("Unread")}
-              className={`px-4 py-1 rounded-full ${tab === "Unread" ? "bg-[#d55b35]" : "bg-white"}`}
+              className={`px-4 py-1 rounded-full ${tab === "Unread" ? "bg-[#dc2626]" : "bg-white"}`}
             >
               <Text style={{ color: tab === "Unread" ? "#FFFFFF" : "#374151" }} className="font-semibold">
                 Unread ({unreadCount})
@@ -226,7 +226,7 @@ export default function Notifications() {
           </View>
 
           <TouchableOpacity onPress={markAllAsRead}>
-            <Text className="text-[#d55b35] font-medium">Mark all as read</Text>
+            <Text className="text-[#dc2626] font-medium">Mark all as read</Text>
           </TouchableOpacity>
         </View>
 
@@ -258,7 +258,7 @@ export default function Notifications() {
                     <Text className="text-gray-500 text-sm mt-1">{item.desc}</Text>
                     <Text className="text-gray-400 text-xs mt-2">{item.time}</Text>
                   </View>
-                  {!item.read && <View className="w-3 h-3 bg-[#d55b35] rounded-full mt-1" />}
+                  {!item.read && <View className="w-3 h-3 bg-[#dc2626] rounded-full mt-1" />}
                 </View>
               </TouchableOpacity>
             )}

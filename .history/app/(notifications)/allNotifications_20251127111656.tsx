@@ -58,7 +58,7 @@
 //     <HStack className="px-4 py-3 items-start gap-3">
 //       {/* ICON */}
 //       <Box className="bg-primary-100 p-2 rounded-full">
-//         <Bell size={18} color="#D55B35" />
+//         <Bell size={18} color="#dc2626" />
 //       </Box>
 
 //       {/* TEXT */}
@@ -130,18 +130,18 @@
 
 // Vik code 
 // Old method -------------------------------------------------------------------------------------------------------------------
-import React, { useLayoutEffect, useState } from "react";
-import {
-  TouchableOpacity,
-  TextInput,
-  View,
-  SectionList,
-  SafeAreaView,
-} from "react-native";
-import { Text } from "@gluestack-ui/themed";
-import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/themed-view";
+import { Ionicons } from "@expo/vector-icons";
+import { Text } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
+import { useLayoutEffect, useState } from "react";
+import {
+    SafeAreaView,
+    SectionList,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 // Sample notifications
 const sampleNotifications = [

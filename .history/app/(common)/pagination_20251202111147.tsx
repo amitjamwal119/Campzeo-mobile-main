@@ -60,7 +60,7 @@ export default function Pagination() {
               borderWidth: 1,
               borderColor: "#d1d5db",
               marginRight: 8,
-              backgroundColor: "#d55b35",
+              backgroundColor: "#dc2626",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -106,12 +106,12 @@ export default function Pagination() {
 }
 
 
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import CampaignCard, { Campaign } from "./campaign-components/campaignCard";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { useState } from "react";
+import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 import Pagination from "../contacts/contactComponents/pagination";
+import CampaignCard, { Campaign } from "./campaign-components/campaignCard";
 
 // Map type to icon
 const platformIcons: Record<string, { Icon: any; color: string; name: string }> = {

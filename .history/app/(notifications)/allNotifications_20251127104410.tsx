@@ -1,14 +1,14 @@
-import { FlatList, ListRenderItem } from "react-native";
+import { ThemedText } from "@/components/themed-text";
 import {
-  Box,
-  Text,
-  HStack,
-  VStack,
-  Button,
-  ButtonText,
+    Box,
+    Button,
+    ButtonText,
+    HStack,
+    Text,
+    VStack,
 } from "@gluestack-ui/themed";
 import { Bell } from "lucide-react-native";
-import { ThemedText } from "@/components/themed-text";
+import { FlatList, ListRenderItem } from "react-native";
 
 /** Notification type */
 type NotificationItem = {
@@ -58,7 +58,7 @@ export default function AllNotifications() {
     <HStack className="px-4 py-3 items-start gap-3">
       {/* ICON */}
       <Box className="bg-primary-100 p-2 rounded-full">
-        <Bell size={18} color="#D55B35" />
+        <Bell size={18} color="#dc2626" />
       </Box>
 
       {/* TEXT */}

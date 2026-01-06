@@ -1,23 +1,23 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import {
-  Avatar,
-  AvatarImage,
-  Box,
-  Divider,
-  HStack,
-  Modal,
-  ModalBackdrop,
-  ModalContent,
-  Pressable,
-  VStack,
+    Avatar,
+    AvatarImage,
+    Box,
+    Divider,
+    HStack,
+    Modal,
+    ModalBackdrop,
+    ModalContent,
+    Pressable,
+    VStack,
 } from "@gluestack-ui/themed";
 import {
-  Briefcase,
-  LockKeyhole,
-  Mail,
-  User,
-  UserPen,
+    Briefcase,
+    LockKeyhole,
+    Mail,
+    User,
+    UserPen,
 } from "lucide-react-native";
 import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
 
@@ -26,10 +26,10 @@ import { useEffect, useState } from "react";
 import ChangePassword from "../(auth)/changePassword";
 import EditProfile from "../(auth)/editProfile";
 
-import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { useUser } from "@clerk/clerk-expo";
 import { getUser } from "@/api/dashboardApi";
+import { useUser } from "@clerk/clerk-expo";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function UserProfile() {
   const [userData, setUserData] = useState<any>(null);
@@ -104,7 +104,7 @@ export default function UserProfile() {
           <VStack space="md">
             {/* UserName */}
             <HStack className="items-center gap-3">
-              <User size={22} color="#D55B35" />
+              <User size={22} color="#dc2626" />
 
               <VStack>
                 <ThemedText className="text-sm text-gray-400">
@@ -120,7 +120,7 @@ export default function UserProfile() {
 
             {/* EMAIL */}
             <HStack className="items-center gap-3">
-              <Mail size={20} color="#D55B35" />
+              <Mail size={20} color="#dc2626" />
               <VStack>
                 <ThemedText className="text-sm text-gray-400">Email</ThemedText>
                 <ThemedText className="text-base font-medium">
@@ -133,7 +133,7 @@ export default function UserProfile() {
 
             {/* PHONE */}
             {/* <HStack className="items-center gap-3">
-              <Phone size={20} color="#D55B35" />
+              <Phone size={20} color="#dc2626" />
               <VStack>
                 <ThemedText className="text-sm text-gray-400">Phone</ThemedText>
                 <ThemedText className="text-base font-medium">
@@ -146,7 +146,7 @@ export default function UserProfile() {
 
             {/* Organisation */}
             <HStack className="items-center gap-3">
-              <Briefcase size={20} color="#D55B35" />
+              <Briefcase size={20} color="#dc2626" />
               <VStack>
                 <ThemedText className="text-sm text-gray-400">
                   Organisation
@@ -164,7 +164,7 @@ export default function UserProfile() {
         <VStack className="mt-8" space="md">
           {/* EDIT PROFILE */}
           <TouchableOpacity
-            className="bg-[#D55B35] rounded-xl py-4 flex-row items-center justify-center gap-2"
+            className="bg-[#dc2626] rounded-xl py-4 flex-row items-center justify-center gap-2"
             onPress={() => setEditProfile(true)}
           >
             <UserPen size={20} color="white" />

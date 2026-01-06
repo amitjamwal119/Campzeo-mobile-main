@@ -70,7 +70,7 @@ export default function TopBar() {
             trigger={(triggerProps) => {
               return (
                 <Button {...triggerProps} variant="link">
-                  <IconSymbol name="notifications" size={25} color="#D55B35" />
+                  <IconSymbol name="notifications" size={25} color="#dc2626" />
                 </Button>
               );
             }}

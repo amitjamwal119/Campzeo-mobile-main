@@ -1,22 +1,22 @@
-import { Image, TouchableOpacity } from "react-native";
+import { useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { useUser } from "@clerk/clerk-expo";
+import { Image, TouchableOpacity } from "react-native";
 
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useSidebarStore } from "../../store/sidebarStore";
 
 import {
-  Popover,
-  PopoverContent,
-  PopoverBody,
-  PopoverArrow,
-  PopoverBackdrop,
-  Button,
-  ButtonText,
-  Box,
-  Text,
+    Box,
+    Button,
+    ButtonText,
+    Popover,
+    PopoverArrow,
+    PopoverBackdrop,
+    PopoverBody,
+    PopoverContent,
+    Text,
 } from "@gluestack-ui/themed";
 
 export default function TopBar() {
@@ -58,7 +58,7 @@ export default function TopBar() {
           size="lg"
           trigger={(triggerProps) => (
             <Button {...triggerProps} variant="link">
-              <IconSymbol name="notifications" size={25} color="#D55B35" />
+              <IconSymbol name="notifications" size={25} color="#dc2626" />
             </Button>
           )}
         >
