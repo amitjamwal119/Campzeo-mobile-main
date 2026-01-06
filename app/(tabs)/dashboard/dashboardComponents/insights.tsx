@@ -1,26 +1,71 @@
-import { Box, Text, VStack, HStack, ScrollView } from "@gluestack-ui/themed";
+import {
+  Box,
+  Text,
+  VStack,
+  HStack,
+  ScrollView,
+  Center,
+  Progress,
+  ProgressFilledTrack,
+  Pressable,
+} from "@gluestack-ui/themed";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
-import { getCampaigns, getContacts, getUser } from "@/api/dashboardApi";
+import {
+  getCampaigns,
+  getContacts,
+  getNotifications,
+  getUser,
+} from "@/api/dashboardApi";
+import { getUsage } from "@/api/billingApi";
+import { useRouter } from "expo-router";
+
+/* ================= TYPES ================= */
+
+type UsageItem = {
+  current?: number;
+  limit?: number;
+  percentage?: number;
+  isNearLimit?: boolean;
+};
+
+type NotificationItem = {
+  id: number;
+  message: string;
+  platform: string | null;
+  createdAt: string;
+  isRead: boolean;
+};
+
+/* ================= COMPONENT ================= */
 
 export default function Insights() {
+  const routePage = useRouter();
+
   const [userData, setUserData] = useState<any>(null);
   const [campaignData, setCampaignData] = useState<any>(null);
   const [contactsData, setContactsData] = useState<any>(null);
+  const [usageData, setUsageData] = useState<any>(null);
+  const [notificationData, setNotificationData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  /* ================= API ================= */
   useEffect(() => {
     const fetchInsights = async () => {
       try {
         const user = await getUser();
         const campaigns = await getCampaigns();
         const contacts = await getContacts();
+        const usage = await getUsage();
+        const notification = await getNotifications();
 
         setUserData(user);
         setCampaignData(campaigns);
         setContactsData(contacts);
+        setUsageData(usage);
+        setNotificationData(notification);
       } catch (error) {
         console.error("Dashboard fetch error:", error);
       } finally {
@@ -31,51 +76,98 @@ export default function Insights() {
     fetchInsights();
   }, []);
 
+  /* ================= LOADING ================= */
   if (loading) {
     return (
-      <ThemedView className="flex-1 items-center justify-center">
+      <ThemedView style={styles.loader}>
         <ActivityIndicator size="large" color="#D55B35" />
-        <ThemedText
-          style={{
-            marginTop: 12,
-            fontSize: 14,
-            color: "#6b7280",
-          }}
-        >
+        <ThemedText style={styles.loadingText}>
           Loading dashboard…
         </ThemedText>
       </ThemedView>
     );
   }
 
-  const organisation = userData?.organisation;
-  const organisationName = organisation?.name ?? "Organisation";
+  /* ================= DERIVED DATA ================= */
+
+  const organisationName =
+    userData?.organisation?.name ?? "Organisation";
 
   const totalCampaigns =
-    campaignData?.pagination?.total ?? campaignData?.campaigns?.length ?? 0;
+    campaignData?.pagination?.total ??
+    campaignData?.campaigns?.length ??
+    "-";
 
   const totalContacts =
-    contactsData?.pagination?.total ?? contactsData?.contacts?.length ?? 0;
+    contactsData?.pagination?.total ??
+    contactsData?.contacts?.length ??
+    "-";
 
-  const planName = organisation?.subscriptions?.[0]?.plan?.name ?? "FREE TRIAL";
+  const teamSize =
+    usageData?.usage?.users?.current ??
+    userData?.organisation?.users?.length ??
+    1;
 
-  const trialEndDate = organisation?.trialEndDate
-    ? new Date(organisation.trialEndDate).toLocaleDateString()
+  const planName =
+    userData?.organisation?.subscriptions?.[0]?.plan?.name ??
+    "FREE TRIAL";
+
+  const trialEndDate = userData?.organisation?.trialEndDate
+    ? new Date(userData.organisation.trialEndDate).toLocaleDateString()
     : "N/A";
+
+  const notifications: NotificationItem[] =
+    notificationData?.data?.notifications ?? [];
+
+  /* ================= HELPERS ================= */
+
+  const formatDate = (date: string) =>
+    new Date(date).toLocaleString();
+
+  const renderUsageItem = (label: string, data?: UsageItem) => {
+    const current = data?.current ?? "-";
+    const limit = data?.limit ?? "-";
+    const percentage =
+      typeof data?.percentage === "number" ? data.percentage : 0;
+
+    const progressColor = data?.isNearLimit
+      ? "#f97316"
+      : "#22c55e";
+
+    return (
+      <VStack style={{ marginBottom: 16 }}>
+        <HStack justifyContent="space-between">
+          <ThemedText>{label}</ThemedText>
+          <ThemedText>
+            {current}/{limit}
+          </ThemedText>
+        </HStack>
+
+        <Center style={{ marginTop: 6 }}>
+          <Progress value={percentage} size="sm">
+            <ProgressFilledTrack
+              style={{ backgroundColor: progressColor }}
+            />
+          </Progress>
+        </Center>
+      </VStack>
+    );
+  };
+
+  /* ================= UI ================= */
 
   return (
     <ThemedView style={styles.container}>
-      {/* ================= HEADER ================= */}
-      <HStack space="xs" style={styles.header}>
+      {/* HEADER */}
+      <HStack style={styles.header}>
         <ThemedText style={styles.heading}>Welcome back,</ThemedText>
-
-        <ThemedText style={styles.orgName}>{organisationName}</ThemedText>
+        <ThemedText style={styles.orgName}>
+          {organisationName}
+        </ThemedText>
       </HStack>
-      {/* <Text style={styles.subText}>
-          Here’s what’s happening with your account today
-        </Text> */}
+
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* ================= PLAN CARD ================= */}
+        {/* PLAN CARD */}
         <Box style={styles.planCard}>
           <HStack justifyContent="space-between" alignItems="center">
             <VStack>
@@ -83,47 +175,134 @@ export default function Insights() {
               <ThemedText style={styles.planName}>{planName}</ThemedText>
             </VStack>
 
-            <Box style={styles.trialBadge}>
-              <Text style={styles.trialText}>Trial</Text>
-            </Box>
+            <Pressable
+              style={styles.trialBadge}
+              onPress={() =>
+                routePage.push("/(billing)/billingPage")
+              }
+            >
+              <Text style={styles.trialText}>Manage Billing</Text>
+            </Pressable>
           </HStack>
 
-          <Text style={styles.trialDate}>Trial ends on {trialEndDate}</Text>
+          <Text style={styles.trialDate}>
+            Trial ends on {trialEndDate}
+          </Text>
         </Box>
 
         {/* ================= STATS ================= */}
-        <VStack space="md" style={styles.section}>
-          {/* Campaigns */}
-          <Box style={styles.statCard}>
-            <Text style={styles.statLabel}>Total Campaigns</Text>
-            <ThemedText style={styles.statValue}>{totalCampaigns}</ThemedText>
-            <Text style={styles.statHelper}>Active marketing campaigns</Text>
-          </Box>
+        <VStack style={styles.section}>
+          <HStack style={styles.statsRow}>
+            <Box style={styles.statCard}>
+              <Text style={styles.statLabel}>Total Campaigns</Text>
+              <ThemedText style={styles.statValue}>
+                {totalCampaigns}
+              </ThemedText>
+              <ThemedText style={styles.statSubtext}>
+                Total Active Campaigns
+              </ThemedText>
+            </Box>
 
-          {/* Contacts */}
-          <Box style={styles.statCard}>
-            <Text style={styles.statLabel}>Total Contacts</Text>
-            <ThemedText style={styles.statValue}>{totalContacts}</ThemedText>
-            <Text style={styles.statHelper}>Audience reach</Text>
-          </Box>
+            <Box style={styles.statCard}>
+              <Text style={styles.statLabel}>Total Contacts</Text>
+              <ThemedText style={styles.statValue}>
+                {totalContacts}
+              </ThemedText>
+              <ThemedText style={styles.statSubtext}>
+                Audience Reached
+              </ThemedText>
+            </Box>
+          </HStack>
 
-          {/* Team Size */}
-          <Box style={styles.statCard}>
+          <Box style={[styles.statCard, styles.statCardFull]}>
             <Text style={styles.statLabel}>Team Size</Text>
-            <ThemedText style={styles.statValue}>1</ThemedText>
-            <Text style={styles.statHelper}>Active team members</Text>
+            <ThemedText style={styles.statValue}>{teamSize}</ThemedText>
+            <ThemedText style={styles.statSubtext}>
+              Active team members
+            </ThemedText>
           </Box>
         </VStack>
 
-        {/* ================= TEAM MEMBER ================= */}
-        <Box style={styles.teamCard}>
-          <Text style={styles.teamLabel}>Team Members</Text>
-
-          <ThemedText style={styles.teamName}>
-            {userData?.firstName} {userData?.lastName}
+        {/* ================= USAGE ================= */}
+        <Box style={styles.usageCard}>
+          <ThemedText style={styles.usageName}>
+            Usage Details
+          </ThemedText>
+          <ThemedText style={styles.usageLabel}>
+            Detailed breakdown of your usage and limits
           </ThemedText>
 
-          <ThemedText style={styles.teamEmail}>{userData?.email}</ThemedText>
+          {renderUsageItem(
+            "Monthly Posts",
+            usageData?.usage?.postsThisMonth
+          )}
+          {renderUsageItem(
+            "Total Contacts",
+            usageData?.usage?.contacts
+          )}
+          {renderUsageItem(
+            "Campaigns",
+            usageData?.usage?.campaigns
+          )}
+          {renderUsageItem(
+            "Platform Connections",
+            usageData?.usage?.platforms
+          )}
+          {renderUsageItem(
+            "Team Members",
+            usageData?.usage?.users
+          )}
+        </Box>
+
+        {/* ================= TEAM ================= */}
+        <Box style={styles.usageCard}>
+          <ThemedText style={styles.usageName}>Team Members</ThemedText>
+
+          <HStack justifyContent="space-between" alignItems="center">
+            <VStack>
+              <ThemedText>
+                {userData?.firstName} {userData?.lastName}
+              </ThemedText>
+              <ThemedText>{userData?.email}</ThemedText>
+            </VStack>
+
+            <Box style={styles.roleBadge}>
+              <Text style={styles.badgeText}>{userData?.role}</Text>
+            </Box>
+          </HStack>
+        </Box>
+
+        {/* ================= NOTIFICATIONS ================= */}
+        <Box style={styles.usageCard}>
+          <ThemedText style={styles.usageName}>
+            Recent Activity
+          </ThemedText>
+
+          {notifications.length === 0 ? (
+            <ThemedText>-</ThemedText>
+          ) : (
+            notifications.map((item) => (
+              <Box key={item.id} style={styles.notificationItem}>
+                <ThemedText style={styles.notificationMessage}>
+                  {item.message}
+                </ThemedText>
+
+                <HStack justifyContent="space-between">
+                  <ThemedText style={styles.notificationDate}>
+                    {formatDate(item.createdAt)}
+                  </ThemedText>
+
+                  {item.platform && (
+                    <Box style={styles.platformBadge}>
+                      <Text style={styles.badgeText}>
+                        {item.platform}
+                      </Text>
+                    </Box>
+                  )}
+                </HStack>
+              </Box>
+            ))
+          )}
         </Box>
       </ScrollView>
     </ThemedView>
@@ -138,14 +317,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 20,
   },
-  center: {
+  loader: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
   },
   loadingText: {
-    color: "#6b7280",
+    marginTop: 12,
     fontSize: 14,
+    color: "#6b7280",
   },
   header: {
     marginBottom: 24,
@@ -159,11 +339,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#D55B35",
   },
-  subText: {
-    fontSize: 14,
-    color: "#6b7280",
-    marginTop: 4,
-  },
+
+  /* PLAN */
   planCard: {
     backgroundColor: "#D55B35",
     borderRadius: 16,
@@ -178,13 +355,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "600",
-    marginTop: 2,
   },
   trialBadge: {
     backgroundColor: "rgba(255,255,255,0.2)",
     paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 20,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
   trialText: {
     color: "#fff",
@@ -196,49 +372,89 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 12,
   },
+
+  /* STATS */
   section: {
     marginBottom: 24,
   },
+  statsRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 12,
+  },
   statCard: {
+    flex: 1,
     borderWidth: 1,
     borderColor: "#e5e7eb",
     borderRadius: 16,
-    padding: 20,
+    padding: 16,
+    minHeight: 130,
+    justifyContent: "space-between",
+  },
+  statCardFull: {
+    width: "100%",
   },
   statLabel: {
-    fontSize: 14,
+    fontSize: 13,
     color: "#6b7280",
   },
   statValue: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: "700",
-    marginTop: 8,
-    lineHeight:30
   },
-  statHelper: {
+  statSubtext: {
     fontSize: 12,
-    color: "#6b7280",
-    marginTop: 8,
+    color: "#9ca3af",
   },
-  teamCard: {
+
+  /* USAGE */
+  usageCard: {
     borderWidth: 1,
     borderColor: "#e5e7eb",
     borderRadius: 16,
     padding: 20,
-    marginBottom: 32,
+    marginBottom: 24,
   },
-  teamLabel: {
-    fontSize: 14,
-    color: "#6b7280",
-    marginBottom: 8,
-  },
-  teamName: {
+  usageName: {
     fontSize: 18,
     fontWeight: "600",
   },
-  teamEmail: {
+  usageLabel: {
     fontSize: 14,
-    color: "#4b5563",
-    marginTop: 4,
+    color: "#6b7280",
+    marginBottom: 12,
+  },
+
+  /* BADGES */
+  roleBadge: {
+    backgroundColor: "#e0f2fe",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  platformBadge: {
+    backgroundColor: "#ede9fe",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  badgeText: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+
+  /* NOTIFICATIONS */
+  notificationItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+    paddingVertical: 12,
+  },
+  notificationMessage: {
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  notificationDate: {
+    fontSize: 12,
+    color: "#6b7280",
   },
 });

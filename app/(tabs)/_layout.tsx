@@ -1,6 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect } from "react";
-import { ActivityIndicator, Linking } from "react-native";
+import { Linking } from "react-native";
 
 import BottomBar from "../(common)/bottomBar";
 import Sidebar from "../(common)/sideBar";
@@ -8,6 +8,7 @@ import TopBar from "../(common)/topBar";
 
 import { useApprovalStore } from "@/store/useApprovalStore";
 import { ThemedView } from "@/components/themed-view";
+import { Image } from "react-native";
 
 export default function TabLayout() {
   const { isApproved, isChecking, checkApproval } = useApprovalStore();
@@ -25,7 +26,12 @@ export default function TabLayout() {
       <ThemedView
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
-        <ActivityIndicator size="large" color="#D55B35" />
+        <Image
+          source={require("../../assets/app-images/camp-logo.png")}
+          style={{ width: 330, height: 170, borderRadius: 6 }}
+          resizeMode="contain"
+          alt="CampZeo logo"
+        />
       </ThemedView>
     );
   }

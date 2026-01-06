@@ -5,6 +5,7 @@ import React from "react";
 import { StyleSheet, useColorScheme, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { formatReadableTime, getDateLabel } from "../../../utils/dateHelpers";
+import { Center } from "@gluestack-ui/themed";
 
 interface UpcomingPostsListProps {
   groupedEvents: Record<string, CalendarEvent[]>;
@@ -13,28 +14,54 @@ interface UpcomingPostsListProps {
 const UpcomingPostsList: React.FC<UpcomingPostsListProps> = ({
   groupedEvents,
 }) => {
-  const dateKeys = Object.keys(groupedEvents).sort();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const now = new Date();
 
-  if (dateKeys.length === 0) {
+  // 🔥 Filter only future events
+  const futureGroupedEvents: Record<string, CalendarEvent[]> = {};
+
+  Object.entries(groupedEvents).forEach(([dateKey, events]) => {
+    const futureEvents = events.filter(
+      (event) => new Date(event.start) > now
+    );
+
+    if (futureEvents.length > 0) {
+      futureGroupedEvents[dateKey] = futureEvents;
+    }
+  });
+
+  const futureDateKeys = Object.keys(futureGroupedEvents).sort();
+
+  // ✅ No upcoming posts case
+  if (futureDateKeys.length === 0) {
     return (
-      <View style={{ padding: 16 }}>
-        <ThemedText>No upcoming posts.</ThemedText>
-      </View>
+      <ThemedView>
+        <ThemedText className="text-center  my-7">No upcoming posts.</ThemedText>
+      </ThemedView>
     );
   }
 
   return (
     <ScrollView>
       <ThemedView style={styles.container}>
-        {dateKeys.map((dateKey) => {
-          const eventsForDate = groupedEvents[dateKey];
+        <ThemedText
+          style={{
+            fontSize: 25,
+            fontWeight: "700",
+            marginVertical: 10,
+            lineHeight: 36,
+          }}
+        >
+          Upcoming Posts
+        </ThemedText>
+
+        {futureDateKeys.map((dateKey) => {
+          const eventsForDate = futureGroupedEvents[dateKey];
           const readableDateLabel = getDateLabel(dateKey);
 
           return (
             <ThemedView key={dateKey} style={styles.dateSection}>
-              {/* DATE HEADER */}
               <ThemedText
                 style={[
                   styles.dateHeader,
@@ -44,7 +71,6 @@ const UpcomingPostsList: React.FC<UpcomingPostsListProps> = ({
                 {readableDateLabel}
               </ThemedText>
 
-              {/* EVENTS */}
               {eventsForDate.map((event) => (
                 <ThemedView
                   key={event.id}
@@ -56,7 +82,6 @@ const UpcomingPostsList: React.FC<UpcomingPostsListProps> = ({
                     },
                   ]}
                 >
-                  {/* PLATFORM + CAMPAIGN */}
                   <ThemedText
                     style={[
                       styles.title,
@@ -66,7 +91,6 @@ const UpcomingPostsList: React.FC<UpcomingPostsListProps> = ({
                     {event.platform.toUpperCase()} — {event.campaign}
                   </ThemedText>
 
-                  {/* TIME */}
                   <ThemedText
                     style={[
                       styles.time,
@@ -84,6 +108,7 @@ const UpcomingPostsList: React.FC<UpcomingPostsListProps> = ({
     </ScrollView>
   );
 };
+
 
 export default UpcomingPostsList;
 const styles = StyleSheet.create({

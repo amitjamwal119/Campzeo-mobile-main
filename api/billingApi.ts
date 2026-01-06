@@ -1,11 +1,4 @@
-
 import https from "./https";
-
-// user/me is in dashboardApi.ts - getUser
-// https://www.campzeo.com/api/payments
-// https://www.campzeo.com/api/subscription/current
-
-
 
 // Post wali apis
 // plan select krke post krne wali
@@ -36,15 +29,6 @@ export const getCurrentSubscription = async () => {
   }
 };
 
-
-//payload: {autoRenew: true}
-//     { "success": true,
-//     "message": "Auto-renew enabled successfully",
-//     "subscription": {
-//         "id": 28,
-//         "autoRenew": true
-//     }
-// }
 
 export const updateAutoRenew = async (autoRenew: boolean) => {
   try {
@@ -80,7 +64,7 @@ export const cancelSubscription = async (subscription: boolean, message: string)
 export const getPlans = async () => {
   try {
     const response = await https.get(`plans`);    
-    console.log("Plans details: ",response.data);   
+    // console.log("Plans details: ",response.data);   
     return response.data;
   } 
   catch (error) {
@@ -103,34 +87,3 @@ export const getPayments = async () => {
 };
 
 
-// Razorpay 
-
-
-// https://www.campzeo.com/api/razorpay/create-order
-// Payload data: {plan: "PROFESSIONAL", isSignup: false, metadata: {activationTiming: "IMMEDIATE"}}
-
-
-
-// https://www.campzeo.com/api/razorpay/verify-payment
-// Payload data:  {razorpay_order_id: "order_Rxn28HqAkbRug6", razorpay_payment_id: "pay_RxnCscIcQggBJl",…}
-// isSignup
-// : 
-// false
-// metadata
-// : 
-// {activationTiming: "IMMEDIATE"}
-// plan
-// : 
-// "PROFESSIONAL"
-// razorpay_order_id
-// : 
-// "order_Rxn28HqAkbRug6"
-// razorpay_payment_id
-// : 
-// "pay_RxnCscIcQggBJl"
-// razorpay_signature
-// : 
-// "2638aad9cc2bafb97955cd2578bd8d3c5c1d37ca44d0fb1c01036edfc9685278"
-
-// post api after razorpay selection 
-// https://www.campzeo.com/organisation?_rsc=1fyjd

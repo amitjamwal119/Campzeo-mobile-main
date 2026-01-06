@@ -228,7 +228,7 @@ export default function BillingPage() {
                 </HStack>
 
                 <Center style={{ marginTop: 6 }}>
-                  <Progress value={percentage} size="md">
+                  <Progress value={percentage} size="sm">
                     <ProgressFilledTrack
                       style={{
                         backgroundColor: item?.isNearLimit ? "#ef4444" : ACCENT,
