@@ -1,29 +1,16 @@
-import { useUser } from "@clerk/clerk-expo";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useAuth, useUser } from "@clerk/clerk-expo";
+import { router, useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { Image, TouchableOpacity } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
-import { Image, TouchableOpacity } from "react-native";
-import { router, useRouter, useFocusEffect } from "expo-router";
-import { useUser, useAuth } from "@clerk/clerk-expo";
-import {  } from "@gluestack-ui/themed";
 
+import { getNotificationsApi } from "@/api/notification/notificationApi";
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useSidebarStore } from "../../store/sidebarStore";
-import { getNotificationsApi } from "@/api/notification/notificationApi";
 
 import {
-    Box,
-    Button,
-    ButtonText,
-    Popover,
-    PopoverArrow,
-    PopoverBackdrop,
-    PopoverBody,
-    PopoverContent,
-    Text,
-     useColorMode
+  Text,
+  useColorMode
 } from "@gluestack-ui/themed";
 
 export default function TopBar() {
@@ -34,7 +21,7 @@ export default function TopBar() {
 
   const [unreadCount, setUnreadCount] = useState<number>(0);
 
-  const colorMode = useColorMode(); 
+  const colorMode = useColorMode();
   const iconColor = colorMode === "dark" ? "#ffffff" : "#000000";
 
   // ---------------- FETCH UNREAD COUNT ----------------
