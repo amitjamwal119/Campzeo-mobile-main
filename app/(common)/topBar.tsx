@@ -1,13 +1,30 @@
+import { useUser } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Image, TouchableOpacity } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, TouchableOpacity } from "react-native";
 import { router, useRouter, useFocusEffect } from "expo-router";
 import { useUser, useAuth } from "@clerk/clerk-expo";
-import { Text, useColorMode } from "@gluestack-ui/themed";
+import {  } from "@gluestack-ui/themed";
 
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useSidebarStore } from "../../store/sidebarStore";
 import { getNotificationsApi } from "@/api/notification/notificationApi";
+
+import {
+    Box,
+    Button,
+    ButtonText,
+    Popover,
+    PopoverArrow,
+    PopoverBackdrop,
+    PopoverBody,
+    PopoverContent,
+    Text,
+     useColorMode
+} from "@gluestack-ui/themed";
 
 export default function TopBar() {
   const routePage = useRouter();

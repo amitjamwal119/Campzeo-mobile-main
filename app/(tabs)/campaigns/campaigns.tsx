@@ -1,21 +1,21 @@
+import {
+    deleteCampaignApi,
+    getCampaignsApi,
+} from "@/api/campaign/campaignApi";
+import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Text, View } from "@gluestack-ui/themed";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  FlatList,
-  Share,
-  TextInput,
-  TouchableOpacity,
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    Share,
+    TextInput,
+    TouchableOpacity,
 } from "react-native";
 import CampaignCard, { Campaign } from "./campaignComponents/campaignCard";
-import { useAuth } from "@clerk/clerk-expo";
-import {
-  getCampaignsApi,
-  deleteCampaignApi,
-} from "@/api/campaign/campaignApi";
 
 export default function Campaigns() {
   const [search, setSearch] = useState("");
@@ -161,7 +161,7 @@ export default function Campaigns() {
     <View className="flex-1 p-4 bg-gray-100">
       {loading && (
         <View className="absolute inset-0 justify-center items-center bg-black/10 z-10">
-          <ActivityIndicator color={"#D55B35"} size="large" />
+          <ActivityIndicator color={"#dc2626"} size="large" />
         </View>
       )}
 

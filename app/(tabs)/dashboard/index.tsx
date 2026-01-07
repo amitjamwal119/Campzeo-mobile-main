@@ -1,8 +1,8 @@
-import { ThemedView } from "@/components/themed-view";
-import { View, useWindowDimensions, useColorScheme } from "react-native";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { useState } from "react";
 import CalendarWrapper from "@/app/(common)/calendarWrapper";
+import { ThemedView } from "@/components/themed-view";
+import { useState } from "react";
+import { View, useColorScheme, useWindowDimensions } from "react-native";
+import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import Insights from "./dashboardComponents/insights";
 
 export default function Dashboard() {
@@ -46,10 +46,10 @@ export default function Dashboard() {
         borderBottomColor: isDark ? "#1e293b" : "#e5e7eb",
       }}
       indicatorStyle={{
-        backgroundColor: "#D55B35", // active tab underline
+        backgroundColor: "#dc2626", // active tab underline
         height: 3,
       }}
-      activeColor={"#D55B35"}
+      activeColor={"#dc2626"}
       inactiveColor={isDark ? "#777777ff" : "#777777ff"}
       labelStyle={{
         fontSize: 14,

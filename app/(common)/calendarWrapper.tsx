@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { Text, ActivityIndicator } from "react-native";
 import { getScheduledPosts } from "@/api/calanderApi";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Text } from "react-native";
 // import CalendarView from "../(calander)/CalenderComponents/calendarView";
-import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
 import CalendarView from "../(calendar)/CalendarComponents/calendarView";
 
 const CalendarWrapper = () => {
@@ -33,7 +33,7 @@ const CalendarWrapper = () => {
   if (loading) {
     return (
       <ThemedView className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#D55B35" />
+        <ActivityIndicator size="large" color="#dc2626" />
         <ThemedText
           style={{
             marginTop: 12,

@@ -1,20 +1,18 @@
-import React, { useState } from "react";
-import {
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-  View as RNView,
-} from "react-native";
-import { Text, Button, View } from "@gluestack-ui/themed";
-import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from "@react-native-picker/picker";
-import { router } from "expo-router";
-import { useAuth } from "@clerk/clerk-expo";
 import { createPostForCampaignApi } from "@/api/campaign/campaignApi";
+import { useAuth } from "@clerk/clerk-expo";
+import { Ionicons } from "@expo/vector-icons";
+import { Button, Text, View } from "@gluestack-ui/themed";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { router } from "expo-router";
+import { useState } from "react";
+import {
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    TextInput,
+    TouchableOpacity
+} from "react-native";
 
 interface CampaignPostData {
   subject: string;
@@ -205,7 +203,7 @@ export default function CampaignPostForm({
           <Button
             onPress={handleCreate}
             className="rounded-full mt-6 mb-10"
-            style={{ backgroundColor: "#d55b35" }}
+            style={{ backgroundColor: "#dc2626" }}
           >
             <Text className="text-white font-bold text-center">
               Create Campaign Post

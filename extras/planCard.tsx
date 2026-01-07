@@ -30,7 +30,7 @@
 // import { Check, CheckCheck } from "lucide-react-native";
 // import { Pressable, useColorScheme } from "react-native";
 
-// const ACCENT = "#D55B35";
+// const ACCENT = "#dc2626";
 // const MUTED = "#6b7280";
 // const DISABLED = "#9ca3af";
 

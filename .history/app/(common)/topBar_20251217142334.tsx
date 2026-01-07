@@ -1,22 +1,13 @@
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useRouter } from "expo-router";
-import { Image, Text, TouchableOpacity } from "react-native";
+import { Image, TouchableOpacity } from "react-native";
 import { useSidebarStore } from "../../store/sidebarStore";
-import { Box } from "@gluestack-ui/themed";
 
 import React from "react";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverBody,
-  PopoverArrow,
-  PopoverBackdrop,
-  ButtonText,
-} from "@gluestack-ui/themed";
-import { Button } from "@gluestack-ui/themed";
 import { useUser } from "@clerk/clerk-expo";
+import { Button } from "@gluestack-ui/themed";
 
 // type PopoverHandle = {
 //   close: () => void;
@@ -61,7 +52,7 @@ export default function TopBar() {
           {/*  Notifications */}
 
           <Button  variant="link">
-                  <IconSymbol name="notifications" size={25} color="#D55B35" />
+                  <IconSymbol name="notifications" size={25} color="#dc2626" />
                 </Button>
 
           {/*  Avatar */}

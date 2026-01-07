@@ -1,7 +1,6 @@
-import { View } from "react-native";
-import React from "react";
-import { Button, ButtonText } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
+import { Button, ButtonText } from "@gluestack-ui/themed";
+import { View } from "react-native";
 
 interface PaginationProps {
   currentPage: number;
@@ -60,7 +59,7 @@ if (totalPages <= 3) {
               borderWidth: 1,
               borderColor: "#d1d5db",
               marginHorizontal: 5,
-              backgroundColor: currentPage === page ? "#d55b35" : "#ffffff",
+              backgroundColor: currentPage === page ? "#dc2626" : "#ffffff",
               justifyContent: "center",
               alignItems: "center",
             }}

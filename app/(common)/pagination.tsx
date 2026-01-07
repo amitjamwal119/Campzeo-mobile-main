@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import {  Pressable, Text, View } from "@gluestack-ui/themed";
+import { Pressable, Text, View } from "@gluestack-ui/themed";
 
 interface Props {
   currentPage: number;
@@ -64,7 +64,7 @@ export default function Pagination({
                 borderWidth: 1,
                 borderColor: "#d1d5db",
                 marginRight: 8,
-                backgroundColor: isActive ? "#d55b35" : "#ffffff",
+                backgroundColor: isActive ? "#dc2626" : "#ffffff",
               }}
             >
              

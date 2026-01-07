@@ -60,7 +60,7 @@ export default function Pagination() {
               borderWidth: 1,
               borderColor: "#d1d5db",
               marginRight: 8,
-              backgroundColor: "#d55b35",
+              backgroundColor: "#dc2626",
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -154,7 +154,7 @@ export default function Pagination() {
 //             rounded-[12px]
 //             border border-[#d1d5db]
 //             mr-2
-//             bg-[#d55b35]
+//             bg-[#dc2626]
 //             justify-center items-center
 //           "
 //         >

@@ -1,47 +1,47 @@
 import {
-  cancelSubscription,
-  getCurrentSubscription,
-  getPayments,
-  getPlans,
-  getUsage,
-  updateAutoRenew,
+    cancelSubscription,
+    getCurrentSubscription,
+    getPayments,
+    getPlans,
+    getUsage,
+    updateAutoRenew,
 } from "@/api/billingApi";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { CancelFormValues, cancelSchema } from "@/validations/billingSchema";
+import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import {
-  Divider,
-  Progress,
-  ProgressFilledTrack,
-  VStack,
-  HStack,
-  Center,
-  Switch,
-  Modal,
-  ModalBackdrop,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  RadioGroup,
-  RadioIndicator,
-  Textarea,
-  TextareaInput,
+    Center,
+    Divider,
+    HStack,
+    Modal,
+    ModalBackdrop,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    Progress,
+    ProgressFilledTrack,
+    Radio,
+    RadioGroup,
+    RadioIcon,
+    RadioIndicator,
+    Switch,
+    Textarea,
+    TextareaInput,
+    VStack,
 } from "@gluestack-ui/themed";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
+import { AlertTriangle } from "lucide-react-native";
 import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Alert, Pressable, useColorScheme } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import PaymentHistoryCard from "./billingComponents/paymentHistoryCard";
-import { AlertTriangle } from "lucide-react-native";
-import { Radio } from "@gluestack-ui/themed";
-import { RadioIcon } from "@gluestack-ui/themed";
-import { Controller, useForm } from "react-hook-form";
-import { CancelFormValues, cancelSchema } from "@/validations/billingSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@clerk/clerk-expo";
 
-const ACCENT = "#D55B35";
+const ACCENT = "#dc2626";
 const MUTED = "#6b7280";
 
 export default function BillingPage() {
@@ -119,8 +119,8 @@ export default function BillingPage() {
 
   const currentPlanName = subscriptionData?.subscription?.plan?.name ?? null;
 
-  const hasPaidPlan =
-    currentPlanName === "PROFESSIONAL" || currentPlanName === "ENTERPRISE";
+  // const hasPaidPlan =
+  //   currentPlanName === "PROFESSIONAL" || currentPlanName === "ENTERPRISE";
 
   useEffect(() => {
     const fetchBillingDetails = async () => {
@@ -179,6 +179,7 @@ export default function BillingPage() {
             fontSize: 24,
             fontWeight: "700",
             textAlign: "center",
+            lineHeight: 30,
           }}
         >
           Billing & Subscription
@@ -407,7 +408,7 @@ export default function BillingPage() {
                     marginBottom: 16,
                   }}
                 >
-                  <AlertTriangle size={20} color="#D55B35" />
+                  <AlertTriangle size={20} color="#dc2626" />
 
                   <ThemedText
                     style={{
@@ -447,7 +448,7 @@ export default function BillingPage() {
                     <HStack style={{ gap: 10, marginBottom: 14 }}>
                       <RadioIndicator
                         style={{
-                          borderColor: "#D55B35",
+                          borderColor: "#dc2626",
                           borderWidth: 2,
                           width: 18,
                           height: 18,
@@ -460,7 +461,7 @@ export default function BillingPage() {
                             width: 8,
                             height: 8,
                             borderRadius: 4,
-                            backgroundColor: "#D55B35",
+                            backgroundColor: "#dc2626",
                           }}
                         />
                       </RadioIndicator>
@@ -501,7 +502,7 @@ export default function BillingPage() {
                     <HStack style={{ gap: 10, marginBottom: 18 }}>
                       <RadioIndicator
                         style={{
-                          borderColor: "#D55B35",
+                          borderColor: "#dc2626",
                           borderWidth: 2,
                           width: 18,
                           height: 18,
@@ -514,7 +515,7 @@ export default function BillingPage() {
                             width: 8,
                             height: 8,
                             borderRadius: 4,
-                            backgroundColor: "#D55B35",
+                            backgroundColor: "#dc2626",
                           }}
                         />
                       </RadioIndicator>
@@ -616,7 +617,7 @@ export default function BillingPage() {
                       paddingVertical: 10,
                       paddingHorizontal: 14,
                       borderRadius: 10,
-                      backgroundColor: "#D55B35",
+                      backgroundColor: "#dc2626",
                     }}
                   >
                     <ThemedText

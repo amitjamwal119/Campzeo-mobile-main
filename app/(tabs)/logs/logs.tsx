@@ -1,17 +1,16 @@
+import { getLogs } from "@/api/logsApi";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { Text, View } from "@gluestack-ui/themed";
 import { useState } from "react";
 import {
-  TouchableOpacity,
-  FlatList,
-  View as RNView,
-  TextInput,
-  ActivityIndicator,
+    ActivityIndicator,
+    FlatList,
+    View as RNView,
+    TouchableOpacity
 } from "react-native";
 import LogsCard from "./logs-Components/logsCards";
-import { getLogs } from "@/api/logsApi";
-import { ThemedView } from "@/components/themed-view";
-import { ThemedText } from "@/components/themed-text";
 
 export default function Logs() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -183,7 +182,7 @@ export default function Logs() {
   if (loading) {
     return (
       <ThemedView className="flex-1 items-center justify-center">
-              <ActivityIndicator size="large" color="#D55B35" />
+              <ActivityIndicator size="large" color="#dc2626" />
               <ThemedText
                 style={{
                   marginTop: 12,

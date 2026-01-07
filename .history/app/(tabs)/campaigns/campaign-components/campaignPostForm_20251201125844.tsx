@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import {
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-  View,
-} from "react-native";
-import { Text, Button } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
+import { Button, Text } from "@gluestack-ui/themed";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useEffect, useState } from "react";
+import {
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 interface CampaignFormProps {
   platform: string;
@@ -221,7 +221,7 @@ export default function CampaignPostForm({ platform, onClose }: CampaignFormProp
           <Button
             onPress={handleCreate}
             style={{
-              backgroundColor: "#d55b35",
+              backgroundColor: "#dc2626",
               borderRadius: 8,
               marginBottom: 24,
             }}

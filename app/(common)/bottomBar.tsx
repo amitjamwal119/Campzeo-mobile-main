@@ -1,6 +1,6 @@
-import { Tabs } from "expo-router";
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Tabs } from "expo-router";
 
 /* ----------------------------- TAB CONFIG ----------------------------- */
 
@@ -38,7 +38,7 @@ export default function BottomBar() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#D55B35",
+        tabBarActiveTintColor: "#dc2626",
         tabBarInactiveTintColor: "#777777ff",
         headerShown: false,
         tabBarButton: HapticTab,

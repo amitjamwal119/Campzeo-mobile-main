@@ -1,16 +1,15 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { ScrollView, Pressable, Image } from "react-native";
-import { VStack, Input, InputField, Heading } from "@gluestack-ui/themed";
-import { Controller, useForm } from "react-hook-form";
-import { useUser } from "@clerk/clerk-expo";
-import * as ImagePicker from "expo-image-picker";
-import { Text } from "react-native";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  editProfileSchema,
-  EditProfileSchemaType,
+    editProfileSchema,
+    EditProfileSchemaType,
 } from "@/validations/profileSchema";
+import { useUser } from "@clerk/clerk-expo";
+import { Input, InputField, VStack } from "@gluestack-ui/themed";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as ImagePicker from "expo-image-picker";
+import { Controller, useForm } from "react-hook-form";
+import { Image, Pressable, ScrollView, Text } from "react-native";
 
 type closeEPFType = {
   closeEPF: () => void;
@@ -113,7 +112,7 @@ export default function EditProfile({ closeEPF }: closeEPFType) {
                   height: 100,
                   borderRadius: 100,
                   borderWidth: 2,
-                  borderColor: "#D55B35",
+                  borderColor: "#dc2626",
                 }}
               />
             </Pressable>
@@ -164,7 +163,7 @@ export default function EditProfile({ closeEPF }: closeEPFType) {
           ====================== */}
           <VStack>
             <Pressable
-              className="bg-[#D55B35] rounded-xl py-4 mt-4 items-center"
+              className="bg-[#dc2626] rounded-xl py-4 mt-4 items-center"
               onPress={handleSubmit(onSubmit)}
             >
               <ThemedText style={{ color: "white", fontWeight: "600" }}>

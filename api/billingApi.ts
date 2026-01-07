@@ -1,10 +1,5 @@
 import https from "./https";
 
-// Post wali apis
-// plan select krke post krne wali
-// https://www.campzeo.com/api/razorpay/create-order
-// Iska payload data {plan: "PROFESSIONAL", isSignup: false, metadata: {activationTiming: "DEFERRED"}}
-// 
 export const getUsage = async () => {
   try {
     const response = await https.get(`subscription/usage`);    

@@ -1,10 +1,10 @@
-import { View, Text, ActivityIndicator, ScrollView } from "react-native";
-import { useEffect, useState } from "react";
-import { useUser } from "@clerk/clerk-expo";
 import { fetchInvoices } from "@/api/invoicesApi";
-import { Invoice } from "@/types/types";
-import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { Invoice } from "@/types/types";
+import { useUser } from "@clerk/clerk-expo";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, ScrollView, Text } from "react-native";
 
 export default function Invoices() {
   const { user, isLoaded } = useUser();
@@ -31,7 +31,7 @@ export default function Invoices() {
   if (loading) {
     return (
       <ThemedView className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#D55B35" />
+        <ActivityIndicator size="large" color="#dc2626" />
         <ThemedText
           style={{
             marginTop: 12,

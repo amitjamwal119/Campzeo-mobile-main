@@ -3,7 +3,7 @@ import { ThemedView } from "@/components/themed-view";
 import { Divider, HStack, VStack } from "@gluestack-ui/themed";
 import { useColorScheme } from "react-native";
 
-const ACCENT = "#D55B35";
+const ACCENT = "#dc2626";
 const MUTED = "#6b7280";
 
 type PaymentHistoryCardProps = {

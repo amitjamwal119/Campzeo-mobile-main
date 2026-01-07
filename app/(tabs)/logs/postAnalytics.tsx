@@ -1,24 +1,24 @@
 import { getAnalytics } from "@/api/logsApi";
 import { Ionicons } from "@expo/vector-icons";
-import { HStack, VStack, Pressable, Text, Box } from "@gluestack-ui/themed";
+import { HStack, Pressable, VStack } from "@gluestack-ui/themed";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  Image,
-  useColorScheme,
   ActivityIndicator,
   Alert,
+  Dimensions,
+  Image,
   TouchableOpacity,
+  useColorScheme,
 } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
-import { Dimensions } from "react-native";
 
-import { LineChart } from "react-native-gifted-charts";
-import { ScrollView } from "react-native-gesture-handler";
 import { ThemedText } from "@/components/themed-text";
-import { TrendingUp } from "lucide-react-native";
 import { ThemedView } from "@/components/themed-view";
 import { View } from "@gluestack-ui/themed";
+import { TrendingUp } from "lucide-react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { LineChart } from "react-native-gifted-charts";
 
 const { width } = Dimensions.get("window");
 
@@ -58,7 +58,7 @@ export default function PostAnalytics() {
   if (loading) {
     return (
       <ThemedView className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#D55B35" />
+        <ActivityIndicator size="large" color="#dc2626" />
         <ThemedText
           style={{
             marginTop: 12,
@@ -135,12 +135,12 @@ export default function PostAnalytics() {
           {/* CENTER: Title */}
           <ThemedText
             style={{
-              fontSize: 20,
-              lineHeight: 36,
-              fontWeight: "700",
-              textAlign: "center",
-              flex: 1,
-            }}
+            flex: 1,
+            fontSize: 24,
+            fontWeight: "700",
+            textAlign: "center",
+            lineHeight: 30,
+          }}
           >
             Post Insights
           </ThemedText>

@@ -6,13 +6,13 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 type Contact = {
@@ -89,7 +89,7 @@ export default function CreateContact() {
         </TouchableOpacity>
 
         <View className="flex-row items-center mb-6">
-          <View className="w-14 h-14 rounded-xl bg-[#d55b35] items-center justify-center">
+          <View className="w-14 h-14 rounded-xl bg-[#dc2626] items-center justify-center">
             <Ionicons name="person-add" size={28} color="#fff" />
           </View>
           <View className="ml-4">
@@ -209,7 +209,7 @@ export default function CreateContact() {
           onPress={handleSubmit(onSubmit)}
           className="w-full mt-10 mb-10 rounded-xl items-center justify-center py-4"
           style={{
-            backgroundColor: "#d55b35",
+            backgroundColor: "#dc2626",
             shadowColor: "#000",
             shadowOpacity: 0.18,
             shadowOffset: { width: 0, height: 6 },

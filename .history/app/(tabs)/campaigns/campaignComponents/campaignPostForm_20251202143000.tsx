@@ -242,7 +242,7 @@ export default function CampaignPostForm({ platform, onClose }: CampaignFormProp
             onPress={handleCreate}
             className="rounded-lg mb-8"
             style={{
-              backgroundColor: "#d55b35",
+              backgroundColor: "#dc2626",
               borderRadius: 8,
             }}
           >
