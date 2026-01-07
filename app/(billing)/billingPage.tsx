@@ -119,8 +119,8 @@ export default function BillingPage() {
 
   const currentPlanName = subscriptionData?.subscription?.plan?.name ?? null;
 
-  const hasPaidPlan =
-    currentPlanName === "PROFESSIONAL" || currentPlanName === "ENTERPRISE";
+  // const hasPaidPlan =
+  //   currentPlanName === "PROFESSIONAL" || currentPlanName === "ENTERPRISE";
 
   useEffect(() => {
     const fetchBillingDetails = async () => {
@@ -179,6 +179,7 @@ export default function BillingPage() {
             fontSize: 24,
             fontWeight: "700",
             textAlign: "center",
+            lineHeight: 30,
           }}
         >
           Billing & Subscription

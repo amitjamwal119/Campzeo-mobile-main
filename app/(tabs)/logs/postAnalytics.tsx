@@ -135,12 +135,12 @@ export default function PostAnalytics() {
           {/* CENTER: Title */}
           <ThemedText
             style={{
-              fontSize: 20,
-              lineHeight: 36,
-              fontWeight: "700",
-              textAlign: "center",
-              flex: 1,
-            }}
+            flex: 1,
+            fontSize: 24,
+            fontWeight: "700",
+            textAlign: "center",
+            lineHeight: 30,
+          }}
           >
             Post Insights
           </ThemedText>

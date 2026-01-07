@@ -219,10 +219,12 @@ export default function Accounts() {
           <VStack style={{ flex: 1, alignItems: "center" }}>
             <ThemedText
               style={{
-                fontSize: 25,
-                fontWeight: "700",
-                textAlign: "center",
-              }}
+            flex: 1,
+            fontSize: 24,
+            fontWeight: "700",
+            textAlign: "center",
+            lineHeight: 30,
+          }}
             >
               Accounts
             </ThemedText>

@@ -2,7 +2,7 @@ import { getUsage } from "@/api/billingApi";
 import {
   getCampaigns,
   getContacts,
-  getNotifications,
+  // getNotifications,
   getUser,
 } from "@/api/dashboardApi";
 import { ThemedText } from "@/components/themed-text";
@@ -31,14 +31,6 @@ type UsageItem = {
   isNearLimit?: boolean;
 };
 
-type NotificationItem = {
-  id: number;
-  message: string;
-  platform: string | null;
-  createdAt: string;
-  isRead: boolean;
-};
-
 /* ================= COMPONENT ================= */
 
 export default function Insights() {
@@ -59,13 +51,13 @@ export default function Insights() {
         const campaigns = await getCampaigns();
         const contacts = await getContacts();
         const usage = await getUsage();
-        const notification = await getNotifications();
+        // const notification = await getNotifications();
 
         setUserData(user);
         setCampaignData(campaigns);
         setContactsData(contacts);
         setUsageData(usage);
-        // setNotificationData(notification);
+       
       } catch (error) {
         console.error("Dashboard fetch error:", error);
       } finally {
@@ -81,27 +73,20 @@ export default function Insights() {
     return (
       <ThemedView style={styles.loader}>
         <ActivityIndicator size="large" color="#dc2626" />
-        <ThemedText style={styles.loadingText}>
-          Loading dashboard…
-        </ThemedText>
+        <ThemedText style={styles.loadingText}>Loading dashboard…</ThemedText>
       </ThemedView>
     );
   }
 
   /* ================= DERIVED DATA ================= */
 
-  const organisationName =
-    userData?.organisation?.name ?? "Organisation";
+  const organisationName = userData?.organisation?.name ?? "Organisation";
 
   const totalCampaigns =
-    campaignData?.pagination?.total ??
-    campaignData?.campaigns?.length ??
-    "-";
+    campaignData?.pagination?.total ?? campaignData?.campaigns?.length ?? "-";
 
   const totalContacts =
-    contactsData?.pagination?.total ??
-    contactsData?.contacts?.length ??
-    "-";
+    contactsData?.pagination?.total ?? contactsData?.contacts?.length ?? "-";
 
   const teamSize =
     usageData?.usage?.users?.current ??
@@ -109,12 +94,16 @@ export default function Insights() {
     1;
 
   const planName =
-    userData?.organisation?.subscriptions?.[0]?.plan?.name ??
-    "FREE TRIAL";
+    userData?.organisation?.subscriptions?.[0]?.plan?.name ?? "FREE TRIAL";
 
-  const trialEndDate = userData?.organisation?.trialEndDate
-    ? new Date(userData.organisation.trialEndDate).toLocaleDateString()
-    : "N/A";
+  const isApproved =
+    userData?.organisation?.isApproved ?? null;
+
+    // console.log("isapp check",isApproved);
+    
+  // const trialEndDate = userData?.organisation?.trialEndDate
+  //   ? new Date(userData.organisation.trialEndDate).toLocaleDateString()
+  //   : "N/A";
 
   // const notifications: NotificationItem[] =
   //   notificationData?.data?.notifications ?? [];
@@ -130,9 +119,7 @@ export default function Insights() {
     const percentage =
       typeof data?.percentage === "number" ? data.percentage : 0;
 
-    const progressColor = data?.isNearLimit
-      ? "#f97316"
-      : "#22c55e";
+    const progressColor = data?.isNearLimit ? "#f97316" : "#22c55e";
 
     return (
       <VStack style={{ marginBottom: 16 }}>
@@ -145,9 +132,7 @@ export default function Insights() {
 
         <Center style={{ marginTop: 6 }}>
           <Progress value={percentage} size="sm">
-            <ProgressFilledTrack
-              style={{ backgroundColor: progressColor }}
-            />
+            <ProgressFilledTrack style={{ backgroundColor: progressColor }} />
           </Progress>
         </Center>
       </VStack>
@@ -161,9 +146,7 @@ export default function Insights() {
       {/* HEADER */}
       <HStack style={styles.header}>
         <ThemedText style={styles.heading}>Welcome back, </ThemedText>
-        <ThemedText style={styles.orgName}>
-          {organisationName}
-        </ThemedText>
+        <ThemedText style={styles.orgName}>{organisationName}</ThemedText>
       </HStack>
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -177,16 +160,28 @@ export default function Insights() {
 
             <Pressable
               style={styles.trialBadge}
-              onPress={() =>
-                routePage.push("/(billing)/billingPage")
-              }
+              onPress={() => routePage.push("/(billing)/billingPage")}
             >
               <Text style={styles.trialText}>Manage Billing</Text>
             </Pressable>
           </HStack>
 
-          <Text style={styles.trialDate}>
-            Trial ends on {trialEndDate}
+          <Text
+            style={[
+              styles.trialDate,
+              {
+                color:
+                  isApproved === true
+                    ? "#dcfce7" // light green
+                    : isApproved === false
+                    ? "#fee2e2" // light red
+                    : "#ffffff",
+              },
+            ]}
+          >
+            {isApproved === true && "Your subscription is active."}
+            {isApproved === false && "You don't have any active subscription."}
+            {isApproved === null && "-"}
           </Text>
         </Box>
 
@@ -195,9 +190,7 @@ export default function Insights() {
           <HStack style={styles.statsRow}>
             <Box style={styles.statCard}>
               <Text style={styles.statLabel}>Total Campaigns</Text>
-              <ThemedText style={styles.statValue}>
-                {totalCampaigns}
-              </ThemedText>
+              <ThemedText style={styles.statValue}>{totalCampaigns}</ThemedText>
               <ThemedText style={styles.statSubtext}>
                 Total Active Campaigns
               </ThemedText>
@@ -205,9 +198,7 @@ export default function Insights() {
 
             <Box style={styles.statCard}>
               <Text style={styles.statLabel}>Total Contacts</Text>
-              <ThemedText style={styles.statValue}>
-                {totalContacts}
-              </ThemedText>
+              <ThemedText style={styles.statValue}>{totalContacts}</ThemedText>
               <ThemedText style={styles.statSubtext}>
                 Audience Reached
               </ThemedText>
@@ -225,33 +216,16 @@ export default function Insights() {
 
         {/* ================= USAGE ================= */}
         <Box style={styles.usageCard}>
-          <ThemedText style={styles.usageName}>
-            Usage Details
-          </ThemedText>
+          <ThemedText style={styles.usageName}>Usage Details</ThemedText>
           <ThemedText style={styles.usageLabel}>
             Detailed breakdown of your usage and limits
           </ThemedText>
 
-          {renderUsageItem(
-            "Monthly Posts",
-            usageData?.usage?.postsThisMonth
-          )}
-          {renderUsageItem(
-            "Total Contacts",
-            usageData?.usage?.contacts
-          )}
-          {renderUsageItem(
-            "Campaigns",
-            usageData?.usage?.campaigns
-          )}
-          {renderUsageItem(
-            "Platform Connections",
-            usageData?.usage?.platforms
-          )}
-          {renderUsageItem(
-            "Team Members",
-            usageData?.usage?.users
-          )}
+          {renderUsageItem("Monthly Posts", usageData?.usage?.postsThisMonth)}
+          {renderUsageItem("Total Contacts", usageData?.usage?.contacts)}
+          {renderUsageItem("Campaigns", usageData?.usage?.campaigns)}
+          {renderUsageItem("Platform Connections", usageData?.usage?.platforms)}
+          {renderUsageItem("Team Members", usageData?.usage?.users)}
         </Box>
 
         {/* ================= TEAM ================= */}
@@ -370,7 +344,7 @@ const styles = StyleSheet.create({
   trialDate: {
     color: "#fff",
     fontSize: 13,
-    marginTop: 12,
+    marginTop: 5,
   },
 
   /* STATS */
@@ -418,6 +392,7 @@ const styles = StyleSheet.create({
   usageName: {
     fontSize: 18,
     fontWeight: "600",
+    marginBottom: 9
   },
   usageLabel: {
     fontSize: 14,

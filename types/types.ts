@@ -26,12 +26,12 @@ export interface CalendarEvent {
 }
 
 
-interface CalendarHeaderProps {
-  currentDate: Date;  
-  viewMode: "month" | "week" | "day";
-  onChangeView: (mode: "month" | "week" | "day") => void;
-  onChangeDate: (date: Date) => void;
-}
+// interface CalendarHeaderProps {
+//   currentDate: Date;  
+//   viewMode: "month" | "week" | "day";
+//   onChangeView: (mode: "month" | "week" | "day") => void;
+//   onChangeDate: (date: Date) => void;
+// }
 
 // types/invoice.ts
 export interface Invoice {
